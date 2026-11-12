@@ -1,0 +1,7 @@
+node_modules/
+.DS_Store
+_BACKUP_FULL_PROJECT/
+*.xlsx
+data/*.db-wal
+data/*.db-shm
+.env
