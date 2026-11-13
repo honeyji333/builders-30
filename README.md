@@ -5,12 +5,19 @@
 
 ---
 
-## 📌 Day 1 Progress: Project Planning & Feature Specification
+## 📌 Progress Highlights
+### Day 1: Project Planning & Feature Specification
 - [x] Defined core problem statement and target audience.
 - [x] Outlined user roles: Guest, Registered Member, and Admin.
 - [x] Structured MVP features (10 core capabilities) vs Phase 2 enhancements in [`FEATURES.md`](./FEATURES.md).
 - [x] Designed the full 30-day execution roadmap.
 - [x] Initialized Git repository and project planning documentation.
+
+### Day 2: Database Modeling & Screen Wireframes
+- [x] Modeled relational SQLite schema with Entity-Relationship (ER) diagram in [`docs/schema.md`](./docs/schema.md).
+- [x] Defined tables for `users`, `anime`, `genres`, `anime_genres`, `episodes`, `watchlist`, `favorites`, `watch_history`, and `comments`.
+- [x] Added index optimization strategies for high-frequency queries (slugs, statuses, user IDs).
+- [x] Sketched 4 core UI wireframes (Auth Modal, Catalog Browsing, Detail/Streaming Player, and User Library) in [`docs/wireframes.md`](./docs/wireframes.md).
 
 ---
 
@@ -26,7 +33,7 @@
 ## 📅 30-Day Roadmap Overview
 
 - [x] **Day 1**: Project Concept & Feature Specification (`FEATURES.md`)
-- [ ] **Day 2**: Database Schema Design & Entity Relationships
+- [x] **Day 2**: Database Schema Design & Screen Wireframes (`/docs`)
 - [ ] **Day 3**: Express Server Skeleton & Health Check Endpoint
 - [ ] **Day 4**: SQLite Engine Integration & Core Tables
 - [ ] **Day 5**: Relational Schema (Episodes, Watchlist, Favorites)
