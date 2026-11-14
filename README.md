@@ -19,6 +19,13 @@
 - [x] Added index optimization strategies for high-frequency queries (slugs, statuses, user IDs).
 - [x] Sketched 4 core UI wireframes (Auth Modal, Catalog Browsing, Detail/Streaming Player, and User Library) in [`docs/wireframes.md`](./docs/wireframes.md).
 
+### Day 3: Project Setup, Database Connection & Health API
+- [x] Initialized Node.js backend environment with `package.json` and scripts.
+- [x] Configured environment variables template in `.env.example`.
+- [x] Established SQLite database connection engine in `db/init.js` with WAL mode and foreign key constraints enabled.
+- [x] Built core Express server (`server.js`) with CORS and JSON middleware.
+- [x] Created `/health` REST endpoint returning real-time server and database connectivity status.
+
 ---
 
 ## 🛠️ Planned Tech Stack
@@ -34,7 +41,7 @@
 
 - [x] **Day 1**: Project Concept & Feature Specification (`FEATURES.md`)
 - [x] **Day 2**: Database Schema Design & Screen Wireframes (`/docs`)
-- [ ] **Day 3**: Express Server Skeleton & Health Check Endpoint
+- [x] **Day 3**: Express Server Skeleton & Health Check Endpoint (`/health`)
 - [ ] **Day 4**: SQLite Engine Integration & Core Tables
 - [ ] **Day 5**: Relational Schema (Episodes, Watchlist, Favorites)
 - [ ] **Day 6**: Core Anime Catalog Seeding
