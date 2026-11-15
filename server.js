@@ -1,10 +1,13 @@
 require('dotenv').config();
 const express = require('express');
 const cors = require('cors');
-const { db, checkDatabaseHealth } = require('./db/init');
+const { db, initializeDatabase, checkDatabaseHealth } = require('./db/init');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
+
+// Initialize Database Schema (creates users table on startup)
+initializeDatabase();
 
 // Core Middleware
 app.use(cors());
@@ -17,11 +20,14 @@ app.get('/', (req, res) => {
     version: '1.0.0',
     description: 'Full-stack anime streaming platform backend',
     status: 'online',
-    healthCheck: '/health'
+    endpoints: {
+      health: '/health',
+      signup: 'POST /api/auth/register'
+    }
   });
 });
 
-// Health Check API (Deliverable for Day 3)
+// Health Check API
 app.get(['/health', '/api/health'], (req, res) => {
   const dbHealth = checkDatabaseHealth();
   
@@ -44,10 +50,14 @@ app.get(['/health', '/api/health'], (req, res) => {
   });
 });
 
+// Authentication Routes (Day 4: Signup / Register API)
+app.use('/api/auth', require('./routes/auth'));
+
 // Start Server
 app.listen(PORT, () => {
   console.log(`\n🚀 AnimeVault Server running on http://localhost:${PORT}`);
-  console.log(`🩺 Health check available at: http://localhost:${PORT}/health\n`);
+  console.log(`🩺 Health check: http://localhost:${PORT}/health`);
+  console.log(`🔐 Signup API : POST http://localhost:${PORT}/api/auth/register\n`);
 });
 
 module.exports = app;
