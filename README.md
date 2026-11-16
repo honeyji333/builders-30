@@ -29,14 +29,19 @@
 - [x] Implemented robust input validation (RFC 5322 email regex, username length/format, min 8-char password).
 - [x] Integrated `bcryptjs` for secure password hashing with 10 salt rounds (never storing plain text).
 - [x] Built `POST /api/auth/register` (and `/signup`) returning sanitized user profiles and avatars.
-- [x] Added duplicate prevention and error handling for existing usernames/emails.
+
+### Day 5: Login API with JWT & Protected Routes Middleware
+- [x] Created `POST /api/auth/login` validating credentials against bcrypt hashes and signing JWT tokens (7-day validity).
+- [x] Implemented `middleware/auth.js` (`authMiddleware` and `optionalAuth`) intercepting Bearer headers and HTTP-only cookies.
+- [x] Created protected endpoint `GET /api/auth/me` returning `401 Unauthorized` without a token and user profile data with one.
+- [x] Added `POST /api/auth/logout` safely invalidating session cookies.
 
 ---
 
 ## 🛠️ Tech Stack
 - **Backend**: Node.js, Express.js
 - **Database**: SQLite with `better-sqlite3`
-- **Security & Auth**: `bcryptjs` password hashing, input validation, JWT (upcoming Day 5)
+- **Security & Authentication**: JWT (JSON Web Tokens), `bcryptjs` (10 rounds), `cookie-parser`, HTTP-Only Cookies
 - **Frontend**: Modern Vanilla JS (Single Page Architecture), Semantic HTML5, CSS3 Glassmorphism
 - **DevOps**: Docker, Render / Railway
 
@@ -48,7 +53,7 @@
 - [x] **Day 2**: Database schema and wireframes (`/docs`)
 - [x] **Day 3**: Project setup and server running (`/health` API)
 - [x] **Day 4**: Signup API with password hashing (`POST /api/auth/register`)
-- [ ] **Day 5**: Login API with JWT and protected routes
+- [x] **Day 5**: Login API with JWT and protected routes (`POST /login` & `GET /me`)
 - [ ] **Day 6**: CRUD APIs for the main entity (Anime Catalog)
 - [ ] **Day 7**: Related entities, search and pagination
 - [ ] **Day 8**: Frontend setup, routing and auth screens
@@ -62,26 +67,54 @@
 
 ---
 
-## 🧪 Testing the Signup API (Postman / cURL)
+## 🧪 Testing Day 5 Deliverable: Protected Routes & JWT
 
-You can test user registration using Postman or cURL:
-
+### 1. Test Without Token ➔ `401 Unauthorized`
 ```bash
-# Register a new user
-curl -X POST http://localhost:3000/api/auth/register \
+curl -X GET http://localhost:3000/api/auth/me
+```
+**Response:**
+```json
+{
+  "success": false,
+  "error": "Authentication required: Token missing",
+  "code": "UNAUTHORIZED"
+}
+```
+
+### 2. Login to receive JWT Token
+```bash
+curl -X POST http://localhost:3000/api/auth/login \
   -H "Content-Type: application/json" \
   -d '{
     "username": "eren_jaeger",
-    "email": "eren@paradis.island",
     "password": "TatacawPassword123"
   }'
 ```
-
-**Successful Response (`201 Created`):**
+**Response:**
 ```json
 {
   "success": true,
-  "message": "User registered successfully",
+  "message": "Logged in successfully",
+  "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...",
+  "data": {
+    "id": 1,
+    "username": "eren_jaeger",
+    "email": "eren@paradis.island"
+  }
+}
+```
+
+### 3. Access Protected Route With JWT ➔ `200 OK`
+```bash
+curl -X GET http://localhost:3000/api/auth/me \
+  -H "Authorization: Bearer <YOUR_JWT_TOKEN>"
+```
+**Response:**
+```json
+{
+  "success": true,
+  "message": "Authorized: User profile retrieved",
   "data": {
     "id": 1,
     "username": "eren_jaeger",

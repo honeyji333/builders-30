@@ -1,6 +1,7 @@
 require('dotenv').config();
 const express = require('express');
 const cors = require('cors');
+const cookieParser = require('cookie-parser');
 const { db, initializeDatabase, checkDatabaseHealth } = require('./db/init');
 
 const app = express();
@@ -10,8 +11,9 @@ const PORT = process.env.PORT || 3000;
 initializeDatabase();
 
 // Core Middleware
-app.use(cors());
+app.use(cors({ origin: true, credentials: true }));
 app.use(express.json());
+app.use(cookieParser());
 
 // Root Welcome Endpoint
 app.get('/', (req, res) => {
@@ -21,8 +23,11 @@ app.get('/', (req, res) => {
     description: 'Full-stack anime streaming platform backend',
     status: 'online',
     endpoints: {
-      health: '/health',
-      signup: 'POST /api/auth/register'
+      health: 'GET /health',
+      signup: 'POST /api/auth/register',
+      login: 'POST /api/auth/login',
+      me: 'GET /api/auth/me (Protected - requires JWT)',
+      logout: 'POST /api/auth/logout'
     }
   });
 });
@@ -50,14 +55,16 @@ app.get(['/health', '/api/health'], (req, res) => {
   });
 });
 
-// Authentication Routes (Day 4: Signup / Register API)
+// Authentication Routes (Day 4: Register | Day 5: Login, Protected /me, Logout)
 app.use('/api/auth', require('./routes/auth'));
 
 // Start Server
 app.listen(PORT, () => {
   console.log(`\n🚀 AnimeVault Server running on http://localhost:${PORT}`);
   console.log(`🩺 Health check: http://localhost:${PORT}/health`);
-  console.log(`🔐 Signup API : POST http://localhost:${PORT}/api/auth/register\n`);
+  console.log(`🔐 Signup API : POST http://localhost:${PORT}/api/auth/register`);
+  console.log(`🔑 Login API  : POST http://localhost:${PORT}/api/auth/login`);
+  console.log(`🛡️  Protected  : GET  http://localhost:${PORT}/api/auth/me (Requires JWT)\n`);
 });
 
 module.exports = app;
