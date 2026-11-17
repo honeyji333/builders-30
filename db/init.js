@@ -30,6 +30,33 @@ function initializeDatabase() {
 
     CREATE INDEX IF NOT EXISTS idx_users_username ON users(username);
     CREATE INDEX IF NOT EXISTS idx_users_email ON users(email);
+
+    -- Main Entity Table (Day 6)
+    CREATE TABLE IF NOT EXISTS anime (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      title TEXT NOT NULL,
+      title_jp TEXT,
+      slug TEXT UNIQUE NOT NULL,
+      description TEXT,
+      cover_image TEXT,
+      banner_image TEXT,
+      type TEXT CHECK(type IN ('TV','Movie','OVA','ONA','Special')) DEFAULT 'TV',
+      status TEXT CHECK(status IN ('Airing','Completed','Upcoming')) DEFAULT 'Airing',
+      rating REAL DEFAULT 0,
+      episodes_count INTEGER DEFAULT 0,
+      release_year INTEGER,
+      season TEXT,
+      studio TEXT,
+      duration TEXT DEFAULT '24 min',
+      views INTEGER DEFAULT 0,
+      has_hindi_dub INTEGER DEFAULT 0,
+      created_at DATETIME DEFAULT CURRENT_TIMESTAMP
+    );
+
+    CREATE INDEX IF NOT EXISTS idx_anime_slug ON anime(slug);
+    CREATE INDEX IF NOT EXISTS idx_anime_status ON anime(status);
+    CREATE INDEX IF NOT EXISTS idx_anime_type ON anime(type);
+    CREATE INDEX IF NOT EXISTS idx_anime_rating ON anime(rating);
   `);
 }
 

@@ -36,6 +36,13 @@
 - [x] Created protected endpoint `GET /api/auth/me` returning `401 Unauthorized` without a token and user profile data with one.
 - [x] Added `POST /api/auth/logout` safely invalidating session cookies.
 
+### Day 6: Main Entity CRUD APIs with Authentication
+- [x] Created `anime` catalog SQLite table with indexing on `slug`, `type`, `status`, and `rating`.
+- [x] Built **Create API**: `POST /api/anime` (Protected by `authMiddleware`, automatic slug generation).
+- [x] Built **Read API**: `GET /api/anime` (Paginated catalog listing) and `GET /api/anime/:id` (Single anime by ID or slug).
+- [x] Built **Update API**: `PUT /api/anime/:id` (Protected by `authMiddleware`, selective metadata updates).
+- [x] Built **Delete API**: `DELETE /api/anime/:id` (Protected by `authMiddleware`, safely removes records).
+
 ---
 
 ## 🛠️ Tech Stack
@@ -54,7 +61,7 @@
 - [x] **Day 3**: Project setup and server running (`/health` API)
 - [x] **Day 4**: Signup API with password hashing (`POST /api/auth/register`)
 - [x] **Day 5**: Login API with JWT and protected routes (`POST /login` & `GET /me`)
-- [ ] **Day 6**: CRUD APIs for the main entity (Anime Catalog)
+- [x] **Day 6**: CRUD APIs for the main entity (`/api/anime` GET, POST, PUT, DELETE)
 - [ ] **Day 7**: Related entities, search and pagination
 - [ ] **Day 8**: Frontend setup, routing and auth screens
 - [ ] **Day 9**: Main list and detail screens
@@ -67,60 +74,47 @@
 
 ---
 
-## 🧪 Testing Day 5 Deliverable: Protected Routes & JWT
+## 🧪 Testing Day 6 Deliverable: Main Entity CRUD APIs
 
-### 1. Test Without Token ➔ `401 Unauthorized`
+### 1. CREATE Anime (`POST /api/anime`) — Protected
 ```bash
-curl -X GET http://localhost:3000/api/auth/me
-```
-**Response:**
-```json
-{
-  "success": false,
-  "error": "Authentication required: Token missing",
-  "code": "UNAUTHORIZED"
-}
-```
-
-### 2. Login to receive JWT Token
-```bash
-curl -X POST http://localhost:3000/api/auth/login \
+curl -X POST http://localhost:3000/api/anime \
+  -H "Authorization: Bearer <YOUR_JWT_TOKEN>" \
   -H "Content-Type: application/json" \
   -d '{
-    "username": "eren_jaeger",
-    "password": "TatacawPassword123"
+    "title": "Demon Slayer: Kimetsu no Yaiba",
+    "type": "TV",
+    "status": "Completed",
+    "rating": 8.8,
+    "episodes_count": 26,
+    "release_year": 2019,
+    "studio": "ufotable",
+    "description": "A youth begins a quest to fight demons and turn his sister human again."
   }'
 ```
-**Response:**
-```json
-{
-  "success": true,
-  "message": "Logged in successfully",
-  "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...",
-  "data": {
-    "id": 1,
-    "username": "eren_jaeger",
-    "email": "eren@paradis.island"
-  }
-}
+
+### 2. READ All Anime (`GET /api/anime`)
+```bash
+curl -X GET "http://localhost:3000/api/anime?page=1&limit=10"
 ```
 
-### 3. Access Protected Route With JWT ➔ `200 OK`
+### 3. READ Single Anime (`GET /api/anime/:id`)
 ```bash
-curl -X GET http://localhost:3000/api/auth/me \
-  -H "Authorization: Bearer <YOUR_JWT_TOKEN>"
+curl -X GET http://localhost:3000/api/anime/1
+# OR by slug
+curl -X GET http://localhost:3000/api/anime/demon-slayer-kimetsu-no-yaiba
 ```
-**Response:**
-```json
-{
-  "success": true,
-  "message": "Authorized: User profile retrieved",
-  "data": {
-    "id": 1,
-    "username": "eren_jaeger",
-    "email": "eren@paradis.island",
-    "avatar_url": "https://api.dicebear.com/7.x/adventurer/svg?seed=eren_jaeger",
-    "created_at": "2026-11-15T04:45:00.000Z"
-  }
-}
+
+### 4. UPDATE Anime (`PUT /api/anime/:id`) — Protected
+```bash
+curl -X PUT http://localhost:3000/api/anime/1 \
+  -H "Authorization: Bearer <YOUR_JWT_TOKEN>" \
+  -H "Content-Type: application/json" \
+  -d '{ "rating": 8.9, "has_hindi_dub": 1 }'
+```
+
+### 5. DELETE Anime (`DELETE /api/anime/:id`) — Protected
+```bash
+curl -X DELETE http://localhost:3000/api/anime/1 \
+  -H "Authorization: Bearer <YOUR_JWT_TOKEN>"
 ```

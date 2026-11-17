@@ -7,7 +7,7 @@ const { db, initializeDatabase, checkDatabaseHealth } = require('./db/init');
 const app = express();
 const PORT = process.env.PORT || 3000;
 
-// Initialize Database Schema (creates users table on startup)
+// Initialize Database Schema (users & anime tables)
 initializeDatabase();
 
 // Core Middleware
@@ -24,10 +24,19 @@ app.get('/', (req, res) => {
     status: 'online',
     endpoints: {
       health: 'GET /health',
-      signup: 'POST /api/auth/register',
-      login: 'POST /api/auth/login',
-      me: 'GET /api/auth/me (Protected - requires JWT)',
-      logout: 'POST /api/auth/logout'
+      auth: {
+        signup: 'POST /api/auth/register',
+        login: 'POST /api/auth/login',
+        me: 'GET /api/auth/me (Protected)',
+        logout: 'POST /api/auth/logout'
+      },
+      anime_crud: {
+        read_all: 'GET /api/anime',
+        read_one: 'GET /api/anime/:id',
+        create: 'POST /api/anime (Protected - requires auth)',
+        update: 'PUT /api/anime/:id (Protected - requires auth)',
+        delete: 'DELETE /api/anime/:id (Protected - requires auth)'
+      }
     }
   });
 });
@@ -55,16 +64,17 @@ app.get(['/health', '/api/health'], (req, res) => {
   });
 });
 
-// Authentication Routes (Day 4: Register | Day 5: Login, Protected /me, Logout)
+// Authentication Routes (Day 4 & Day 5)
 app.use('/api/auth', require('./routes/auth'));
+
+// Main Entity: Anime CRUD Routes (Day 6)
+app.use('/api/anime', require('./routes/anime'));
 
 // Start Server
 app.listen(PORT, () => {
   console.log(`\n🚀 AnimeVault Server running on http://localhost:${PORT}`);
   console.log(`🩺 Health check: http://localhost:${PORT}/health`);
-  console.log(`🔐 Signup API : POST http://localhost:${PORT}/api/auth/register`);
-  console.log(`🔑 Login API  : POST http://localhost:${PORT}/api/auth/login`);
-  console.log(`🛡️  Protected  : GET  http://localhost:${PORT}/api/auth/me (Requires JWT)\n`);
+  console.log(`🎬 Anime CRUD  : /api/anime (GET, POST, PUT, DELETE)\n`);
 });
 
 module.exports = app;
