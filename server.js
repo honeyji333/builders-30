@@ -7,7 +7,7 @@ const { db, initializeDatabase, checkDatabaseHealth } = require('./db/init');
 const app = express();
 const PORT = process.env.PORT || 3000;
 
-// Initialize Database Schema (users & anime tables)
+// Initialize Database Schema (users, anime, genres, anime_genres, episodes)
 initializeDatabase();
 
 // Core Middleware
@@ -19,7 +19,7 @@ app.use(cookieParser());
 app.get('/', (req, res) => {
   res.json({
     project: 'AnimeVault API',
-    version: '1.0.0',
+    version: '1.1.0',
     description: 'Full-stack anime streaming platform backend',
     status: 'online',
     endpoints: {
@@ -30,12 +30,14 @@ app.get('/', (req, res) => {
         me: 'GET /api/auth/me (Protected)',
         logout: 'POST /api/auth/logout'
       },
-      anime_crud: {
-        read_all: 'GET /api/anime',
-        read_one: 'GET /api/anime/:id',
-        create: 'POST /api/anime (Protected - requires auth)',
-        update: 'PUT /api/anime/:id (Protected - requires auth)',
-        delete: 'DELETE /api/anime/:id (Protected - requires auth)'
+      anime: {
+        catalog_paginated_search: 'GET /api/anime?page=1&limit=20&search=naruto&genre=action',
+        single_anime_with_episodes: 'GET /api/anime/:id',
+        anime_episodes: 'GET /api/anime/:id/episodes',
+        genres_taxonomy: 'GET /api/genres',
+        create: 'POST /api/anime (Protected)',
+        update: 'PUT /api/anime/:id (Protected)',
+        delete: 'DELETE /api/anime/:id (Protected)'
       }
     }
   });
@@ -64,17 +66,34 @@ app.get(['/health', '/api/health'], (req, res) => {
   });
 });
 
+// Genres Taxonomy API (Day 7)
+app.get('/api/genres', (req, res) => {
+  try {
+    const genres = db.prepare(`
+      SELECT g.*, COUNT(ag.anime_id) as anime_count
+      FROM genres g
+      LEFT JOIN anime_genres ag ON g.id = ag.genre_id
+      GROUP BY g.id
+      ORDER BY g.name ASC
+    `).all();
+    res.json({ success: true, data: genres });
+  } catch (error) {
+    res.status(500).json({ success: false, error: error.message });
+  }
+});
+
 // Authentication Routes (Day 4 & Day 5)
 app.use('/api/auth', require('./routes/auth'));
 
-// Main Entity: Anime CRUD Routes (Day 6)
+// Main Entity & Related Entities: Anime, Genres & Episodes (Day 6 & Day 7)
 app.use('/api/anime', require('./routes/anime'));
 
 // Start Server
 app.listen(PORT, () => {
   console.log(`\n🚀 AnimeVault Server running on http://localhost:${PORT}`);
   console.log(`🩺 Health check: http://localhost:${PORT}/health`);
-  console.log(`🎬 Anime CRUD  : /api/anime (GET, POST, PUT, DELETE)\n`);
+  console.log(`🏷️  Genres API  : GET  http://localhost:${PORT}/api/genres`);
+  console.log(`🔍 Anime Search : GET  http://localhost:${PORT}/api/anime?search=solo&genre=action\n`);
 });
 
 module.exports = app;

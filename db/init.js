@@ -57,7 +57,60 @@ function initializeDatabase() {
     CREATE INDEX IF NOT EXISTS idx_anime_status ON anime(status);
     CREATE INDEX IF NOT EXISTS idx_anime_type ON anime(type);
     CREATE INDEX IF NOT EXISTS idx_anime_rating ON anime(rating);
+
+    -- Related Entity: Genres (Day 7)
+    CREATE TABLE IF NOT EXISTS genres (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      name TEXT UNIQUE NOT NULL,
+      slug TEXT UNIQUE NOT NULL
+    );
+
+    -- Many-to-Many Relationship: Anime <-> Genres (Day 7)
+    CREATE TABLE IF NOT EXISTS anime_genres (
+      anime_id INTEGER NOT NULL,
+      genre_id INTEGER NOT NULL,
+      PRIMARY KEY (anime_id, genre_id),
+      FOREIGN KEY (anime_id) REFERENCES anime(id) ON DELETE CASCADE,
+      FOREIGN KEY (genre_id) REFERENCES genres(id) ON DELETE CASCADE
+    );
+
+    -- Related Entity: Episodes (One-to-Many with Anime) (Day 7)
+    CREATE TABLE IF NOT EXISTS episodes (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      anime_id INTEGER NOT NULL,
+      number INTEGER NOT NULL,
+      title TEXT,
+      thumbnail TEXT,
+      duration TEXT DEFAULT '24 min',
+      filler INTEGER DEFAULT 0,
+      created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+      FOREIGN KEY (anime_id) REFERENCES anime(id) ON DELETE CASCADE
+    );
+
+    CREATE INDEX IF NOT EXISTS idx_episodes_anime ON episodes(anime_id);
+    CREATE UNIQUE INDEX IF NOT EXISTS idx_episodes_anime_number ON episodes(anime_id, number);
   `);
+
+  // Seed standard genre taxonomy if empty
+  const genreCount = db.prepare('SELECT COUNT(*) as count FROM genres').get().count;
+  if (genreCount === 0) {
+    const insertGenre = db.prepare('INSERT INTO genres (name, slug) VALUES (?, ?)');
+    const defaultGenres = [
+      ['Action', 'action'],
+      ['Adventure', 'adventure'],
+      ['Comedy', 'comedy'],
+      ['Drama', 'drama'],
+      ['Fantasy', 'fantasy'],
+      ['Romance', 'romance'],
+      ['Sci-Fi', 'sci-fi'],
+      ['Shonen', 'shonen'],
+      ['Supernatural', 'supernatural'],
+      ['Slice of Life', 'slice-of-life']
+    ];
+    for (const [name, slug] of defaultGenres) {
+      insertGenre.run(name, slug);
+    }
+  }
 }
 
 function checkDatabaseHealth() {

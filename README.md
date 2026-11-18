@@ -43,6 +43,14 @@
 - [x] Built **Update API**: `PUT /api/anime/:id` (Protected by `authMiddleware`, selective metadata updates).
 - [x] Built **Delete API**: `DELETE /api/anime/:id` (Protected by `authMiddleware`, safely removes records).
 
+### Day 7: Related Entities, Search Engine & Pagination
+- [x] Modeled and created related entities: `genres` and `episodes` with foreign keys and cascade delete rules.
+- [x] Implemented Many-to-Many junction table `anime_genres` linking anime to multiple categories.
+- [x] Built full multi-field search engine (`GET /api/anime?search=...`) querying titles, Japanese titles, and synopses.
+- [x] Implemented complex filter queries by genre, release year, season, format (`TV`/`Movie`), and Hindi Dub.
+- [x] Added SQL-level offset pagination (`page`, `limit`, `totalPages`, `total`).
+- [x] Created related entity endpoints: `GET /api/genres` (with real-time anime count) and `GET /api/anime/:id/episodes`.
+
 ---
 
 ## 🛠️ Tech Stack
@@ -62,7 +70,7 @@
 - [x] **Day 4**: Signup API with password hashing (`POST /api/auth/register`)
 - [x] **Day 5**: Login API with JWT and protected routes (`POST /login` & `GET /me`)
 - [x] **Day 6**: CRUD APIs for the main entity (`/api/anime` GET, POST, PUT, DELETE)
-- [ ] **Day 7**: Related entities, search and pagination
+- [x] **Day 7**: Related entities, search and pagination (`/api/anime?search=&genre=`, `/api/genres`, `/episodes`)
 - [ ] **Day 8**: Frontend setup, routing and auth screens
 - [ ] **Day 9**: Main list and detail screens
 - [ ] **Day 10**: Create, edit and delete flows (Watchlist & Favorites)
@@ -74,47 +82,25 @@
 
 ---
 
-## 🧪 Testing Day 6 Deliverable: Main Entity CRUD APIs
+## 🧪 Testing Day 7 Deliverable: Search, Filter, Pagination & Related Entities
 
-### 1. CREATE Anime (`POST /api/anime`) — Protected
+### 1. Paginated Catalog with Search & Filter
 ```bash
-curl -X POST http://localhost:3000/api/anime \
-  -H "Authorization: Bearer <YOUR_JWT_TOKEN>" \
-  -H "Content-Type: application/json" \
-  -d '{
-    "title": "Demon Slayer: Kimetsu no Yaiba",
-    "type": "TV",
-    "status": "Completed",
-    "rating": 8.8,
-    "episodes_count": 26,
-    "release_year": 2019,
-    "studio": "ufotable",
-    "description": "A youth begins a quest to fight demons and turn his sister human again."
-  }'
+# Search anime by keyword with genre filter & pagination
+curl -X GET "http://localhost:3000/api/anime?search=demon&genre=action&page=1&limit=10"
 ```
 
-### 2. READ All Anime (`GET /api/anime`)
+### 2. Related Entity: All Genres with Real-Time Counts
 ```bash
-curl -X GET "http://localhost:3000/api/anime?page=1&limit=10"
+curl -X GET http://localhost:3000/api/genres
 ```
 
-### 3. READ Single Anime (`GET /api/anime/:id`)
+### 3. Related Entity: Episodes for an Anime
+```bash
+curl -X GET http://localhost:3000/api/anime/demon-slayer-kimetsu-no-yaiba/episodes
+```
+
+### 4. Single Anime with Enriched Genres and Episode Array
 ```bash
 curl -X GET http://localhost:3000/api/anime/1
-# OR by slug
-curl -X GET http://localhost:3000/api/anime/demon-slayer-kimetsu-no-yaiba
-```
-
-### 4. UPDATE Anime (`PUT /api/anime/:id`) — Protected
-```bash
-curl -X PUT http://localhost:3000/api/anime/1 \
-  -H "Authorization: Bearer <YOUR_JWT_TOKEN>" \
-  -H "Content-Type: application/json" \
-  -d '{ "rating": 8.9, "has_hindi_dub": 1 }'
-```
-
-### 5. DELETE Anime (`DELETE /api/anime/:id`) — Protected
-```bash
-curl -X DELETE http://localhost:3000/api/anime/1 \
-  -H "Authorization: Bearer <YOUR_JWT_TOKEN>"
 ```
