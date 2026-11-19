@@ -19,15 +19,15 @@
       <a href="#/" class="brand-logo" id="brandLogo">
         <div class="brand-icon">▶</div>
         <div class="brand-text">Anime<span>Vault</span></div>
-        <span class="brand-badge">Day 8</span>
+        <span class="brand-badge">Day 9</span>
       </a>
 
       <!-- Primary Navigation Links -->
       <ul class="nav-links">
-        <li><a href="#/" class="nav-link active">Home</a></li>
-        <li><a href="#/catalog" class="nav-link">Catalog</a></li>
-        <li><a href="#/trending" class="nav-link">Trending</a></li>
-        <li><a href="#/watchlist" class="nav-link">Watchlist</a></li>
+        <li><a href="#/" class="nav-link active" id="navLinkHome">Home</a></li>
+        <li><a href="#/catalog" class="nav-link" id="navLinkCatalog">Catalog</a></li>
+        <li><a href="#/trending" class="nav-link" id="navLinkTrending">Trending</a></li>
+        <li><a href="#/watchlist" class="nav-link" id="navLinkWatchlist">Watchlist</a></li>
       </ul>
 
       <!-- Nav Actions: Search & Auth Buttons -->
@@ -67,146 +67,329 @@
   </header>
 
   <!-- ===================================================================
-       Hero Spotlight Section
+       MAIN SPA VIEWS CONTAINER
        =================================================================== -->
-  <section class="hero">
-    <div class="container hero-content">
-      <div class="hero-pill">
-        <span>⚡</span> #ALTABuilder30 • Track A Day 8 Milestone
-      </div>
+  <main id="appMain">
 
-      <h1 class="hero-title">
-        STREAM & TRACK YOUR <br />
-        <span class="text-gradient-red">FAVORITE ANIME</span>
-      </h1>
-
-      <p class="hero-desc">
-        AnimeVault is a next-generation anime streaming catalogue and personal library tracker. 
-        Discover trending series, stream in high definition with Sub/Dub support, and track your episode progress in real-time.
-      </p>
-
-      <div class="hero-actions">
-        <a href="#/catalog" class="btn btn-primary btn-lg">
-          Explore Catalog <span>→</span>
-        </a>
-        <button class="btn btn-outline btn-lg" data-open-modal="signupModal">
-          Create Account Free
-        </button>
-      </div>
-
-      <!-- Live Feature Metric Strip -->
-      <div class="hero-stats">
-        <div class="stat-item">
-          <div class="stat-num">130<span>+</span></div>
-          <div class="stat-label">Anime In Vault</div>
-        </div>
-        <div class="stat-item">
-          <div class="stat-num">10k<span>+</span></div>
-          <div class="stat-label">Episodes Indexed</div>
-        </div>
-        <div class="stat-item">
-          <div class="stat-num">100<span>%</span></div>
-          <div class="stat-label">JWT Secured Auth</div>
-        </div>
-        <div class="stat-item">
-          <div class="stat-num">0.2<span>ms</span></div>
-          <div class="stat-label">SQLite WAL Queries</div>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- ===================================================================
-       Milestone Showcase: Auth & Routing Live Verification Panel
-       =================================================================== -->
-  <section class="milestone-section">
-    <div class="container">
+    <!-- 1. HOME VIEW (#homeView) -->
+    <div id="homeView" class="view-section active">
       
-      <div class="section-header">
-        <div>
-          <h2 class="section-title">Day 8 Deliverables: Live UI Authentication</h2>
-          <p class="section-subtitle">
-            Frontend setup, client routing, and interactive UI forms fully connected to backend endpoints (/api/auth/register, /api/auth/login, /api/auth/me).
+      <!-- Hero Spotlight Section -->
+      <section class="hero">
+        <div class="container hero-content">
+          <div class="hero-pill">
+            <span>⚡</span> #ALTABuilder30 • Track A Day 9 Milestone
+          </div>
+
+          <h1 class="hero-title">
+            STREAM & TRACK YOUR <br />
+            <span class="text-gradient-red">FAVORITE ANIME</span>
+          </h1>
+
+          <p class="hero-desc">
+            AnimeVault is a next-generation anime streaming catalogue and personal library tracker. 
+            Discover trending series, stream in high definition with Sub/Dub support, and track your episode progress in real-time.
+          </p>
+
+          <div class="hero-actions">
+            <a href="#/catalog" class="btn btn-primary btn-lg">
+              Explore Catalog <span>→</span>
+            </a>
+            <button class="btn btn-outline btn-lg" data-open-modal="signupModal">
+              Create Account Free
+            </button>
+          </div>
+
+          <!-- Live Feature Metric Strip -->
+          <div class="hero-stats">
+            <div class="stat-item">
+              <div class="stat-num">137<span>+</span></div>
+              <div class="stat-label">Anime In Vault</div>
+            </div>
+            <div class="stat-item">
+              <div class="stat-num">7,500<span>+</span></div>
+              <div class="stat-label">Episodes Indexed</div>
+            </div>
+            <div class="stat-item">
+              <div class="stat-num">100<span>%</span></div>
+              <div class="stat-label">Live API Data</div>
+            </div>
+            <div class="stat-item">
+              <div class="stat-num">0.2<span>ms</span></div>
+              <div class="stat-label">SQLite WAL Queries</div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Milestone Showcase: Auth & Live APIs -->
+      <section class="milestone-section">
+        <div class="container">
+          
+          <div class="section-header">
+            <div>
+              <h2 class="section-title">Day 8 & 9 Deliverables: Live APIs & State Management</h2>
+              <p class="section-subtitle">
+                Client routing, authentication state, and full-featured catalog reading live data from /api/anime, /api/genres and /api/anime/:id.
+              </p>
+            </div>
+          </div>
+
+          <div class="auth-tester-grid">
+            
+            <!-- Left: Interactive Session Tester -->
+            <div class="test-card">
+              <div class="test-card-header">
+                <div class="test-card-title">
+                  <span>👤</span> Live Session State
+                </div>
+                <span class="status-pill guest" id="testerStatusPill">⚪ Guest Mode</span>
+              </div>
+
+              <div class="status-details">
+                <div class="detail-row">
+                  <span>Current User:</span>
+                  <strong id="testerUsername">Not Logged In</strong>
+                </div>
+                <div class="detail-row">
+                  <span>Account Email:</span>
+                  <strong id="testerEmail">None</strong>
+                </div>
+                <div class="detail-row">
+                  <span>Active Route:</span>
+                  <strong id="testerRoute">#/</strong>
+                </div>
+                <div class="detail-row">
+                  <span>Database Entity Count:</span>
+                  <strong id="testerAnimeCount">137 titles, 7,501 episodes</strong>
+                </div>
+              </div>
+
+              <div class="test-actions-row">
+                <a href="#/catalog" class="btn btn-primary btn-sm">Open Main Catalog</a>
+                <button class="btn btn-outline btn-sm" data-open-modal="loginModal">Sign In</button>
+                <button class="btn btn-outline btn-sm" data-open-modal="signupModal">Sign Up</button>
+                <button class="btn btn-ghost btn-sm" id="testHealthBtn">Health Check</button>
+              </div>
+            </div>
+
+            <!-- Right: Real-time API Response Log -->
+            <div class="test-card">
+              <div class="test-card-header">
+                <div class="test-card-title">
+                  <span>⚡</span> Live API Response Inspector
+                </div>
+                <span style="font-size: 0.75rem; color: var(--text-muted);">Real-Time JSON</span>
+              </div>
+
+              <pre class="json-console" id="jsonConsole">{
+  "ready": true,
+  "message": "Click any anime card or navigation link to test live API reading!"
+}</pre>
+            </div>
+
+          </div>
+
+        </div>
+      </section>
+
+      <!-- Featured Anime Row on Home -->
+      <section class="catalog-preview" id="catalogSection">
+        <div class="container">
+          <div class="section-header">
+            <div>
+              <h2 class="section-title">Featured in the Vault</h2>
+              <p class="section-subtitle">Top-rated stream catalogue fetched directly from GET /api/anime</p>
+            </div>
+            <a href="#/catalog" class="btn btn-outline btn-sm">View Full Catalog →</a>
+          </div>
+
+          <div class="anime-grid" id="animeGrid">
+            <!-- Rendered via JS -->
+          </div>
+        </div>
+      </section>
+
+    </div>
+
+    <!-- 2. CATALOG / MAIN LIST VIEW (#catalogView - DAY 9 MAIN DELIVERABLE) -->
+    <div id="catalogView" class="view-section catalog-page">
+      <div class="container">
+        
+        <!-- Header -->
+        <div class="catalog-header-group">
+          <h1 class="catalog-page-title">Anime Streaming Catalogue</h1>
+          <p class="catalog-page-subtitle">
+            Browse 137 anime titles across diverse genres, formats, and release seasons. Click any title to view full details and episodes.
           </p>
         </div>
+
+        <!-- Filter Toolbar -->
+        <div class="catalog-toolbar">
+          <div class="toolbar-primary-row">
+            
+            <!-- Live Search -->
+            <div class="filter-input-wrap">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+              <input type="text" id="catalogSearchInput" class="filter-input" placeholder="Search title, Japanese title, synopsis..." />
+            </div>
+
+            <!-- Dynamic Genres Dropdown -->
+            <select id="genreSelect" class="filter-select">
+              <option value="">All Genres</option>
+              <!-- Filled via GET /api/genres -->
+            </select>
+
+            <!-- Format / Type Dropdown -->
+            <select id="typeSelect" class="filter-select">
+              <option value="">All Formats</option>
+              <option value="TV">TV Series</option>
+              <option value="Movie">Movie</option>
+              <option value="OVA">OVA</option>
+              <option value="ONA">ONA</option>
+              <option value="Special">Special</option>
+            </select>
+
+            <!-- Status Dropdown -->
+            <select id="statusSelect" class="filter-select">
+              <option value="">All Statuses</option>
+              <option value="Airing">Airing</option>
+              <option value="Completed">Completed</option>
+              <option value="Upcoming">Upcoming</option>
+            </select>
+
+            <!-- Sort Dropdown -->
+            <select id="sortSelect" class="filter-select">
+              <option value="rating">Top Rated</option>
+              <option value="year">Newest Release</option>
+              <option value="views">Most Viewed</option>
+              <option value="title">Title (A-Z)</option>
+            </select>
+
+            <!-- Reset Filters -->
+            <button id="resetFiltersBtn" class="btn btn-outline btn-sm">Reset</button>
+
+          </div>
+
+          <!-- Active Filter Chips -->
+          <div id="activeFiltersRow" class="active-filters-bar" style="display: none;">
+            <span class="active-filters-label">Active:</span>
+            <div id="activeChipsContainer" style="display: inline-flex; gap: 8px; flex-wrap: wrap;"></div>
+          </div>
+        </div>
+
+        <!-- Meta Results Strip -->
+        <div class="catalog-meta-strip">
+          <div id="catalogResultsCount">Loading titles...</div>
+          <div id="catalogPageMeta">Page 1</div>
+        </div>
+
+        <!-- Catalog Anime Grid -->
+        <div id="catalogAnimeGrid" class="catalog-grid">
+          <!-- Rendered dynamically via JS -->
+        </div>
+
+        <!-- Pagination Controls -->
+        <div id="catalogPagination" class="pagination-wrap">
+          <!-- Rendered dynamically via JS -->
+        </div>
+
+      </div>
+    </div>
+
+    <!-- 3. ANIME DETAIL VIEW (#detailView - DAY 9 DETAIL DELIVERABLE) -->
+    <div id="detailView" class="view-section detail-page">
+      
+      <!-- Backdrop Banner -->
+      <div class="detail-backdrop" id="detailBackdrop">
+        <div class="detail-backdrop-overlay"></div>
+        <div class="container detail-nav-bar">
+          <a href="#/catalog" class="btn btn-outline btn-sm" id="detailBackBtn">
+            ← Back to Catalogue
+          </a>
+        </div>
       </div>
 
-      <div class="auth-tester-grid">
-        
-        <!-- Left: Interactive Session Tester -->
-        <div class="test-card">
-          <div class="test-card-header">
-            <div class="test-card-title">
-              <span>👤</span> Live Session State
+      <div class="container">
+        <div class="detail-layout">
+          
+          <!-- Left Column: Poster & Action Buttons -->
+          <div class="detail-poster-col">
+            <div class="detail-poster-box">
+              <img id="detailPosterImg" src="" alt="Anime Poster" />
             </div>
-            <span class="status-pill guest" id="testerStatusPill">⚪ Guest Mode</span>
-          </div>
-
-          <div class="status-details">
-            <div class="detail-row">
-              <span>Current User:</span>
-              <strong id="testerUsername">Not Logged In</strong>
-            </div>
-            <div class="detail-row">
-              <span>Account Email:</span>
-              <strong id="testerEmail">None</strong>
-            </div>
-            <div class="detail-row">
-              <span>JWT Bearer Token:</span>
-              <strong id="testerTokenStatus" style="font-family: monospace; font-size: 0.8rem;">None</strong>
-            </div>
-            <div class="detail-row">
-              <span>Client Route:</span>
-              <strong id="testerRoute">#/</strong>
+            <div class="detail-actions-stack">
+              <button class="btn btn-primary" id="detailWatchBtn">
+                ▶ Watch Episode 1
+              </button>
+              <button class="btn btn-outline" id="detailWatchlistBtn">
+                ＋ Add to Watchlist
+              </button>
+              <button class="btn btn-ghost btn-sm" id="detailShareBtn">
+                ↗ Share Anime Link
+              </button>
             </div>
           </div>
 
-          <div class="test-actions-row">
-            <button class="btn btn-primary btn-sm" data-open-modal="loginModal">Open Sign In</button>
-            <button class="btn btn-outline btn-sm" data-open-modal="signupModal">Open Sign Up</button>
-            <button class="btn btn-outline btn-sm" id="testMeBtn">Verify /me API</button>
-            <button class="btn btn-ghost btn-sm" id="testHealthBtn">Check Health</button>
+          <!-- Right Column: Metadata, Synopsis & Episodes List -->
+          <div class="detail-info-col">
+            
+            <div class="detail-title-block">
+              <h1 id="detailTitle">Anime Title</h1>
+              <div class="detail-title-jp" id="detailTitleJp">Japanese Title</div>
+            </div>
+
+            <div class="detail-badges-strip" id="detailBadgesStrip">
+              <!-- Rating, format, year, episodes, studio, dub -->
+            </div>
+
+            <div class="detail-genres-strip" id="detailGenresStrip">
+              <!-- Clickable genre tags -->
+            </div>
+
+            <div class="detail-synopsis-block">
+              <h3>Synopsis</h3>
+              <p class="detail-synopsis-text" id="detailSynopsis">Loading description...</p>
+            </div>
+
+            <div class="detail-specs-grid">
+              <div class="spec-cell">
+                <span>Format</span>
+                <strong id="detailSpecFormat">TV</strong>
+              </div>
+              <div class="spec-cell">
+                <span>Release Year</span>
+                <strong id="detailSpecYear">2024</strong>
+              </div>
+              <div class="spec-cell">
+                <span>Studio</span>
+                <strong id="detailSpecStudio">Studio</strong>
+              </div>
+              <div class="spec-cell">
+                <span>Total Views</span>
+                <strong id="detailSpecViews">0</strong>
+              </div>
+            </div>
+
+            <!-- Episodes Section -->
+            <div class="episodes-section" id="detailEpisodesSection">
+              <div class="episodes-header-bar">
+                <h2 class="section-title" id="detailEpisodesHeader">Available Episodes</h2>
+                <span style="font-size: 0.85rem; color: var(--accent-crimson-hover); font-weight: 700;" id="detailEpisodesCountBadge">0 Episodes</span>
+              </div>
+              <div class="episodes-grid" id="detailEpisodesGrid">
+                <!-- Episodes loaded from GET /api/anime/:id -->
+              </div>
+            </div>
+
           </div>
+
         </div>
-
-        <!-- Right: Real-time API Response Log -->
-        <div class="test-card">
-          <div class="test-card-header">
-            <div class="test-card-title">
-              <span>⚡</span> Backend Response Inspector
-            </div>
-            <span style="font-size: 0.75rem; color: var(--text-muted);">Real-Time JSON</span>
-          </div>
-
-          <pre class="json-console" id="jsonConsole">{
-  "ready": true,
-  "message": "Click 'Open Sign In' or 'Open Sign Up' above to authenticate from the UI."
-}</pre>
-        </div>
-
       </div>
 
     </div>
-  </section>
 
-  <!-- ===================================================================
-       Catalog Sneak-Peek Grid (Day 8 Live API Feed)
-       =================================================================== -->
-  <section class="catalog-preview" id="catalogSection">
-    <div class="container">
-      <div class="section-header">
-        <div>
-          <h2 class="section-title">Featured in the Vault</h2>
-          <p class="section-subtitle">Live stream catalogue fetched directly from GET /api/anime</p>
-        </div>
-        <a href="#/catalog" class="btn btn-outline btn-sm">View All 130+ Anime</a>
-      </div>
-
-      <div class="anime-grid" id="animeGrid">
-        <!-- Rendered via public/js/app.js -->
-      </div>
-    </div>
-  </section>
+  </main>
 
   <!-- ===================================================================
        Footer

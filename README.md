@@ -72,13 +72,28 @@
 - [x] **Day 6**: CRUD APIs for the main entity (`/api/anime` GET, POST, PUT, DELETE)
 - [x] **Day 7**: Related entities, search and pagination (`/api/anime?search=&genre=`, `/api/genres`, `/episodes`)
 - [x] **Day 8**: Frontend setup, routing and auth screens (SPA client, dark crimson theme, routing & auth modals)
-- [ ] **Day 9**: Main list and detail screens
+- [x] **Day 9**: Main list and detail screens (Catalog with filters & pagination + Single anime view with full episode tracker)
 - [ ] **Day 10**: Create, edit and delete flows (Watchlist & Favorites)
 - [ ] **Day 11**: Heavy feature, part 1 (Video streaming & sync backend)
 - [ ] **Day 12**: Heavy feature, part 2 (Embedded player & UI integration)
 - [ ] **Day 13**: Testing and bug fixes (5+ API tests)
 - [ ] **Day 14**: Deploy frontend, backend and database
 - [ ] **Day 15**: README, demo video and project launch post
+
+---
+
+## 🎬 Day 9 Deliverables: Main List & Detail Screens
+
+- **Main List Screen (`#/catalog`)**:
+  - **Live Filter Toolbar**: Real-time debounce search, dynamic genres taxonomy dropdown (`GET /api/genres`), format filter (`TV`, `Movie`, `OVA`, etc.), status filter (`Airing`, `Completed`), and sorting (`Top Rated`, `Newest`, `Most Viewed`, `Title A-Z`).
+  - **Active Filter Chips**: Click-to-remove tags for active search terms and genre filters.
+  - **Paginated Catalog Grid**: Responsive cards with high-res cover art, crimson rating badges, release year, episode counts, and genre chips.
+  - **Interactive Pagination**: Smart page switcher (`Prev`, `1`, `2`, `3`..., `Next`) fetching live slices from `/api/anime?page=X`.
+- **Anime Detail Screen (`#/anime/:id`)**:
+  - **Cinematic Backdrop**: Hero header with backdrop art and deep crimson gradient vignette.
+  - **Single Entity Info**: Title (English & Japanese), star score, release year, studio, duration, view count, full plot synopsis, and clickable genre tags that cross-filter the catalog.
+  - **Episode Grid**: Fetches complete episode list (`GET /api/anime/:id/episodes`), rendering episode badges, titles, durations, and audio/subtitle flags.
+  - **Quick Action Bar**: "Watch Episode 1", "Add to Watchlist" (prepping Day 10), and "Share" link generator with toast notifications.
 
 ---
 
