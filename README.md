@@ -71,7 +71,7 @@
 - [x] **Day 5**: Login API with JWT and protected routes (`POST /login` & `GET /me`)
 - [x] **Day 6**: CRUD APIs for the main entity (`/api/anime` GET, POST, PUT, DELETE)
 - [x] **Day 7**: Related entities, search and pagination (`/api/anime?search=&genre=`, `/api/genres`, `/episodes`)
-- [ ] **Day 8**: Frontend setup, routing and auth screens
+- [x] **Day 8**: Frontend setup, routing and auth screens (SPA client, dark crimson theme, routing & auth modals)
 - [ ] **Day 9**: Main list and detail screens
 - [ ] **Day 10**: Create, edit and delete flows (Watchlist & Favorites)
 - [ ] **Day 11**: Heavy feature, part 1 (Video streaming & sync backend)
@@ -79,6 +79,30 @@
 - [ ] **Day 13**: Testing and bug fixes (5+ API tests)
 - [ ] **Day 14**: Deploy frontend, backend and database
 - [ ] **Day 15**: README, demo video and project launch post
+
+---
+
+## 🎨 Day 8 Deliverables: Frontend Setup, Routing & Auth Screens
+
+- **Design System**: Tokyo Ghoul / Cyberpunk inspired **Pitch Black (`#070709`) + Dark Slate Charcoal (`#121218`, `#171720`) + Crimson & Neon Red accents (`#e50914`, `#ff1e2b`)**.
+- **SPA Architecture**: Express static middleware with client-side fallback, modular CSS and vanilla JS router (`#/`, `#/login`, `#/signup`, `#/catalog`, `#/watchlist`).
+- **Interactive Modals**:
+  - `Login Modal` (`#loginModal`) connected to `POST /api/auth/login` with JWT local storage and HTTP cookie sync.
+  - `Signup Modal` (`#signupModal`) connected to `POST /api/auth/register` with input validation and password confirmation.
+- **Session State**: Automatic token validation on mount via `GET /api/auth/me`, dynamic user profile badge in navigation, and clean logout handling (`POST /api/auth/logout`).
+- **Live Preview / Catalog Grid**: Dynamically fetches and displays featured anime cards from `GET /api/anime`.
+
+### Testing Day 8 Deliverable:
+Open the website in your browser:
+```bash
+http://localhost:3000/
+# or preview port:
+http://localhost:5050/
+```
+1. Click **"Get Started"** or open `#/signup` to create a new user account.
+2. Click **"Sign In"** or open `#/login` to log into an existing account.
+3. Observe session status badge and profile pill update automatically with your username.
+4. Click **"Verify /me API"** in the Live Session State card to verify the protected JWT response.
 
 ---
 

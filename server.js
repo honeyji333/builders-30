@@ -1,4 +1,5 @@
 require('dotenv').config();
+const path = require('path');
 const express = require('express');
 const cors = require('cors');
 const cookieParser = require('cookie-parser');
@@ -15,13 +16,17 @@ app.use(cors({ origin: true, credentials: true }));
 app.use(express.json());
 app.use(cookieParser());
 
-// Root Welcome Endpoint
-app.get('/', (req, res) => {
+// Serve static frontend assets (Day 8: Frontend setup)
+app.use(express.static(path.join(__dirname, 'public')));
+
+// API Directory & System Info Endpoint
+app.get(['/api', '/api/info'], (req, res) => {
   res.json({
     project: 'AnimeVault API',
-    version: '1.1.0',
+    version: '1.2.0',
     description: 'Full-stack anime streaming platform backend',
     status: 'online',
+    frontend: 'Active (SPA loaded at /)',
     endpoints: {
       health: 'GET /health',
       auth: {
@@ -87,6 +92,14 @@ app.use('/api/auth', require('./routes/auth'));
 
 // Main Entity & Related Entities: Anime, Genres & Episodes (Day 6 & Day 7)
 app.use('/api/anime', require('./routes/anime'));
+
+// SPA Fallback for client-side routing (Day 8: Frontend Routing)
+app.get('*', (req, res, next) => {
+  if (req.path.startsWith('/api') || req.path === '/health') {
+    return next();
+  }
+  res.sendFile(path.join(__dirname, 'public', 'index.html'));
+});
 
 // Start Server
 app.listen(PORT, () => {

@@ -1,0 +1,387 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>AnimeVault • Full-Stack Anime Streaming Platform (#ALTABuilder30)</title>
+  <meta name="description" content="AnimeVault is a high-performance full-stack anime streaming catalogue and library tracker built for ALTA Builder 30." />
+  <link rel="stylesheet" href="/css/style.css" />
+</head>
+<body>
+
+  <!-- ===================================================================
+       Top Navigation Bar
+       =================================================================== -->
+  <header class="navbar">
+    <div class="container nav-container">
+      
+      <!-- Brand Logo -->
+      <a href="#/" class="brand-logo" id="brandLogo">
+        <div class="brand-icon">▶</div>
+        <div class="brand-text">Anime<span>Vault</span></div>
+        <span class="brand-badge">Day 8</span>
+      </a>
+
+      <!-- Primary Navigation Links -->
+      <ul class="nav-links">
+        <li><a href="#/" class="nav-link active">Home</a></li>
+        <li><a href="#/catalog" class="nav-link">Catalog</a></li>
+        <li><a href="#/trending" class="nav-link">Trending</a></li>
+        <li><a href="#/watchlist" class="nav-link">Watchlist</a></li>
+      </ul>
+
+      <!-- Nav Actions: Search & Auth Buttons -->
+      <div class="nav-actions">
+        
+        <!-- Search input -->
+        <div class="nav-search-bar">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="color: var(--text-muted);"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+          <input type="text" placeholder="Search anime..." id="navSearchInput" />
+          <span class="search-shortcut">/</span>
+        </div>
+
+        <!-- Guest Auth Controls -->
+        <div class="auth-guest-group" id="authGuestGroup">
+          <button class="btn btn-outline btn-sm" data-open-modal="loginModal">Sign In</button>
+          <button class="btn btn-primary btn-sm" data-open-modal="signupModal">Get Started</button>
+        </div>
+
+        <!-- Logged-in User Controls (Dynamically Toggled) -->
+        <div class="auth-user-group" id="authUserGroup" style="display: none;">
+          <div class="user-profile-badge">
+            <div class="user-avatar" id="navAvatar">U</div>
+            <span class="user-name" id="navUsername">User</span>
+          </div>
+          <button class="btn btn-danger-ghost btn-sm" id="logoutBtn" title="Sign out of your session">Sign Out</button>
+        </div>
+
+        <!-- Mobile Drawer Toggle -->
+        <button class="mobile-toggle" id="mobileToggle" aria-label="Toggle Navigation">
+          <span></span>
+          <span></span>
+          <span></span>
+        </button>
+
+      </div>
+    </div>
+  </header>
+
+  <!-- ===================================================================
+       Hero Spotlight Section
+       =================================================================== -->
+  <section class="hero">
+    <div class="container hero-content">
+      <div class="hero-pill">
+        <span>⚡</span> #ALTABuilder30 • Track A Day 8 Milestone
+      </div>
+
+      <h1 class="hero-title">
+        STREAM & TRACK YOUR <br />
+        <span class="text-gradient-red">FAVORITE ANIME</span>
+      </h1>
+
+      <p class="hero-desc">
+        AnimeVault is a next-generation anime streaming catalogue and personal library tracker. 
+        Discover trending series, stream in high definition with Sub/Dub support, and track your episode progress in real-time.
+      </p>
+
+      <div class="hero-actions">
+        <a href="#/catalog" class="btn btn-primary btn-lg">
+          Explore Catalog <span>→</span>
+        </a>
+        <button class="btn btn-outline btn-lg" data-open-modal="signupModal">
+          Create Account Free
+        </button>
+      </div>
+
+      <!-- Live Feature Metric Strip -->
+      <div class="hero-stats">
+        <div class="stat-item">
+          <div class="stat-num">130<span>+</span></div>
+          <div class="stat-label">Anime In Vault</div>
+        </div>
+        <div class="stat-item">
+          <div class="stat-num">10k<span>+</span></div>
+          <div class="stat-label">Episodes Indexed</div>
+        </div>
+        <div class="stat-item">
+          <div class="stat-num">100<span>%</span></div>
+          <div class="stat-label">JWT Secured Auth</div>
+        </div>
+        <div class="stat-item">
+          <div class="stat-num">0.2<span>ms</span></div>
+          <div class="stat-label">SQLite WAL Queries</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================================================================
+       Milestone Showcase: Auth & Routing Live Verification Panel
+       =================================================================== -->
+  <section class="milestone-section">
+    <div class="container">
+      
+      <div class="section-header">
+        <div>
+          <h2 class="section-title">Day 8 Deliverables: Live UI Authentication</h2>
+          <p class="section-subtitle">
+            Frontend setup, client routing, and interactive UI forms fully connected to backend endpoints (/api/auth/register, /api/auth/login, /api/auth/me).
+          </p>
+        </div>
+      </div>
+
+      <div class="auth-tester-grid">
+        
+        <!-- Left: Interactive Session Tester -->
+        <div class="test-card">
+          <div class="test-card-header">
+            <div class="test-card-title">
+              <span>👤</span> Live Session State
+            </div>
+            <span class="status-pill guest" id="testerStatusPill">⚪ Guest Mode</span>
+          </div>
+
+          <div class="status-details">
+            <div class="detail-row">
+              <span>Current User:</span>
+              <strong id="testerUsername">Not Logged In</strong>
+            </div>
+            <div class="detail-row">
+              <span>Account Email:</span>
+              <strong id="testerEmail">None</strong>
+            </div>
+            <div class="detail-row">
+              <span>JWT Bearer Token:</span>
+              <strong id="testerTokenStatus" style="font-family: monospace; font-size: 0.8rem;">None</strong>
+            </div>
+            <div class="detail-row">
+              <span>Client Route:</span>
+              <strong id="testerRoute">#/</strong>
+            </div>
+          </div>
+
+          <div class="test-actions-row">
+            <button class="btn btn-primary btn-sm" data-open-modal="loginModal">Open Sign In</button>
+            <button class="btn btn-outline btn-sm" data-open-modal="signupModal">Open Sign Up</button>
+            <button class="btn btn-outline btn-sm" id="testMeBtn">Verify /me API</button>
+            <button class="btn btn-ghost btn-sm" id="testHealthBtn">Check Health</button>
+          </div>
+        </div>
+
+        <!-- Right: Real-time API Response Log -->
+        <div class="test-card">
+          <div class="test-card-header">
+            <div class="test-card-title">
+              <span>⚡</span> Backend Response Inspector
+            </div>
+            <span style="font-size: 0.75rem; color: var(--text-muted);">Real-Time JSON</span>
+          </div>
+
+          <pre class="json-console" id="jsonConsole">{
+  "ready": true,
+  "message": "Click 'Open Sign In' or 'Open Sign Up' above to authenticate from the UI."
+}</pre>
+        </div>
+
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ===================================================================
+       Catalog Sneak-Peek Grid (Day 8 Live API Feed)
+       =================================================================== -->
+  <section class="catalog-preview" id="catalogSection">
+    <div class="container">
+      <div class="section-header">
+        <div>
+          <h2 class="section-title">Featured in the Vault</h2>
+          <p class="section-subtitle">Live stream catalogue fetched directly from GET /api/anime</p>
+        </div>
+        <a href="#/catalog" class="btn btn-outline btn-sm">View All 130+ Anime</a>
+      </div>
+
+      <div class="anime-grid" id="animeGrid">
+        <!-- Rendered via public/js/app.js -->
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================================================================
+       Footer
+       =================================================================== -->
+  <footer class="footer">
+    <div class="container footer-container">
+      <div>
+        <strong style="color: var(--text-pure);">Anime<span style="color: var(--accent-crimson);">Vault</span></strong>
+        • Full-Stack Streaming Platform for #ALTABuilder30
+      </div>
+      <div class="footer-links">
+        <a href="https://github.com/honeyji333/builders-30" target="_blank" rel="noopener">GitHub Repository</a>
+        <a href="/api/info" target="_blank">API Directory</a>
+        <a href="/health" target="_blank">Health Check</a>
+      </div>
+    </div>
+  </footer>
+
+  <!-- ===================================================================
+       LOGIN MODAL (#loginModal)
+       =================================================================== -->
+  <div class="modal-backdrop" id="loginModal">
+    <div class="modal-dialog">
+      <button class="modal-close-btn" data-close-modal="loginModal" aria-label="Close dialog">&times;</button>
+      
+      <div class="modal-header">
+        <div class="modal-icon-badge">🔑</div>
+        <h3 class="modal-title">Welcome Back</h3>
+        <p class="modal-subtitle">Sign in to sync your watchlist, bookmarks and progress</p>
+      </div>
+
+      <div class="form-alert" id="loginAlert"></div>
+
+      <form id="loginForm">
+        <div class="form-group">
+          <label class="form-label" for="loginIdentifier">Username or Email</label>
+          <input 
+            type="text" 
+            id="loginIdentifier" 
+            name="identifier" 
+            class="form-input" 
+            placeholder="e.g. manan or user@example.com" 
+            required 
+            autocomplete="username" 
+          />
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="loginPassword">
+            <span>Password</span>
+            <span class="helper">Min 8 characters</span>
+          </label>
+          <div class="input-wrapper">
+            <input 
+              type="password" 
+              id="loginPassword" 
+              name="password" 
+              class="form-input" 
+              placeholder="Enter your password" 
+              required 
+              autocomplete="current-password" 
+            />
+            <span class="toggle-password" title="Toggle visibility">👁️</span>
+          </div>
+        </div>
+
+        <button type="submit" class="btn btn-primary" id="loginSubmitBtn" style="width: 100%; margin-top: 8px;">
+          Sign In
+        </button>
+      </form>
+
+      <div class="modal-footer-switch">
+        Don't have an account? 
+        <a href="#/signup" data-open-modal="signupModal">Sign up free</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===================================================================
+       SIGNUP MODAL (#signupModal)
+       =================================================================== -->
+  <div class="modal-backdrop" id="signupModal">
+    <div class="modal-dialog">
+      <button class="modal-close-btn" data-close-modal="signupModal" aria-label="Close dialog">&times;</button>
+      
+      <div class="modal-header">
+        <div class="modal-icon-badge">✨</div>
+        <h3 class="modal-title">Create Account</h3>
+        <p class="modal-subtitle">Join AnimeVault to stream, rate and track your anime library</p>
+      </div>
+
+      <div class="form-alert" id="signupAlert"></div>
+
+      <form id="signupForm">
+        <div class="form-group">
+          <label class="form-label" for="signupUsername">
+            <span>Username</span>
+            <span class="helper">3-24 characters</span>
+          </label>
+          <input 
+            type="text" 
+            id="signupUsername" 
+            name="username" 
+            class="form-input" 
+            placeholder="Choose a unique username" 
+            required 
+            autocomplete="username" 
+          />
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="signupEmail">Email Address</label>
+          <input 
+            type="email" 
+            id="signupEmail" 
+            name="email" 
+            class="form-input" 
+            placeholder="you@domain.com" 
+            required 
+            autocomplete="email" 
+          />
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="signupPassword">
+            <span>Password</span>
+            <span class="helper">At least 8 characters</span>
+          </label>
+          <div class="input-wrapper">
+            <input 
+              type="password" 
+              id="signupPassword" 
+              name="password" 
+              class="form-input" 
+              placeholder="Create a strong password" 
+              required 
+              autocomplete="new-password" 
+            />
+            <span class="toggle-password" title="Toggle visibility">👁️</span>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="signupConfirmPassword">Confirm Password</label>
+          <div class="input-wrapper">
+            <input 
+              type="password" 
+              id="signupConfirmPassword" 
+              name="confirmPassword" 
+              class="form-input" 
+              placeholder="Repeat your password" 
+              required 
+              autocomplete="new-password" 
+            />
+            <span class="toggle-password" title="Toggle visibility">👁️</span>
+          </div>
+        </div>
+
+        <button type="submit" class="btn btn-primary" id="signupSubmitBtn" style="width: 100%; margin-top: 8px;">
+          Create Account
+        </button>
+      </form>
+
+      <div class="modal-footer-switch">
+        Already have an account? 
+        <a href="#/login" data-open-modal="loginModal">Sign in here</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast Notification Container -->
+  <div class="toast-container" id="toastContainer"></div>
+
+  <!-- Client Application Script -->
+  <script src="/js/app.js"></script>
+
+</body>
+</html>
