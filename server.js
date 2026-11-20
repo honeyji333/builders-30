@@ -22,7 +22,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 // API Directory & System Info Endpoint
 app.get(['/api', '/api/info'], (req, res) => {
   res.json({
-    project: 'AnimeVault API',
+    project: 'KageStream API',
     version: '1.2.0',
     description: 'Full-stack anime streaming platform backend',
     status: 'online',
@@ -55,7 +55,7 @@ app.get(['/health', '/api/health'], (req, res) => {
   if (dbHealth.connected) {
     return res.status(200).json({
       status: 'OK',
-      message: 'AnimeVault server is running smoothly',
+      message: 'KageStream server is running smoothly',
       database: 'Connected',
       dbEngine: 'SQLite3 (better-sqlite3)',
       timestamp: new Date().toISOString()
@@ -109,7 +109,7 @@ app.get('*', (req, res, next) => {
 
 // Start Server
 app.listen(PORT, () => {
-  console.log(`\n🚀 AnimeVault Server running on http://localhost:${PORT}`);
+  console.log(`\n🚀 KageStream Server running on http://localhost:${PORT}`);
   console.log(`🩺 Health check: http://localhost:${PORT}/health`);
   console.log(`🏷️  Genres API  : GET  http://localhost:${PORT}/api/genres`);
   console.log(`🔍 Anime Search : GET  http://localhost:${PORT}/api/anime?search=solo&genre=action\n`);

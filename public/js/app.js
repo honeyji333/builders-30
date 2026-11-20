@@ -1,12 +1,12 @@
 /**
- * AnimeVault • Client Application (Day 10: Create, Edit and Delete Flows)
+ * KageStream • Client Application (Day 10: Create, Edit and Delete Flows)
  * #ALTABuilder30 • Full-Stack Anime Streaming Platform
  */
 
 // Application State
 const state = {
   user: null,
-  token: localStorage.getItem('animevault_token') || null,
+  token: localStorage.getItem('kagestream_token') || localStorage.getItem('animevault_token') || null,
   currentRoute: window.location.hash || '#/',
   genres: [],
   catalog: {
@@ -1066,7 +1066,7 @@ async function handleLoginSubmit(e) {
 
   if (res.ok && res.data.success) {
     state.token = res.data.token;
-    localStorage.setItem('animevault_token', res.data.token);
+    localStorage.setItem('kagestream_token', res.data.token);
     state.user = res.data.data;
 
     showAlert(alertEl, 'Logged in successfully!', 'success');
@@ -1133,11 +1133,11 @@ async function handleSignupSubmit(e) {
 
   if (res.ok && res.data.success) {
     state.token = res.data.token;
-    localStorage.setItem('animevault_token', res.data.token);
+    localStorage.setItem('kagestream_token', res.data.token);
     state.user = res.data.data;
 
     showAlert(alertEl, 'Account created successfully!', 'success');
-    showToast(`Welcome to AnimeVault, ${username}!`, 'success');
+    showToast(`Welcome to KageStream, ${username}!`, 'success');
     renderAuthState(true);
     updateStatusConsole(res.data);
 
@@ -1159,6 +1159,7 @@ async function handleLogout() {
 
   state.token = null;
   state.user = null;
+  localStorage.removeItem('kagestream_token');
   localStorage.removeItem('animevault_token');
 
   renderAuthState(false);

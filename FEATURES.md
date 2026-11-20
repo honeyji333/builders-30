@@ -1,7 +1,7 @@
-# 📋 FEATURES.md - AnimeVault
+# 📋 FEATURES.md - KageStream
 
 ## 1. Project Overview & Problem Statement
-Anime enthusiasts often face cluttered, ad-ridden platforms with sluggish load times, inconsistent metadata, and poor personal library features. **AnimeVault** is a fast, responsive, and ad-free full-stack anime streaming catalog and library platform. It gives users a seamless viewing experience with instant search, rich metadata, personalized watchlists, and reliable playback tracking.
+Anime enthusiasts often face cluttered, ad-ridden platforms with sluggish load times, inconsistent metadata, and poor personal library features. **KageStream** is a fast, responsive, and ad-free full-stack anime streaming catalog and library platform. It gives users a seamless viewing experience with instant search, rich metadata, personalized watchlists, and reliable playback tracking.
 
 ---
 

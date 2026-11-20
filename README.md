@@ -1,4 +1,4 @@
-# 🎬 AnimeVault - 30-Day Project Challenge
+# 🎬 KageStream - 30-Day Project Challenge
 
 > A modern, ad-free full-stack anime streaming platform and personal media library.
 > Built as part of the **#ALTABuilder30** 30-Day Project Challenge (Track A: Days 1–15).

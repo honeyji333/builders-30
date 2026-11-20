@@ -1,5 +1,5 @@
 {
-  "name": "anime-vault",
+  "name": "kagestream",
   "version": "1.0.0",
   "description": "Full-stack anime and movie streaming catalog platform with personal library management",
   "main": "server.js",
