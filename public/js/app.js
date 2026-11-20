@@ -1461,18 +1461,27 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   // Day 11: Heavy Feature Streaming Test Buttons
+  const handleStreamResolveClick = async () => {
+    showToast('Resolving multi-server streams for Episode 1...', 'info');
+    const res = await apiCall('/api/stream/resolve/1');
+    updateStatusConsole(res.data);
+    if (res.ok) {
+      const serverName = res.data?.data?.servers?.[0]?.name || 'HD Vault';
+      const quality = res.data?.data?.servers?.[0]?.quality || '1080p HD';
+      showToast(`Stream Resolved: ${serverName} • ${quality}`, 'success');
+    } else {
+      showToast('Failed to resolve stream', 'error');
+    }
+  };
+
   const testStreamResolverBtn = document.getElementById('testStreamResolverBtn');
   if (testStreamResolverBtn) {
-    testStreamResolverBtn.addEventListener('click', async () => {
-      showToast('Resolving multi-server streams for Episode 1...', 'info');
-      const res = await apiCall('/api/stream/resolve/1');
-      updateStatusConsole(res.data);
-      if (res.ok) {
-        showToast('Stream resolved! HD Vault & Mirrors active', 'success');
-      } else {
-        showToast('Failed to resolve stream', 'error');
-      }
-    });
+    testStreamResolverBtn.addEventListener('click', handleStreamResolveClick);
+  }
+
+  const navTestStreamBtn = document.getElementById('navTestStreamBtn');
+  if (navTestStreamBtn) {
+    navTestStreamBtn.addEventListener('click', handleStreamResolveClick);
   }
 
   const testStreamSyncBtn = document.getElementById('testStreamSyncBtn');
