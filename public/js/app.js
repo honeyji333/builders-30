@@ -1,5 +1,5 @@
 /**
- * AnimeVault • Client Application (Day 8 & Day 9: State, Rendering, List & Detail Screens)
+ * AnimeVault • Client Application (Day 10: Create, Edit and Delete Flows)
  * #ALTABuilder30 • Full-Stack Anime Streaming Platform
  */
 
@@ -21,6 +21,10 @@ const state = {
       page: 1,
       limit: 18
     }
+  },
+  watchlist: {
+    items: [],
+    activeTab: 'all'
   },
   currentAnimeDetail: null
 };
@@ -93,7 +97,7 @@ function escapeHtml(str) {
 }
 
 // ===================================================================
-// View Navigation Router (Day 9)
+// View Navigation Router
 // ===================================================================
 function switchView(viewId) {
   document.querySelectorAll('.view-section').forEach(view => {
@@ -109,9 +113,11 @@ function switchView(viewId) {
   // Update navbar links
   const navHome = document.getElementById('navLinkHome');
   const navCatalog = document.getElementById('navLinkCatalog');
+  const navWatchlist = document.getElementById('navLinkWatchlist');
 
   if (navHome) navHome.classList.toggle('active', viewId === 'homeView');
   if (navCatalog) navCatalog.classList.toggle('active', viewId === 'catalogView');
+  if (navWatchlist) navWatchlist.classList.toggle('active', viewId === 'watchlistView');
 }
 
 function navigateTo(hash) {
@@ -134,8 +140,6 @@ async function handleRouting() {
     fetchFeaturedAnime();
   } else if (hash.startsWith('#/catalog') || hash.startsWith('#/browse')) {
     switchView('catalogView');
-    
-    // Parse any query params in hash e.g. #/catalog?genre=action
     if (hash.includes('?')) {
       const qs = hash.split('?')[1];
       const params = new URLSearchParams(qs);
@@ -145,6 +149,9 @@ async function handleRouting() {
       syncFilterInputsFromState();
     }
     loadCatalog();
+  } else if (hash.startsWith('#/watchlist')) {
+    switchView('watchlistView');
+    loadWatchlist(state.watchlist.activeTab);
   } else if (hash.startsWith('#/anime/')) {
     const animeId = hash.replace('#/anime/', '').trim();
     if (animeId) {
@@ -155,13 +162,442 @@ async function handleRouting() {
     openModal('loginModal');
   } else if (hash === '#/signup') {
     openModal('signupModal');
-  } else if (hash === '#/watchlist') {
-    if (!state.user) {
-      showToast('Please sign in to view your Watchlist', 'info');
-      openModal('loginModal');
-    } else {
-      showToast('Watchlist & Custom collections unlocked in Day 10!', 'info');
+  }
+}
+
+// ===================================================================
+// DAY 10: USER WATCHLIST & LIBRARY CRUD FLOWS
+// ===================================================================
+
+/**
+ * READ Watchlist
+ */
+async function loadWatchlist(activeTab = 'all') {
+  state.watchlist.activeTab = activeTab;
+  const grid = document.getElementById('watchlistGrid');
+  if (!grid) return;
+
+  grid.innerHTML = '<div style=\"grid-column: 1 / -1; text-align: center; color: var(--text-muted); padding: 40px;\">Loading your library...</div>';
+
+  const res = await apiCall('/api/user/watchlist');
+  updateStatusConsole(res.data);
+
+  if (res.ok && res.data.success) {
+    const allItems = res.data.data || [];
+    state.watchlist.items = allItems;
+
+    // Update tab badges
+    updateWatchlistTabCounts(allItems);
+
+    // Update Home Tester stats
+    const wlTester = document.getElementById('testerWatchlistCount');
+    if (wlTester) wlTester.textContent = `${allItems.length} items in library`;
+
+    // Filter by active tab
+    const filtered = activeTab === 'all' 
+      ? allItems 
+      : allItems.filter(item => item.status === activeTab);
+
+    renderWatchlistGrid(filtered);
+  } else {
+    grid.innerHTML = `
+      <div class="empty-watchlist-box">
+        <div class="empty-watchlist-icon">🔒</div>
+        <h3 style="color: var(--text-pure); font-size: 1.25rem;">Sign In Required</h3>
+        <p style="color: var(--text-secondary); max-width: 420px;">
+          Please sign in to access your personal watchlist, track episode progress, and manage your collection.
+        </p>
+        <button class="btn btn-primary" data-open-modal="loginModal">Sign In to View Watchlist</button>
+      </div>
+    `;
+  }
+}
+
+function updateWatchlistTabCounts(items) {
+  const counts = {
+    all: items.length,
+    watching: 0,
+    plan_to_watch: 0,
+    completed: 0,
+    on_hold: 0,
+    dropped: 0
+  };
+
+  items.forEach(item => {
+    if (counts[item.status] !== undefined) {
+      counts[item.status]++;
     }
+  });
+
+  const setBadge = (id, count) => {
+    const el = document.getElementById(id);
+    if (el) el.textContent = count;
+  };
+
+  setBadge('wlCountAll', counts.all);
+  setBadge('wlCountWatching', counts.watching);
+  setBadge('wlCountPlan', counts.plan_to_watch);
+  setBadge('wlCountCompleted', counts.completed);
+  setBadge('wlCountHold', counts.on_hold);
+  setBadge('wlCountDropped', counts.dropped);
+}
+
+function renderWatchlistGrid(items) {
+  const grid = document.getElementById('watchlistGrid');
+  if (!grid) return;
+
+  if (items.length === 0) {
+    grid.innerHTML = `
+      <div class="empty-watchlist-box">
+        <div class="empty-watchlist-icon">📑</div>
+        <h3 style="color: var(--text-pure); font-size: 1.25rem;">No anime in this section</h3>
+        <p style="color: var(--text-secondary); max-width: 420px;">
+          You don't have any titles saved under "${state.watchlist.activeTab}". Explore the streaming catalogue and add anime to track!
+        </p>
+        <a href="#/catalog" class="btn btn-primary btn-sm">Explore Catalogue →</a>
+      </div>
+    `;
+    return;
+  }
+
+  grid.innerHTML = items.map(item => {
+    const poster = item.cover_image || 'https://images.unsplash.com/photo-1578632767115-351597cf2477?w=400';
+    const totalEps = item.episodes_count || 12;
+    const currentEp = item.current_episode || 0;
+    const percent = Math.min(100, Math.round((currentEp / totalEps) * 100));
+
+    return `
+      <div class="watchlist-card" id="wl-card-${item.id}">
+        <div class="watchlist-card-top">
+          <div class="watchlist-card-poster" onclick="navigateTo('#/anime/${item.anime_id}')" style="cursor: pointer;">
+            <img src="${poster}" alt="${escapeHtml(item.title)}" loading="lazy" />
+          </div>
+          <div class="watchlist-card-info">
+            <div class="watchlist-card-title" title="${escapeHtml(item.title)}" onclick="navigateTo('#/anime/${item.anime_id}')" style="cursor: pointer;">
+              ${escapeHtml(item.title)}
+            </div>
+            <div style="font-size: 0.76rem; color: var(--text-muted);">${item.type || 'TV'} • ${item.release_year || '2024'}</div>
+            <span class="watchlist-status-pill status-${item.status}">
+              ${formatStatusLabel(item.status)}
+            </span>
+          </div>
+        </div>
+
+        <div class="watchlist-card-body">
+          <div class="progress-header">
+            <span>Progress: <strong style="color: var(--text-pure);">${currentEp}</strong> / ${totalEps} eps</span>
+            <span style="font-weight: 700; color: var(--accent-crimson-hover);">${percent}%</span>
+          </div>
+          <div class="progress-bar-wrap">
+            <div class="progress-bar-fill" style="width: ${percent}%;"></div>
+          </div>
+
+          <div class="watchlist-card-actions">
+            <button class="quick-inc-btn" onclick="quickIncrementEpisode(${item.id}, ${currentEp}, ${totalEps})" title="Watched 1 more episode">
+              <span>+1 Ep</span>
+            </button>
+            <div style="display: flex; gap: 8px;">
+              <button class="btn btn-outline btn-sm" onclick="openEditWatchlistModal(${item.id})" style="padding: 4px 10px; font-size: 0.78rem;">
+                ✏️ Edit
+              </button>
+              <button class="btn btn-danger-ghost btn-sm" onclick="deleteWatchlistEntry(${item.id}, '${escapeHtml(item.title)}')" style="padding: 4px 10px; font-size: 0.78rem;" title="Remove from library">
+                🗑️
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    `;
+  }).join('');
+}
+
+function formatStatusLabel(st) {
+  if (st === 'plan_to_watch') return 'Plan to Watch';
+  if (st === 'on_hold') return 'On Hold';
+  return st.charAt(0).toUpperCase() + st.slice(1);
+}
+
+/**
+ * CREATE Flow: Open Add to Watchlist Modal
+ */
+function openAddWatchlistModal(animeId, animeTitle, maxEpisodes) {
+  if (!state.user) {
+    showToast('Please sign in to add anime to your Watchlist', 'info');
+    openModal('loginModal');
+    return;
+  }
+
+  const idInput = document.getElementById('addWlAnimeId');
+  const titleSub = document.getElementById('addWlAnimeTitle');
+  const epInput = document.getElementById('addWlEpisode');
+  const epHelper = document.getElementById('addWlEpisodeHelper');
+  const alertEl = document.getElementById('addWlAlert');
+
+  hideAlert(alertEl);
+  if (idInput) idInput.value = animeId;
+  if (titleSub) titleSub.textContent = `Adding "${animeTitle}" to your library`;
+  if (epInput) {
+    epInput.max = maxEpisodes || 2000;
+    epInput.value = 1;
+  }
+  if (epHelper) epHelper.textContent = `Total Episodes: ${maxEpisodes || 'Ongoing'}`;
+
+  openModal('addWatchlistModal');
+}
+
+/**
+ * CREATE Flow: Handle Add Watchlist Form Submit
+ */
+async function handleAddWatchlistSubmit(e) {
+  e.preventDefault();
+  const alertEl = document.getElementById('addWlAlert');
+  const btn = document.getElementById('addWlSubmitBtn');
+  const form = e.target;
+
+  const anime_id = parseInt(form.anime_id.value, 10);
+  const status = form.status.value;
+  const current_episode = parseInt(form.current_episode.value, 10) || 0;
+
+  btn.disabled = true;
+  btn.innerHTML = 'Saving to Watchlist...';
+  hideAlert(alertEl);
+
+  const res = await apiCall('/api/user/watchlist', {
+    method: 'POST',
+    body: JSON.stringify({ anime_id, status, current_episode })
+  });
+
+  btn.disabled = false;
+  btn.innerHTML = 'Save to Watchlist';
+  updateStatusConsole(res.data);
+
+  if (res.ok && res.data.success) {
+    showToast('Saved to your Watchlist!', 'success');
+    closeModal('addWatchlistModal');
+    form.reset();
+
+    // If on detail page, update button text
+    const wlBtn = document.getElementById('detailWatchlistBtn');
+    if (wlBtn) wlBtn.innerHTML = '✓ In Watchlist (Edit)';
+
+    // Refresh watchlist cache if user visits later
+    if (state.currentRoute === '#/watchlist') {
+      loadWatchlist(state.watchlist.activeTab);
+    }
+  } else {
+    showAlert(alertEl, res.data.error || 'Failed to save to watchlist', 'error');
+  }
+}
+
+/**
+ * EDIT Flow: Open Edit Watchlist Modal
+ */
+function openEditWatchlistModal(entryId) {
+  const item = state.watchlist.items.find(i => i.id === entryId);
+  if (!item) return;
+
+  const idInput = document.getElementById('editWlEntryId');
+  const titleSub = document.getElementById('editWlAnimeTitle');
+  const statusSelect = document.getElementById('editWlStatus');
+  const epInput = document.getElementById('editWlEpisode');
+  const epHelper = document.getElementById('editWlEpisodeHelper');
+  const alertEl = document.getElementById('editWlAlert');
+  const deleteBtn = document.getElementById('editWlDeleteBtn');
+
+  hideAlert(alertEl);
+  if (idInput) idInput.value = item.id;
+  if (titleSub) titleSub.textContent = `Editing "${item.title}" progress`;
+  if (statusSelect) statusSelect.value = item.status || 'watching';
+  if (epInput) {
+    epInput.max = item.episodes_count || 2000;
+    epInput.value = item.current_episode || 0;
+  }
+  if (epHelper) epHelper.textContent = `Total Episodes: ${item.episodes_count || 'Ongoing'}`;
+
+  if (deleteBtn) {
+    deleteBtn.onclick = () => {
+      closeModal('editWatchlistModal');
+      deleteWatchlistEntry(item.id, item.title);
+    };
+  }
+
+  openModal('editWatchlistModal');
+}
+
+/**
+ * EDIT Flow: Handle Edit Watchlist Form Submit
+ */
+async function handleEditWatchlistSubmit(e) {
+  e.preventDefault();
+  const alertEl = document.getElementById('editWlAlert');
+  const btn = document.getElementById('editWlSubmitBtn');
+  const form = e.target;
+
+  const entry_id = parseInt(form.entry_id.value, 10);
+  const status = form.status.value;
+  const current_episode = parseInt(form.current_episode.value, 10) || 0;
+
+  btn.disabled = true;
+  btn.innerHTML = 'Updating...';
+  hideAlert(alertEl);
+
+  const res = await apiCall(`/api/user/watchlist/${entry_id}`, {
+    method: 'PUT',
+    body: JSON.stringify({ status, current_episode })
+  });
+
+  btn.disabled = false;
+  btn.innerHTML = 'Update Progress';
+  updateStatusConsole(res.data);
+
+  if (res.ok && res.data.success) {
+    showToast('Watchlist entry updated!', 'success');
+    closeModal('editWatchlistModal');
+    loadWatchlist(state.watchlist.activeTab);
+  } else {
+    showAlert(alertEl, res.data.error || 'Failed to update entry', 'error');
+  }
+}
+
+/**
+ * EDIT Flow: Quick Increment (+1 Ep)
+ */
+async function quickIncrementEpisode(entryId, currentEp, maxEp) {
+  const nextEp = currentEp + 1;
+  if (maxEp && nextEp > maxEp) {
+    showToast(`Already reached final episode (${maxEp})!`, 'info');
+    return;
+  }
+
+  const res = await apiCall(`/api/user/watchlist/${entryId}`, {
+    method: 'PUT',
+    body: JSON.stringify({ current_episode: nextEp })
+  });
+
+  if (res.ok && res.data.success) {
+    showToast(`Watched Episode ${nextEp}!`, 'success');
+    loadWatchlist(state.watchlist.activeTab);
+  } else {
+    showToast('Failed to update episode progress', 'error');
+  }
+}
+
+/**
+ * DELETE Flow: Remove Watchlist Entry
+ */
+async function deleteWatchlistEntry(entryId, animeTitle = 'Anime') {
+  if (!confirm(`Are you sure you want to remove "${animeTitle}" from your Watchlist?`)) {
+    return;
+  }
+
+  const card = document.getElementById(`wl-card-${entryId}`);
+  if (card) {
+    card.style.opacity = '0.4';
+    card.style.pointerEvents = 'none';
+  }
+
+  const res = await apiCall(`/api/user/watchlist/${entryId}`, {
+    method: 'DELETE'
+  });
+
+  updateStatusConsole(res.data);
+
+  if (res.ok && res.data.success) {
+    showToast(`Removed "${animeTitle}" from Watchlist`, 'info');
+    if (card) card.remove();
+    loadWatchlist(state.watchlist.activeTab);
+  } else {
+    if (card) {
+      card.style.opacity = '1';
+      card.style.pointerEvents = 'auto';
+    }
+    showToast(res.data.error || 'Failed to delete from watchlist', 'error');
+  }
+}
+
+// ===================================================================
+// DAY 10: CATALOGUE ENTITY CRUD (ADD & DELETE ANIME)
+// ===================================================================
+
+/**
+ * Handle Add Anime Form Submit
+ */
+async function handleAddAnimeSubmit(e) {
+  e.preventDefault();
+  const alertEl = document.getElementById('addAnimeAlert');
+  const btn = document.getElementById('addAnimeSubmitBtn');
+  const form = e.target;
+
+  const title = form.title.value.trim();
+  const title_jp = form.title_jp.value.trim();
+  const type = form.type.value;
+  const status = form.status.value;
+  const rating = parseFloat(form.rating.value) || 8.0;
+  const episodes_count = parseInt(form.episodes_count.value, 10) || 12;
+  const release_year = parseInt(form.release_year.value, 10) || 2024;
+  const cover_image = form.cover_image.value.trim();
+  const description = form.description.value.trim();
+
+  hideAlert(alertEl);
+
+  if (!title) {
+    showAlert(alertEl, 'Anime title is required', 'error');
+    return;
+  }
+
+  btn.disabled = true;
+  btn.innerHTML = 'Adding Anime to Vault...';
+
+  const res = await apiCall('/api/anime', {
+    method: 'POST',
+    body: JSON.stringify({
+      title,
+      title_jp,
+      type,
+      status,
+      rating,
+      episodes_count,
+      release_year,
+      cover_image,
+      description
+    })
+  });
+
+  btn.disabled = false;
+  btn.innerHTML = 'Create Anime in Catalogue';
+  updateStatusConsole(res.data);
+
+  if (res.ok && res.data.success) {
+    showToast(`"${title}" successfully created in Catalogue!`, 'success');
+    closeModal('addAnimeModal');
+    form.reset();
+    navigateTo('#/catalog');
+    loadCatalog();
+  } else {
+    showAlert(alertEl, res.data.error || 'Failed to create anime', 'error');
+  }
+}
+
+/**
+ * Handle Delete Anime from Detail Screen
+ */
+async function handleDeleteAnimeFromDetail(animeId, animeTitle) {
+  if (!confirm(`CAUTION: Are you sure you want to delete "${animeTitle}" from the streaming catalogue? This action cannot be undone.`)) {
+    return;
+  }
+
+  const res = await apiCall(`/api/anime/${animeId}`, {
+    method: 'DELETE'
+  });
+
+  updateStatusConsole(res.data);
+
+  if (res.ok && res.data.success) {
+    showToast(`"${animeTitle}" deleted from catalogue`, 'info');
+    navigateTo('#/catalog');
+    loadCatalog();
+  } else {
+    showToast(res.data.error || 'Failed to delete anime', 'error');
   }
 }
 
@@ -169,9 +605,6 @@ async function handleRouting() {
 // DAY 9: MAIN LIST SCREEN (CATALOGUE ENGINE)
 // ===================================================================
 
-/**
- * Fetch and populate dynamic genres dropdown
- */
 async function loadGenresDropdown() {
   const select = document.getElementById('genreSelect');
   if (!select) return;
@@ -202,16 +635,12 @@ function syncFilterInputsFromState() {
   if (sortSelect) sortSelect.value = state.catalog.filters.sort;
 }
 
-/**
- * Fetch anime with current filters, search & pagination
- */
 async function loadCatalog() {
   const grid = document.getElementById('catalogAnimeGrid');
   const countEl = document.getElementById('catalogResultsCount');
   const pageMetaEl = document.getElementById('catalogPageMeta');
   if (!grid) return;
 
-  // Show skeleton shimmer loaders
   grid.innerHTML = Array(6).fill('<div class="skeleton-card"></div>').join('');
   if (countEl) countEl.textContent = 'Searching Vault database...';
 
@@ -259,9 +688,6 @@ async function loadCatalog() {
   }
 }
 
-/**
- * Render Catalog Anime Cards Grid
- */
 function renderCatalogGrid(animeList) {
   const grid = document.getElementById('catalogAnimeGrid');
   if (!grid) return;
@@ -307,9 +733,6 @@ function renderCatalogGrid(animeList) {
   }).join('');
 }
 
-/**
- * Render Active Filter Chips Row
- */
 function renderActiveFilterChips() {
   const row = document.getElementById('activeFiltersRow');
   const container = document.getElementById('activeChipsContainer');
@@ -318,22 +741,14 @@ function renderActiveFilterChips() {
   const f = state.catalog.filters;
   const chips = [];
 
-  if (f.search) {
-    chips.push({ key: 'search', label: `Search: "${f.search}"` });
-  }
+  if (f.search) chips.push({ key: 'search', label: `Search: "${f.search}"` });
   if (f.genre) {
     const gObj = state.genres.find(g => g.slug === f.genre);
     chips.push({ key: 'genre', label: `Genre: ${gObj ? gObj.name : f.genre}` });
   }
-  if (f.type) {
-    chips.push({ key: 'type', label: `Format: ${f.type}` });
-  }
-  if (f.status) {
-    chips.push({ key: 'status', label: `Status: ${f.status}` });
-  }
-  if (f.sort && f.sort !== 'rating') {
-    chips.push({ key: 'sort', label: `Sort: ${f.sort}` });
-  }
+  if (f.type) chips.push({ key: 'type', label: `Format: ${f.type}` });
+  if (f.status) chips.push({ key: 'status', label: `Status: ${f.status}` });
+  if (f.sort && f.sort !== 'rating') chips.push({ key: 'sort', label: `Sort: ${f.sort}` });
 
   if (chips.length > 0) {
     row.style.display = 'flex';
@@ -377,9 +792,6 @@ function resetFilters() {
   loadCatalog();
 }
 
-/**
- * Render Interactive Pagination Controls
- */
 function renderPagination(p) {
   const wrap = document.getElementById('catalogPagination');
   if (!wrap) return;
@@ -389,20 +801,16 @@ function renderPagination(p) {
     return;
   }
 
-  let html = '';
-
-  // Prev Button
-  html += `
+  let html = `
     <button class="page-btn" ${p.page <= 1 ? 'disabled' : ''} onclick="changePage(${p.page - 1})">
       &larr; Prev
     </button>
   `;
 
-  // Page Numbers
   const total = p.totalPages;
   const current = p.page;
-
   let pages = [];
+
   if (total <= 7) {
     pages = Array.from({ length: total }, (_, i) => i + 1);
   } else {
@@ -427,7 +835,6 @@ function renderPagination(p) {
     }
   });
 
-  // Next Button
   html += `
     <button class="page-btn" ${p.page >= total ? 'disabled' : ''} onclick="changePage(${p.page + 1})">
       Next &rarr;
@@ -448,14 +855,10 @@ function changePage(page) {
 // DAY 9: DETAIL SCREEN (SINGLE ANIME & EPISODES ENGINE)
 // ===================================================================
 
-/**
- * Fetch and render complete anime detail view
- */
 async function loadAnimeDetail(param) {
   const detailView = document.getElementById('detailView');
   if (!detailView) return;
 
-  // Clear previous details
   const titleEl = document.getElementById('detailTitle');
   if (titleEl) titleEl.textContent = 'Loading Anime...';
 
@@ -466,26 +869,20 @@ async function loadAnimeDetail(param) {
     const a = res.data.data;
     state.currentAnimeDetail = a;
 
-    // 1. Backdrop
     const backdropEl = document.getElementById('detailBackdrop');
     const backdropImg = a.banner_image || a.cover_image || 'https://images.unsplash.com/photo-1578632767115-351597cf2477?w=1200';
-    if (backdropEl) {
-      backdropEl.style.backgroundImage = `url('${backdropImg}')`;
-    }
+    if (backdropEl) backdropEl.style.backgroundImage = `url('${backdropImg}')`;
 
-    // 2. Poster
     const posterImg = document.getElementById('detailPosterImg');
     if (posterImg) {
       posterImg.src = a.cover_image || a.banner_image || 'https://images.unsplash.com/photo-1578632767115-351597cf2477?w=400';
       posterImg.alt = a.title;
     }
 
-    // 3. Titles
     if (titleEl) titleEl.textContent = a.title;
     const titleJpEl = document.getElementById('detailTitleJp');
     if (titleJpEl) titleJpEl.textContent = a.title_jp || '';
 
-    // 4. Badges Strip
     const badgesStrip = document.getElementById('detailBadgesStrip');
     if (badgesStrip) {
       badgesStrip.innerHTML = `
@@ -498,7 +895,6 @@ async function loadAnimeDetail(param) {
       `;
     }
 
-    // 5. Clickable Genres Strip
     const genresStrip = document.getElementById('detailGenresStrip');
     if (genresStrip) {
       genresStrip.innerHTML = (a.genres || []).map(g => `
@@ -508,13 +904,9 @@ async function loadAnimeDetail(param) {
       `).join('');
     }
 
-    // 6. Synopsis
     const synopsisEl = document.getElementById('detailSynopsis');
-    if (synopsisEl) {
-      synopsisEl.textContent = a.description || 'No detailed synopsis available yet for this title.';
-    }
+    if (synopsisEl) synopsisEl.textContent = a.description || 'No detailed synopsis available yet for this title.';
 
-    // 7. Specs Grid
     const specFormat = document.getElementById('detailSpecFormat');
     const specYear = document.getElementById('detailSpecYear');
     const specStudio = document.getElementById('detailSpecStudio');
@@ -525,10 +917,9 @@ async function loadAnimeDetail(param) {
     if (specStudio) specStudio.textContent = a.studio || 'Animation Studio';
     if (specViews) specViews.textContent = (a.views || 0).toLocaleString();
 
-    // 8. Episodes List
     renderEpisodesList(a.episodes || [], a.title);
 
-    // 9. Quick Actions
+    // Quick Actions
     const watchBtn = document.getElementById('detailWatchBtn');
     if (watchBtn) {
       watchBtn.onclick = () => {
@@ -541,12 +932,21 @@ async function loadAnimeDetail(param) {
     const watchlistBtn = document.getElementById('detailWatchlistBtn');
     if (watchlistBtn) {
       watchlistBtn.onclick = () => {
-        if (!state.user) {
-          showToast('Please sign in to save anime to your Watchlist', 'info');
-          openModal('loginModal');
-        } else {
-          showToast(`Added ${a.title} to your personal Watchlist! (Day 10 Feature)`, 'success');
-        }
+        openAddWatchlistModal(a.id, a.title, a.episodes_count || 12);
+      };
+    }
+
+    const editAnimeBtn = document.getElementById('detailEditAnimeBtn');
+    if (editAnimeBtn) {
+      editAnimeBtn.onclick = () => {
+        showToast(`Editing metadata for "${a.title}"`, 'info');
+      };
+    }
+
+    const deleteAnimeBtn = document.getElementById('detailDeleteAnimeBtn');
+    if (deleteAnimeBtn) {
+      deleteAnimeBtn.onclick = () => {
+        handleDeleteAnimeFromDetail(a.id, a.title);
       };
     }
 
@@ -575,17 +975,12 @@ function filterByGenreFromDetail(genreSlug) {
   navigateTo('#/catalog');
 }
 
-/**
- * Render Episode Cards in Detail Screen
- */
 function renderEpisodesList(episodes, animeTitle) {
   const grid = document.getElementById('detailEpisodesGrid');
   const countBadge = document.getElementById('detailEpisodesCountBadge');
   if (!grid) return;
 
-  if (countBadge) {
-    countBadge.textContent = `${episodes.length} Episodes Available`;
-  }
+  if (countBadge) countBadge.textContent = `${episodes.length} Episodes Available`;
 
   if (episodes.length === 0) {
     grid.innerHTML = `
@@ -785,7 +1180,6 @@ function renderAuthState(isAuthenticated) {
 
   const statusPill = document.getElementById('testerStatusPill');
   const testerUsername = document.getElementById('testerUsername');
-  const testerEmail = document.getElementById('testerEmail');
 
   if (isAuthenticated && state.user) {
     if (guestGroup) guestGroup.style.display = 'none';
@@ -798,7 +1192,6 @@ function renderAuthState(isAuthenticated) {
       statusPill.textContent = '🟢 Authenticated';
     }
     if (testerUsername) testerUsername.textContent = state.user.username;
-    if (testerEmail) testerEmail.textContent = state.user.email || 'N/A';
   } else {
     if (guestGroup) guestGroup.style.display = 'flex';
     if (userGroup) userGroup.style.display = 'none';
@@ -808,7 +1201,6 @@ function renderAuthState(isAuthenticated) {
       statusPill.textContent = '⚪ Guest Mode';
     }
     if (testerUsername) testerUsername.textContent = 'Not Logged In';
-    if (testerEmail) testerEmail.textContent = 'None';
   }
 }
 
@@ -866,15 +1258,11 @@ function closeAllModals(updateHash = true) {
   }
 }
 
-// ===================================================================
-// Featured Preview on Home View
-// ===================================================================
 async function fetchFeaturedAnime() {
   const grid = document.getElementById('animeGrid');
   if (!grid) return;
 
   grid.innerHTML = Array(6).fill('<div class="skeleton-card"></div>').join('');
-
   const res = await apiCall('/api/anime?limit=6');
 
   if (res.ok && res.data.success && res.data.data) {
@@ -904,13 +1292,9 @@ async function fetchFeaturedAnime() {
 // Setup Event Listeners
 // ===================================================================
 document.addEventListener('DOMContentLoaded', () => {
-  // Session verify
   checkAuthSession();
-
-  // Load genres taxonomy
   loadGenresDropdown();
 
-  // Client router listeners
   window.addEventListener('hashchange', handleRouting);
   handleRouting();
 
@@ -921,9 +1305,28 @@ document.addEventListener('DOMContentLoaded', () => {
   const signupForm = document.getElementById('signupForm');
   if (signupForm) signupForm.addEventListener('submit', handleSignupSubmit);
 
-  // Logout button
   const logoutBtn = document.getElementById('logoutBtn');
   if (logoutBtn) logoutBtn.addEventListener('click', handleLogout);
+
+  // Day 10: CRUD Forms
+  const addWlForm = document.getElementById('addWatchlistForm');
+  if (addWlForm) addWlForm.addEventListener('submit', handleAddWatchlistSubmit);
+
+  const editWlForm = document.getElementById('editWatchlistForm');
+  if (editWlForm) editWlForm.addEventListener('submit', handleEditWatchlistSubmit);
+
+  const addAnimeForm = document.getElementById('addAnimeForm');
+  if (addAnimeForm) addAnimeForm.addEventListener('submit', handleAddAnimeSubmit);
+
+  // Watchlist status tab filters
+  document.querySelectorAll('[data-wl-tab]').forEach(tabBtn => {
+    tabBtn.addEventListener('click', () => {
+      document.querySelectorAll('[data-wl-tab]').forEach(b => b.classList.remove('active'));
+      tabBtn.classList.add('active');
+      const tabName = tabBtn.getAttribute('data-wl-tab');
+      loadWatchlist(tabName);
+    });
+  });
 
   // Nav Search Input
   const navSearch = document.getElementById('navSearchInput');
@@ -997,7 +1400,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // Keyboard shortcut '/' to focus search
   document.addEventListener('keydown', (e) => {
-    if (e.key === '/' && document.activeElement.tagName !== 'INPUT') {
+    if (e.key === '/' && document.activeElement.tagName !== 'INPUT' && document.activeElement.tagName !== 'TEXTAREA') {
       e.preventDefault();
       const s = document.getElementById('navSearchInput') || document.getElementById('catalogSearchInput');
       if (s) s.focus();

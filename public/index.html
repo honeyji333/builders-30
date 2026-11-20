@@ -19,15 +19,15 @@
       <a href="#/" class="brand-logo" id="brandLogo">
         <div class="brand-icon">▶</div>
         <div class="brand-text">Anime<span>Vault</span></div>
-        <span class="brand-badge">Day 9</span>
+        <span class="brand-badge">Day 10</span>
       </a>
 
       <!-- Primary Navigation Links -->
       <ul class="nav-links">
         <li><a href="#/" class="nav-link active" id="navLinkHome">Home</a></li>
         <li><a href="#/catalog" class="nav-link" id="navLinkCatalog">Catalog</a></li>
+        <li><a href="#/watchlist" class="nav-link" id="navLinkWatchlist">My Watchlist</a></li>
         <li><a href="#/trending" class="nav-link" id="navLinkTrending">Trending</a></li>
-        <li><a href="#/watchlist" class="nav-link" id="navLinkWatchlist">Watchlist</a></li>
       </ul>
 
       <!-- Nav Actions: Search & Auth Buttons -->
@@ -48,6 +48,9 @@
 
         <!-- Logged-in User Controls (Dynamically Toggled) -->
         <div class="auth-user-group" id="authUserGroup" style="display: none;">
+          <a href="#/watchlist" class="btn btn-ghost btn-sm" style="display: flex; align-items: center; gap: 6px;">
+            <span>📑</span> Watchlist
+          </a>
           <div class="user-profile-badge">
             <div class="user-avatar" id="navAvatar">U</div>
             <span class="user-name" id="navUsername">User</span>
@@ -78,7 +81,7 @@
       <section class="hero">
         <div class="container hero-content">
           <div class="hero-pill">
-            <span>⚡</span> #ALTABuilder30 • Track A Day 9 Milestone
+            <span>⚡</span> #ALTABuilder30 • Track A Day 10 Milestone
           </div>
 
           <h1 class="hero-title">
@@ -95,9 +98,9 @@
             <a href="#/catalog" class="btn btn-primary btn-lg">
               Explore Catalog <span>→</span>
             </a>
-            <button class="btn btn-outline btn-lg" data-open-modal="signupModal">
-              Create Account Free
-            </button>
+            <a href="#/watchlist" class="btn btn-outline btn-lg">
+              My Watchlist & Library
+            </a>
           </div>
 
           <!-- Live Feature Metric Strip -->
@@ -112,7 +115,7 @@
             </div>
             <div class="stat-item">
               <div class="stat-num">100<span>%</span></div>
-              <div class="stat-label">Live API Data</div>
+              <div class="stat-label">CRUD Usable In UI</div>
             </div>
             <div class="stat-item">
               <div class="stat-num">0.2<span>ms</span></div>
@@ -122,15 +125,15 @@
         </div>
       </section>
 
-      <!-- Milestone Showcase: Auth & Live APIs -->
+      <!-- Milestone Showcase: Day 10 CRUD Verification Panel -->
       <section class="milestone-section">
         <div class="container">
           
           <div class="section-header">
             <div>
-              <h2 class="section-title">Day 8 & 9 Deliverables: Live APIs & State Management</h2>
+              <h2 class="section-title">Day 10 Deliverables: Create, Edit & Delete Flows (UI CRUD)</h2>
               <p class="section-subtitle">
-                Client routing, authentication state, and full-featured catalog reading live data from /api/anime, /api/genres and /api/anime/:id.
+                Interactive forms to create, update, and delete watchlist entries and catalogue records directly from the UI with real-time feedback.
               </p>
             </div>
           </div>
@@ -141,7 +144,7 @@
             <div class="test-card">
               <div class="test-card-header">
                 <div class="test-card-title">
-                  <span>👤</span> Live Session State
+                  <span>👤</span> Live Session & CRUD State
                 </div>
                 <span class="status-pill guest" id="testerStatusPill">⚪ Guest Mode</span>
               </div>
@@ -152,23 +155,22 @@
                   <strong id="testerUsername">Not Logged In</strong>
                 </div>
                 <div class="detail-row">
-                  <span>Account Email:</span>
-                  <strong id="testerEmail">None</strong>
+                  <span>Watchlist Records:</span>
+                  <strong id="testerWatchlistCount">0 items tracked</strong>
                 </div>
                 <div class="detail-row">
                   <span>Active Route:</span>
                   <strong id="testerRoute">#/</strong>
                 </div>
                 <div class="detail-row">
-                  <span>Database Entity Count:</span>
-                  <strong id="testerAnimeCount">137 titles, 7,501 episodes</strong>
+                  <span>CRUD Features:</span>
+                  <strong style="color: var(--accent-crimson-hover);">Create, Edit, Delete Active</strong>
                 </div>
               </div>
 
               <div class="test-actions-row">
-                <a href="#/catalog" class="btn btn-primary btn-sm">Open Main Catalog</a>
-                <button class="btn btn-outline btn-sm" data-open-modal="loginModal">Sign In</button>
-                <button class="btn btn-outline btn-sm" data-open-modal="signupModal">Sign Up</button>
+                <a href="#/watchlist" class="btn btn-primary btn-sm">Open My Watchlist</a>
+                <button class="btn btn-outline btn-sm" id="quickAddAnimeBtn" data-open-modal="addAnimeModal">＋ Add Anime to Vault</button>
                 <button class="btn btn-ghost btn-sm" id="testHealthBtn">Health Check</button>
               </div>
             </div>
@@ -184,7 +186,7 @@
 
               <pre class="json-console" id="jsonConsole">{
   "ready": true,
-  "message": "Click any anime card or navigation link to test live API reading!"
+  "message": "Day 10: Test creating, editing, and deleting watchlist items or catalogue records from the UI."
 }</pre>
             </div>
 
@@ -212,16 +214,21 @@
 
     </div>
 
-    <!-- 2. CATALOG / MAIN LIST VIEW (#catalogView - DAY 9 MAIN DELIVERABLE) -->
+    <!-- 2. CATALOG / MAIN LIST VIEW (#catalogView) -->
     <div id="catalogView" class="view-section catalog-page">
       <div class="container">
         
-        <!-- Header -->
-        <div class="catalog-header-group">
-          <h1 class="catalog-page-title">Anime Streaming Catalogue</h1>
-          <p class="catalog-page-subtitle">
-            Browse 137 anime titles across diverse genres, formats, and release seasons. Click any title to view full details and episodes.
-          </p>
+        <!-- Header with Add Anime CRUD button -->
+        <div class="catalog-header-group" style="display: flex; justify-content: space-between; align-items: flex-end; flex-wrap: wrap; gap: 16px;">
+          <div>
+            <h1 class="catalog-page-title">Anime Streaming Catalogue</h1>
+            <p class="catalog-page-subtitle">
+              Browse 137 anime titles across diverse genres, formats, and release seasons. Click any title to view full details and episodes.
+            </p>
+          </div>
+          <button class="btn btn-primary btn-sm" data-open-modal="addAnimeModal">
+            <span>＋</span> Add New Anime
+          </button>
         </div>
 
         <!-- Filter Toolbar -->
@@ -237,7 +244,6 @@
             <!-- Dynamic Genres Dropdown -->
             <select id="genreSelect" class="filter-select">
               <option value="">All Genres</option>
-              <!-- Filled via GET /api/genres -->
             </select>
 
             <!-- Format / Type Dropdown -->
@@ -297,7 +303,7 @@
       </div>
     </div>
 
-    <!-- 3. ANIME DETAIL VIEW (#detailView - DAY 9 DETAIL DELIVERABLE) -->
+    <!-- 3. ANIME DETAIL VIEW (#detailView) -->
     <div id="detailView" class="view-section detail-page">
       
       <!-- Backdrop Banner -->
@@ -324,6 +330,12 @@
               </button>
               <button class="btn btn-outline" id="detailWatchlistBtn">
                 ＋ Add to Watchlist
+              </button>
+              <button class="btn btn-ghost btn-sm" id="detailEditAnimeBtn">
+                ✏️ Edit Anime Metadata
+              </button>
+              <button class="btn btn-danger-ghost btn-sm" id="detailDeleteAnimeBtn">
+                🗑️ Delete from Catalogue
               </button>
               <button class="btn btn-ghost btn-sm" id="detailShareBtn">
                 ↗ Share Anime Link
@@ -387,6 +399,53 @@
         </div>
       </div>
 
+    </div>
+
+    <!-- 4. WATCHLIST & LIBRARY VIEW (#watchlistView - DAY 10 DELIVERABLE) -->
+    <div id="watchlistView" class="view-section watchlist-page">
+      <div class="container">
+        
+        <!-- Header -->
+        <div class="watchlist-header-bar">
+          <div>
+            <h1 class="catalog-page-title">My Anime Library & Watchlist</h1>
+            <p class="catalog-page-subtitle">
+              Manage your personal watchlist. Create, edit, and delete entries with real-time episode progress tracking.
+            </p>
+          </div>
+          <a href="#/catalog" class="btn btn-outline btn-sm">
+            <span>＋</span> Browse to Add More
+          </a>
+        </div>
+
+        <!-- Status Filter Tabs -->
+        <div class="watchlist-tabs-bar">
+          <button class="watchlist-tab-btn active" data-wl-tab="all">
+            All <span class="tab-count-badge" id="wlCountAll">0</span>
+          </button>
+          <button class="watchlist-tab-btn" data-wl-tab="watching">
+            Watching <span class="tab-count-badge" id="wlCountWatching">0</span>
+          </button>
+          <button class="watchlist-tab-btn" data-wl-tab="plan_to_watch">
+            Plan to Watch <span class="tab-count-badge" id="wlCountPlan">0</span>
+          </button>
+          <button class="watchlist-tab-btn" data-wl-tab="completed">
+            Completed <span class="tab-count-badge" id="wlCountCompleted">0</span>
+          </button>
+          <button class="watchlist-tab-btn" data-wl-tab="on_hold">
+            On Hold <span class="tab-count-badge" id="wlCountHold">0</span>
+          </button>
+          <button class="watchlist-tab-btn" data-wl-tab="dropped">
+            Dropped <span class="tab-count-badge" id="wlCountDropped">0</span>
+          </button>
+        </div>
+
+        <!-- Watchlist Cards Grid -->
+        <div id="watchlistGrid" class="watchlist-grid">
+          <!-- Rendered dynamically via JS -->
+        </div>
+
+      </div>
     </div>
 
   </main>
@@ -557,6 +616,199 @@
         Already have an account? 
         <a href="#/login" data-open-modal="loginModal">Sign in here</a>
       </div>
+    </div>
+  </div>
+
+  <!-- ===================================================================
+       DAY 10: ADD TO WATCHLIST MODAL (#addWatchlistModal - CREATE FLOW)
+       =================================================================== -->
+  <div class="modal-backdrop" id="addWatchlistModal">
+    <div class="modal-dialog">
+      <button class="modal-close-btn" data-close-modal="addWatchlistModal" aria-label="Close dialog">&times;</button>
+      
+      <div class="modal-header">
+        <div class="modal-icon-badge">📑</div>
+        <h3 class="modal-title">Add to Watchlist</h3>
+        <p class="modal-subtitle" id="addWlAnimeTitle">Select your tracking status and progress</p>
+      </div>
+
+      <div class="form-alert" id="addWlAlert"></div>
+
+      <form id="addWatchlistForm">
+        <input type="hidden" id="addWlAnimeId" name="anime_id" />
+
+        <div class="form-group">
+          <label class="form-label" for="addWlStatus">Tracking Status</label>
+          <select id="addWlStatus" name="status" class="form-input" required>
+            <option value="watching">Watching (Currently Airing / In Progress)</option>
+            <option value="plan_to_watch">Plan to Watch (Saved for Later)</option>
+            <option value="completed">Completed (Finished Series)</option>
+            <option value="on_hold">On Hold (Paused)</option>
+            <option value="dropped">Dropped</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="addWlEpisode">
+            <span>Episodes Watched</span>
+            <span class="helper" id="addWlEpisodeHelper">Total Episodes: 12</span>
+          </label>
+          <input 
+            type="number" 
+            id="addWlEpisode" 
+            name="current_episode" 
+            class="form-input" 
+            value="1" 
+            min="0" 
+            max="2000" 
+            required 
+          />
+        </div>
+
+        <button type="submit" class="btn btn-primary" id="addWlSubmitBtn" style="width: 100%; margin-top: 8px;">
+          Save to Watchlist
+        </button>
+      </form>
+    </div>
+  </div>
+
+  <!-- ===================================================================
+       DAY 10: EDIT WATCHLIST MODAL (#editWatchlistModal - EDIT FLOW)
+       =================================================================== -->
+  <div class="modal-backdrop" id="editWatchlistModal">
+    <div class="modal-dialog">
+      <button class="modal-close-btn" data-close-modal="editWatchlistModal" aria-label="Close dialog">&times;</button>
+      
+      <div class="modal-header">
+        <div class="modal-icon-badge">✏️</div>
+        <h3 class="modal-title">Update Watchlist Entry</h3>
+        <p class="modal-subtitle" id="editWlAnimeTitle">Modify your tracking status and progress</p>
+      </div>
+
+      <div class="form-alert" id="editWlAlert"></div>
+
+      <form id="editWatchlistForm">
+        <input type="hidden" id="editWlEntryId" name="entry_id" />
+
+        <div class="form-group">
+          <label class="form-label" for="editWlStatus">Tracking Status</label>
+          <select id="editWlStatus" name="status" class="form-input" required>
+            <option value="watching">Watching</option>
+            <option value="plan_to_watch">Plan to Watch</option>
+            <option value="completed">Completed</option>
+            <option value="on_hold">On Hold</option>
+            <option value="dropped">Dropped</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="editWlEpisode">
+            <span>Current Episode</span>
+            <span class="helper" id="editWlEpisodeHelper">Episode progress</span>
+          </label>
+          <input 
+            type="number" 
+            id="editWlEpisode" 
+            name="current_episode" 
+            class="form-input" 
+            value="1" 
+            min="0" 
+            max="2000" 
+            required 
+          />
+        </div>
+
+        <div style="display: flex; gap: 10px; margin-top: 14px;">
+          <button type="submit" class="btn btn-primary" id="editWlSubmitBtn" style="flex: 1;">
+            Update Progress
+          </button>
+          <button type="button" class="btn btn-danger-ghost" id="editWlDeleteBtn" style="flex: 1;">
+            Remove from Watchlist
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- ===================================================================
+       DAY 10: ADD ANIME TO CATALOGUE MODAL (#addAnimeModal - CATALOG CREATE)
+       =================================================================== -->
+  <div class="modal-backdrop" id="addAnimeModal">
+    <div class="modal-dialog" style="max-width: 540px;">
+      <button class="modal-close-btn" data-close-modal="addAnimeModal" aria-label="Close dialog">&times;</button>
+      
+      <div class="modal-header">
+        <div class="modal-icon-badge">🎬</div>
+        <h3 class="modal-title">Add Anime to Vault</h3>
+        <p class="modal-subtitle">Contribute a new anime title to the streaming catalogue</p>
+      </div>
+
+      <div class="form-alert" id="addAnimeAlert"></div>
+
+      <form id="addAnimeForm">
+        <div class="form-group">
+          <label class="form-label" for="addAnimeTitle">Anime Title (English)</label>
+          <input type="text" id="addAnimeTitle" name="title" class="form-input" placeholder="e.g. Chainsaw Man" required />
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="addAnimeTitleJp">Japanese Title (Optional)</label>
+          <input type="text" id="addAnimeTitleJp" name="title_jp" class="form-input" placeholder="e.g. チェンソーマン" />
+        </div>
+
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
+          <div class="form-group">
+            <label class="form-label" for="addAnimeType">Format</label>
+            <select id="addAnimeType" name="type" class="form-input">
+              <option value="TV">TV Series</option>
+              <option value="Movie">Movie</option>
+              <option value="OVA">OVA</option>
+              <option value="ONA">ONA</option>
+              <option value="Special">Special</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="addAnimeStatus">Status</label>
+            <select id="addAnimeStatus" name="status" class="form-input">
+              <option value="Airing">Airing</option>
+              <option value="Completed">Completed</option>
+              <option value="Upcoming">Upcoming</option>
+            </select>
+          </div>
+        </div>
+
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
+          <div class="form-group">
+            <label class="form-label" for="addAnimeRating">Rating (Score)</label>
+            <input type="number" step="0.1" min="0" max="10" id="addAnimeRating" name="rating" class="form-input" value="8.5" required />
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="addAnimeEpisodes">Total Episodes</label>
+            <input type="number" min="1" max="2000" id="addAnimeEpisodes" name="episodes_count" class="form-input" value="12" required />
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="addAnimeYear">Release Year</label>
+          <input type="number" min="1960" max="2030" id="addAnimeYear" name="release_year" class="form-input" value="2024" required />
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="addAnimeCover">Cover Image URL</label>
+          <input type="url" id="addAnimeCover" name="cover_image" class="form-input" placeholder="https://..." value="https://images.unsplash.com/photo-1578632767115-351597cf2477?w=400" required />
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="addAnimeDesc">Description / Synopsis</label>
+          <textarea id="addAnimeDesc" name="description" class="form-input" rows="3" placeholder="Enter story synopsis..."></textarea>
+        </div>
+
+        <button type="submit" class="btn btn-primary" id="addAnimeSubmitBtn" style="width: 100%; margin-top: 8px;">
+          Create Anime in Catalogue
+        </button>
+      </form>
     </div>
   </div>
 

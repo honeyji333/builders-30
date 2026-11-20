@@ -1711,6 +1711,257 @@ input, select, textarea {
 }
 
 /* ===================================================================
+   DAY 10: USER WATCHLIST & LIBRARY CRUD FLOWS
+   =================================================================== */
+
+.watchlist-page {
+  padding: 40px 0 80px 0;
+  background: var(--bg-primary);
+}
+
+.watchlist-header-bar {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  margin-bottom: 28px;
+  flex-wrap: wrap;
+  gap: 16px;
+}
+
+.watchlist-tabs-bar {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: var(--bg-card);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-md);
+  padding: 8px 12px;
+  margin-bottom: 28px;
+  overflow-x: auto;
+  box-shadow: var(--shadow-sm);
+}
+
+.watchlist-tab-btn {
+  padding: 8px 16px;
+  border-radius: var(--radius-sm);
+  background: transparent;
+  color: var(--text-secondary);
+  font-size: 0.88rem;
+  font-weight: 600;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: var(--transition-normal);
+}
+
+.watchlist-tab-btn:hover {
+  color: var(--text-pure);
+  background: var(--bg-surface-elevated);
+}
+
+.watchlist-tab-btn.active {
+  background: var(--accent-crimson);
+  color: #fff;
+  box-shadow: 0 0 12px var(--accent-crimson-glow);
+}
+
+.tab-count-badge {
+  font-size: 0.72rem;
+  padding: 2px 7px;
+  border-radius: var(--radius-full);
+  background: rgba(0, 0, 0, 0.3);
+  color: inherit;
+}
+
+.watchlist-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 22px;
+}
+
+.watchlist-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-md);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  transition: var(--transition-normal);
+  position: relative;
+}
+
+.watchlist-card:hover {
+  transform: translateY(-4px);
+  border-color: var(--accent-crimson-border);
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.7), 0 0 14px var(--accent-crimson-glow);
+}
+
+.watchlist-card-top {
+  display: flex;
+  gap: 14px;
+  padding: 14px;
+  border-bottom: 1px solid var(--border-subtle);
+}
+
+.watchlist-card-poster {
+  width: 72px;
+  aspect-ratio: 2 / 3;
+  border-radius: var(--radius-sm);
+  overflow: hidden;
+  background: var(--bg-pitch);
+  flex-shrink: 0;
+}
+
+.watchlist-card-poster img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.watchlist-card-info {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  overflow: hidden;
+  flex-grow: 1;
+}
+
+.watchlist-card-title {
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: var(--text-pure);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.watchlist-status-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 0.74rem;
+  font-weight: 700;
+  padding: 2px 8px;
+  border-radius: var(--radius-xs);
+  text-transform: capitalize;
+  width: fit-content;
+}
+
+.status-watching {
+  background: rgba(59, 130, 246, 0.15);
+  color: #60a5fa;
+  border: 1px solid rgba(59, 130, 246, 0.3);
+}
+
+.status-completed {
+  background: var(--color-success-bg);
+  color: var(--color-success);
+  border: 1px solid rgba(16, 185, 129, 0.3);
+}
+
+.status-plan_to_watch {
+  background: rgba(245, 158, 11, 0.15);
+  color: #fbbf24;
+  border: 1px solid rgba(245, 158, 11, 0.3);
+}
+
+.status-on_hold {
+  background: rgba(142, 146, 164, 0.15);
+  color: var(--text-secondary);
+  border: 1px solid var(--border-subtle);
+}
+
+.status-dropped {
+  background: var(--color-error-bg);
+  color: #f87171;
+  border: 1px solid rgba(239, 68, 68, 0.3);
+}
+
+/* Progress Section in Watchlist Card */
+.watchlist-card-body {
+  padding: 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.progress-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 0.82rem;
+  color: var(--text-secondary);
+}
+
+.progress-bar-wrap {
+  width: 100%;
+  height: 6px;
+  background: var(--bg-pitch);
+  border-radius: var(--radius-full);
+  overflow: hidden;
+  border: 1px solid var(--border-subtle);
+}
+
+.progress-bar-fill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--accent-crimson), #ff3344);
+  box-shadow: 0 0 8px var(--accent-crimson-glow);
+  border-radius: var(--radius-full);
+  transition: width 0.3s ease;
+}
+
+.watchlist-card-actions {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  padding-top: 8px;
+  border-top: 1px solid var(--border-subtle);
+}
+
+.quick-inc-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 5px 10px;
+  border-radius: var(--radius-xs);
+  background: var(--bg-pitch);
+  border: 1px solid var(--border-medium);
+  color: var(--text-pure);
+  font-size: 0.78rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: var(--transition-fast);
+}
+
+.quick-inc-btn:hover {
+  background: var(--accent-crimson-subtle);
+  border-color: var(--accent-crimson);
+  color: var(--accent-crimson-hover);
+}
+
+/* Empty Watchlist State */
+.empty-watchlist-box {
+  grid-column: 1 / -1;
+  text-align: center;
+  padding: 60px 20px;
+  background: var(--bg-card);
+  border: 1px dashed var(--border-medium);
+  border-radius: var(--radius-lg);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+}
+
+.empty-watchlist-icon {
+  font-size: 3rem;
+  color: var(--text-muted);
+}
+
+/* ===================================================================
    Responsive Breakpoints
    =================================================================== */
 @media (max-width: 992px) {

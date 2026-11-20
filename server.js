@@ -93,6 +93,9 @@ app.use('/api/auth', require('./routes/auth'));
 // Main Entity & Related Entities: Anime, Genres & Episodes (Day 6 & Day 7)
 app.use('/api/anime', require('./routes/anime'));
 
+// User Library & Watchlist CRUD Routes (Day 10: Create, Edit & Delete Flows)
+app.use('/api/user', require('./routes/user'));
+
 // SPA Fallback for client-side routing (Day 8: Frontend Routing)
 app.get('*', (req, res, next) => {
   if (req.path.startsWith('/api') || req.path === '/health') {

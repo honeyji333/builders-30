@@ -73,12 +73,26 @@
 - [x] **Day 7**: Related entities, search and pagination (`/api/anime?search=&genre=`, `/api/genres`, `/episodes`)
 - [x] **Day 8**: Frontend setup, routing and auth screens (SPA client, dark crimson theme, routing & auth modals)
 - [x] **Day 9**: Main list and detail screens (Catalog with filters & pagination + Single anime view with full episode tracker)
-- [ ] **Day 10**: Create, edit and delete flows (Watchlist & Favorites)
+- [x] **Day 10**: Create, edit and delete flows (Watchlist & Catalogue CRUD usable from UI with loading & error states)
 - [ ] **Day 11**: Heavy feature, part 1 (Video streaming & sync backend)
 - [ ] **Day 12**: Heavy feature, part 2 (Embedded player & UI integration)
 - [ ] **Day 13**: Testing and bug fixes (5+ API tests)
 - [ ] **Day 14**: Deploy frontend, backend and database
 - [ ] **Day 15**: README, demo video and project launch post
+
+---
+
+## ⚡ Day 10 Deliverables: Create, Edit & Delete Flows (Full UI CRUD)
+
+- **User Watchlist & Library CRUD (`#/watchlist`)**:
+  - **CREATE**: Add anime to library via `#addWatchlistModal` with status (`Watching`, `Plan to Watch`, `Completed`, `On Hold`, `Dropped`) and starting episode progress.
+  - **READ**: Filterable library view categorized by tabs with dynamic counters (`All`, `Watching`, `Plan to Watch`, `Completed`, `On Hold`, `Dropped`).
+  - **UPDATE / EDIT**: Update status or episode count via `#editWatchlistModal`, or use the **instant inline `+1 Ep` quick-increment button** directly on the card with animated progress bar updates!
+  - **DELETE**: Delete entries with confirmation (`DELETE /api/user/watchlist/:id`), removing cards smoothly from DOM with optimistic UI updates.
+- **Catalogue Entity CRUD**:
+  - **CREATE**: `＋ Add New Anime` modal on the catalogue page submitting to `POST /api/anime` with input validation, loading button state, and live catalog refresh.
+  - **DELETE**: Admin/contributor delete action on detail screen (`DELETE /api/anime/:id`) with prompt confirmation.
+- **UX Feedback & State**: Loading spinners during submission, error banners for validation failures, and floating toast notifications for every mutation.
 
 ---
 
