@@ -923,9 +923,8 @@ async function loadAnimeDetail(param) {
     const watchBtn = document.getElementById('detailWatchBtn');
     if (watchBtn) {
       watchBtn.onclick = () => {
-        const epSection = document.getElementById('detailEpisodesSection');
-        if (epSection) epSection.scrollIntoView({ behavior: 'smooth' });
-        showToast(`Ready to stream Episode 1 of ${a.title}! (Player unlocks Day 11)`, 'info');
+        const firstEp = (a.episodes && a.episodes.length > 0) ? a.episodes[0] : null;
+        resolveAndPlayEpisode(firstEp ? firstEp.id : 1);
       };
     }
 
@@ -998,7 +997,7 @@ function renderEpisodesList(episodes, animeTitle) {
     const lang = ep.audio_language ? `[${ep.audio_language}]` : '[JP Audio, EN Sub]';
 
     return `
-      <div class="episode-card" onclick="showToast('Streaming player launches in Day 11: ${escapeHtml(title)}', 'info')">
+      <div class="episode-card" onclick="resolveAndPlayEpisode(${ep.id})" style="cursor: pointer;" title="Click to stream ${escapeHtml(title)}">
         <div class="episode-num-badge">EP ${num}</div>
         <div class="episode-info">
           <div class="episode-title" title="${escapeHtml(title)}">${escapeHtml(title)}</div>
@@ -1006,6 +1005,7 @@ function renderEpisodesList(episodes, animeTitle) {
             <span>⏱ ${duration}</span>
             <span>•</span>
             <span style="color: var(--accent-crimson-hover);">${lang}</span>
+            <span style="margin-left: auto; color: var(--color-success); font-weight: 600;">▶ Play HD</span>
           </div>
         </div>
       </div>
@@ -1243,6 +1243,10 @@ function closeModal(modalId, updateHash = true) {
   if (modal) {
     modal.classList.remove('active');
     document.body.style.overflow = '';
+    if (modalId === 'streamModal') {
+      const iframe = document.getElementById('streamIframe');
+      if (iframe) iframe.src = '';
+    }
   }
   if (updateHash && (window.location.hash === '#/login' || window.location.hash === '#/signup')) {
     history.pushState('', document.title, window.location.pathname + window.location.search);
@@ -1252,6 +1256,8 @@ function closeModal(modalId, updateHash = true) {
 
 function closeAllModals(updateHash = true) {
   document.querySelectorAll('.modal-backdrop').forEach(m => m.classList.remove('active'));
+  const iframe = document.getElementById('streamIframe');
+  if (iframe) iframe.src = '';
   document.body.style.overflow = '';
   if (updateHash && (window.location.hash === '#/login' || window.location.hash === '#/signup')) {
     history.pushState('', document.title, window.location.pathname + window.location.search);
@@ -1460,28 +1466,133 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-  // Day 11: Heavy Feature Streaming Test Buttons
-  const handleStreamResolveClick = async () => {
-    showToast('Resolving multi-server streams for Episode 1...', 'info');
-    const res = await apiCall('/api/stream/resolve/1');
+  // Day 11: Heavy Feature Streaming Engine & Interactive Player
+  let currentStreamingEpisode = null;
+
+  async function resolveAndPlayEpisode(epId) {
+    if (!epId) epId = 1;
+    showToast(`Resolving multi-server streams for Episode ${epId}...`, 'info');
+    
+    const res = await apiCall(`/api/stream/resolve/${epId}`);
     updateStatusConsole(res.data);
-    if (res.ok) {
-      const serverName = res.data?.data?.servers?.[0]?.name || 'HD Vault';
-      const quality = res.data?.data?.servers?.[0]?.quality || '1080p HD';
-      showToast(`Stream Resolved: ${serverName} • ${quality}`, 'success');
+
+    if (res.ok && res.data.success && res.data.data) {
+      const data = res.data.data;
+      currentStreamingEpisode = data;
+      const ep = data.episode;
+      const servers = data.servers || [];
+
+      const titleEl = document.getElementById('streamModalTitle');
+      const qualityEl = document.getElementById('streamModalQuality');
+      const iframeEl = document.getElementById('streamIframe');
+      const serverChipsEl = document.getElementById('streamServerChips');
+      const prevBtn = document.getElementById('streamPrevEpBtn');
+      const nextBtn = document.getElementById('streamNextEpBtn');
+      const syncStatusEl = document.getElementById('streamSyncStatus');
+
+      if (titleEl) {
+        titleEl.textContent = `${ep.anime?.title || 'Anime'} • Ep ${ep.number}: ${ep.title}`;
+      }
+      if (qualityEl) {
+        qualityEl.textContent = servers[0]?.quality || '1080p HD';
+      }
+      if (syncStatusEl) {
+        syncStatusEl.textContent = 'Auto-sync ready';
+      }
+
+      // Load initial server embed
+      if (iframeEl && servers[0]) {
+        iframeEl.src = servers[0].embed_url;
+      }
+
+      // Populate multi-server CDN buttons
+      if (serverChipsEl) {
+        serverChipsEl.innerHTML = servers.map((srv, idx) => `
+          <button class="btn ${idx === 0 ? 'btn-primary' : 'btn-outline'} btn-sm"
+            onclick="switchStreamServer('${srv.id}', '${escapeHtml(srv.embed_url)}', '${escapeHtml(srv.quality)}', this)"
+            style="font-size: 0.75rem; padding: 4px 10px;">
+            ${escapeHtml(srv.name)} (${escapeHtml(srv.quality)})
+          </button>
+        `).join('');
+      }
+
+      // Navigation pointers (Next / Prev)
+      if (prevBtn) {
+        if (data.prev_episode) {
+          prevBtn.style.display = 'inline-flex';
+          prevBtn.textContent = `⏮ Ep ${data.prev_episode.number}`;
+          prevBtn.onclick = () => resolveAndPlayEpisode(data.prev_episode.id);
+        } else {
+          prevBtn.style.display = 'none';
+        }
+      }
+
+      if (nextBtn) {
+        if (data.next_episode) {
+          nextBtn.style.display = 'inline-flex';
+          nextBtn.textContent = `Ep ${data.next_episode.number} ⏭`;
+          nextBtn.onclick = () => resolveAndPlayEpisode(data.next_episode.id);
+        } else {
+          nextBtn.style.display = 'none';
+        }
+      }
+
+      openModal('streamModal');
+      showToast(`Stream Resolved: ${servers[0]?.name || 'HD Vault'} (${servers[0]?.quality || '1080p HD'})`, 'success');
     } else {
-      showToast('Failed to resolve stream', 'error');
+      showToast('Failed to resolve stream sources', 'error');
     }
+  }
+
+  window.resolveAndPlayEpisode = resolveAndPlayEpisode;
+
+  window.switchStreamServer = function(serverId, embedUrl, quality, btnEl) {
+    const iframeEl = document.getElementById('streamIframe');
+    const qualityEl = document.getElementById('streamModalQuality');
+    if (iframeEl) iframeEl.src = embedUrl;
+    if (qualityEl) qualityEl.textContent = quality;
+
+    const container = document.getElementById('streamServerChips');
+    if (container) {
+      container.querySelectorAll('button').forEach(b => {
+        b.className = 'btn btn-outline btn-sm';
+      });
+    }
+    if (btnEl) btnEl.className = 'btn btn-primary btn-sm';
+    showToast(`Switched stream server: ${quality}`, 'info');
   };
 
   const testStreamResolverBtn = document.getElementById('testStreamResolverBtn');
   if (testStreamResolverBtn) {
-    testStreamResolverBtn.addEventListener('click', handleStreamResolveClick);
+    testStreamResolverBtn.addEventListener('click', () => {
+      resolveAndPlayEpisode(1);
+    });
   }
 
-  const navTestStreamBtn = document.getElementById('navTestStreamBtn');
-  if (navTestStreamBtn) {
-    navTestStreamBtn.addEventListener('click', handleStreamResolveClick);
+  const streamSyncNowBtn = document.getElementById('streamSyncNowBtn');
+  if (streamSyncNowBtn) {
+    streamSyncNowBtn.addEventListener('click', async () => {
+      if (!currentStreamingEpisode?.episode?.id) return;
+      const epId = currentStreamingEpisode.episode.id;
+      showToast('Syncing watch progress to database...', 'info');
+      const res = await apiCall('/api/stream/sync', {
+        method: 'POST',
+        body: JSON.stringify({
+          episode_id: epId,
+          progress_seconds: 720,
+          duration_seconds: 1440
+        })
+      });
+      updateStatusConsole(res.data);
+      if (res.ok && res.data.success) {
+        const pct = res.data.data.percent_watched || 50;
+        showToast(`Watch progress synced! (${pct}% completed)`, 'success');
+        const syncStatusEl = document.getElementById('streamSyncStatus');
+        if (syncStatusEl) syncStatusEl.textContent = `Synced: ${pct}% watched`;
+      } else {
+        showToast('Watch sync failed', 'error');
+      }
+    });
   }
 
   const testStreamSyncBtn = document.getElementById('testStreamSyncBtn');
