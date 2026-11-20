@@ -96,8 +96,9 @@
   - Delivers instantaneous "Continue Watching" playback recovery, retrieving the exact episode and timestamp where the user left off.
 - **HTTP 206 Partial Content Byte-Range Video Streaming (`GET /api/stream/range-demo`)**:
   - RFC 7233 compliant media streaming endpoint supporting `Range: bytes=start-end` requests, `Content-Range`, `Accept-Ranges: bytes`, and chunked binary streaming for smooth seeking.
-- **Interactive UI Testing Controls**:
-  - Added dedicated Day 11 test action triggers on the frontend navigation bar to test stream resolution and watch progress sync end-to-end with visual toast confirmations.
+- **Interactive Stream Resolver Modal & Video Player (`#streamModal`)**:
+  - Integrated 16:9 widescreen video player modal with multi-server CDN switcher (`HD Vault 1080p` vs `AnimeStream Mirror 720p`).
+  - Enables direct one-click playback from episode cards and "Watch Episode 1" action, complete with Next/Previous episode navigation and database watch progress sync.
 
 ---
 
