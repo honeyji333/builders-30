@@ -110,10 +110,12 @@ input, select, textarea {
   margin: 0 auto;
   padding: 0 24px;
   width: 100%;
+  box-sizing: border-box;
 }
 
 /* ===================================================================
-   Navbar Component
+   Navbar Component (Unified 3-Column Symmetrical Grid Alignment)
+   Left: Brand Logo | Center: Navigation Links | Right: Search & Actions
    =================================================================== */
 .navbar {
   position: sticky;
@@ -127,14 +129,15 @@ input, select, textarea {
 }
 
 .nav-container {
-  display: flex;
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
   align-items: center;
-  justify-content: space-between;
   height: 72px;
 }
 
-/* Brand Logo */
+/* Brand Logo (Left Side of Container Grid) */
 .brand-logo {
+  justify-self: start;
   display: flex;
   align-items: center;
   gap: 10px;
@@ -142,6 +145,7 @@ input, select, textarea {
   font-weight: 800;
   letter-spacing: -0.5px;
   color: var(--text-pure);
+  white-space: nowrap;
 }
 
 .brand-icon {
@@ -173,33 +177,15 @@ input, select, textarea {
   letter-spacing: 0.5px;
 }
 
-.nav-stream-btn {
-  margin-left: 8px;
-  background: rgba(229, 9, 20, 0.12) !important;
-  border: 1px solid var(--accent-crimson) !important;
-  color: #fff !important;
-  font-weight: 700 !important;
-  font-size: 0.78rem !important;
-  padding: 5px 12px !important;
-  border-radius: 999px !important;
-  box-shadow: 0 0 10px rgba(229, 9, 20, 0.25);
-  transition: all 0.25s ease;
-  white-space: nowrap;
-}
-
-.nav-stream-btn:hover {
-  background: var(--accent-crimson) !important;
-  color: #fff !important;
-  box-shadow: 0 0 16px rgba(229, 9, 20, 0.6);
-  transform: translateY(-1px);
-}
-
-/* Navigation Links */
+/* Navigation Links (Exact Mathematical Center Alignment) */
 .nav-links {
+  justify-self: center;
   display: flex;
   align-items: center;
-  gap: 28px;
+  gap: 32px;
   list-style: none;
+  margin: 0;
+  padding: 0;
 }
 
 .nav-link {
@@ -208,6 +194,7 @@ input, select, textarea {
   color: var(--text-secondary);
   position: relative;
   padding: 6px 0;
+  white-space: nowrap;
 }
 
 .nav-link:hover,
@@ -227,8 +214,9 @@ input, select, textarea {
   border-radius: 2px;
 }
 
-/* Nav Actions (Search & Auth) */
+/* Nav Actions (Search & Auth - Right Side of Container Grid) */
 .nav-actions {
+  justify-self: end;
   display: flex;
   align-items: center;
   gap: 16px;
@@ -1986,6 +1974,13 @@ input, select, textarea {
    Responsive Breakpoints
    =================================================================== */
 @media (max-width: 992px) {
+  .nav-container {
+    display: flex;
+    justify-content: space-between;
+  }
+  .nav-links {
+    gap: 20px;
+  }
   .hero-title {
     font-size: 2.6rem;
   }
@@ -1998,6 +1993,10 @@ input, select, textarea {
 }
 
 @media (max-width: 768px) {
+  .nav-container {
+    display: flex;
+    justify-content: space-between;
+  }
   .nav-links, .nav-search-bar {
     display: none;
   }
