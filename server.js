@@ -96,6 +96,9 @@ app.use('/api/anime', require('./routes/anime'));
 // User Library & Watchlist CRUD Routes (Day 10: Create, Edit & Delete Flows)
 app.use('/api/user', require('./routes/user'));
 
+// Video Streaming & Real-Time Sync Engine (Day 11: Heavy Feature Backend)
+app.use('/api/stream', require('./routes/stream'));
+
 // SPA Fallback for client-side routing (Day 8: Frontend Routing)
 app.get('*', (req, res, next) => {
   if (req.path.startsWith('/api') || req.path === '/health') {

@@ -74,11 +74,30 @@
 - [x] **Day 8**: Frontend setup, routing and auth screens (SPA client, dark crimson theme, routing & auth modals)
 - [x] **Day 9**: Main list and detail screens (Catalog with filters & pagination + Single anime view with full episode tracker)
 - [x] **Day 10**: Create, edit and delete flows (Watchlist & Catalogue CRUD usable from UI with loading & error states)
-- [ ] **Day 11**: Heavy feature, part 1 (Video streaming & sync backend)
+- [x] **Day 11**: Heavy feature, part 1 (Video streaming & sync backend)
 - [ ] **Day 12**: Heavy feature, part 2 (Embedded player & UI integration)
 - [ ] **Day 13**: Testing and bug fixes (5+ API tests)
 - [ ] **Day 14**: Deploy frontend, backend and database
 - [ ] **Day 15**: README, demo video and project launch post
+
+---
+
+## 🚀 Day 11 Deliverables: Heavy Feature, Part 1 (Streaming Resolver & Watch Sync Backend)
+
+- **Multi-Server Streaming Resolver (`GET /api/stream/resolve/:episodeId`)**:
+  - Dynamically resolves multi-CDN mirrors for any episode (Primary `HD Vault Fast CDN`, Fallback Mirror 2, and 4K Stream Server).
+  - Supplies verified responsive embed targets, direct streaming streams, audio track metadata (Japanese / Hindi Dub / English Sub), and next/previous episode navigation pointers.
+  - Automatically fetches the authenticated user's last saved playback timestamp for seamless instant resume.
+- **Real-Time Watch Progress Synchronization (`POST /api/stream/sync`)**:
+  - Records real-time playback position (`progress_seconds`, `duration_seconds`) into SQLite `watch_history`.
+  - Dynamically calculates watched percentage (`percent_watched`).
+  - **Auto-Completion & Library Progression**: When progress exceeds 90% or the episode finishes, automatically marks the episode completed and updates the user's watchlist episode counter. If it is the final episode, it promotes the anime's watchlist status to `Completed`!
+- **Instant Resume Lookup (`GET /api/stream/resume/:animeId`)**:
+  - Delivers instantaneous "Continue Watching" playback recovery, retrieving the exact episode and timestamp where the user left off.
+- **HTTP 206 Partial Content Byte-Range Video Streaming (`GET /api/stream/range-demo`)**:
+  - RFC 7233 compliant media streaming endpoint supporting `Range: bytes=start-end` requests, `Content-Range`, `Accept-Ranges: bytes`, and chunked binary streaming for smooth seeking.
+- **Interactive UI Testing Controls**:
+  - Added dedicated Day 11 test action triggers on the frontend navigation bar to test stream resolution and watch progress sync end-to-end with visual toast confirmations.
 
 ---
 

@@ -1458,4 +1458,40 @@ document.addEventListener('DOMContentLoaded', () => {
       showToast('Health check: Status OK (SQLite WAL)', 'success');
     });
   }
+
+  // Day 11: Heavy Feature Streaming Test Buttons
+  const testStreamResolverBtn = document.getElementById('testStreamResolverBtn');
+  if (testStreamResolverBtn) {
+    testStreamResolverBtn.addEventListener('click', async () => {
+      showToast('Resolving multi-server streams for Episode 1...', 'info');
+      const res = await apiCall('/api/stream/resolve/1');
+      updateStatusConsole(res.data);
+      if (res.ok) {
+        showToast('Stream resolved! HD Vault & Mirrors active', 'success');
+      } else {
+        showToast('Failed to resolve stream', 'error');
+      }
+    });
+  }
+
+  const testStreamSyncBtn = document.getElementById('testStreamSyncBtn');
+  if (testStreamSyncBtn) {
+    testStreamSyncBtn.addEventListener('click', async () => {
+      showToast('Syncing real-time watch progress (420s / 1440s)...', 'info');
+      const res = await apiCall('/api/stream/sync', {
+        method: 'POST',
+        body: JSON.stringify({
+          episode_id: 1,
+          progress_seconds: 420,
+          duration_seconds: 1440
+        })
+      });
+      updateStatusConsole(res.data);
+      if (res.ok) {
+        showToast(`Progress synced! Watched: ${res.data.data.percent_watched}%`, 'success');
+      } else {
+        showToast('Failed to sync progress', 'error');
+      }
+    });
+  }
 });
