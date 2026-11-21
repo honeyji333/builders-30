@@ -100,6 +100,10 @@ function escapeHtml(str) {
 // View Navigation Router
 // ===================================================================
 function switchView(viewId) {
+  if (viewId !== 'watchView') {
+    stopWatchTheaterHeartbeat();
+  }
+
   document.querySelectorAll('.view-section').forEach(view => {
     view.classList.remove('active');
   });
@@ -152,6 +156,10 @@ async function handleRouting() {
   } else if (hash.startsWith('#/watchlist')) {
     switchView('watchlistView');
     loadWatchlist(state.watchlist.activeTab);
+  } else if (hash.startsWith('#/watch/')) {
+    const epId = parseInt(hash.replace('#/watch/', '').trim(), 10) || 1;
+    switchView('watchView');
+    loadWatchTheater(epId);
   } else if (hash.startsWith('#/anime/')) {
     const animeId = hash.replace('#/anime/', '').trim();
     if (animeId) {
@@ -924,7 +932,7 @@ async function loadAnimeDetail(param) {
     if (watchBtn) {
       watchBtn.onclick = () => {
         const firstEp = (a.episodes && a.episodes.length > 0) ? a.episodes[0] : null;
-        resolveAndPlayEpisode(firstEp ? firstEp.id : 1);
+        navigateTo('#/watch/' + (firstEp ? firstEp.id : 1));
       };
     }
 
@@ -997,7 +1005,7 @@ function renderEpisodesList(episodes, animeTitle) {
     const lang = ep.audio_language ? `[${ep.audio_language}]` : '[JP Audio, EN Sub]';
 
     return `
-      <div class="episode-card" onclick="resolveAndPlayEpisode(${ep.id})" style="cursor: pointer;" title="Click to stream ${escapeHtml(title)}">
+      <div class="episode-card" onclick="navigateTo('#/watch/${ep.id}')" style="cursor: pointer;" title="Click to stream ${escapeHtml(title)} in Theater Mode">
         <div class="episode-num-badge">EP ${num}</div>
         <div class="episode-info">
           <div class="episode-title" title="${escapeHtml(title)}">${escapeHtml(title)}</div>
@@ -1005,7 +1013,7 @@ function renderEpisodesList(episodes, animeTitle) {
             <span>⏱ ${duration}</span>
             <span>•</span>
             <span style="color: var(--accent-crimson-hover);">${lang}</span>
-            <span style="margin-left: auto; color: var(--color-success); font-weight: 600;">▶ Play HD</span>
+            <span style="margin-left: auto; color: var(--color-success); font-weight: 600;">▶ Watch HD</span>
           </div>
         </div>
       </div>
@@ -1293,6 +1301,322 @@ async function fetchFeaturedAnime() {
       </div>
     `).join('');
   }
+}
+
+// ===================================================================
+// DAY 12: CINEMATIC THEATER WATCH VIEW & ASYNC PROGRESS ENGINE
+// ===================================================================
+
+let theaterState = {
+  episodeId: null,
+  animeId: null,
+  animeTitle: '',
+  allEpisodes: [],
+  currentServer: null,
+  currentAudio: 'Japanese',
+  progressSeconds: 0,
+  durationSeconds: 1440,
+  heartbeatTimer: null
+};
+
+function stopWatchTheaterHeartbeat() {
+  if (theaterState.heartbeatTimer) {
+    clearInterval(theaterState.heartbeatTimer);
+    theaterState.heartbeatTimer = null;
+  }
+  const iframe = document.getElementById('theaterIframe');
+  if (iframe) iframe.src = '';
+}
+
+async function loadWatchTheater(epId) {
+  stopWatchTheaterHeartbeat();
+  theaterState.episodeId = epId;
+
+  const loadingOverlay = document.getElementById('theaterLoadingOverlay');
+  if (loadingOverlay) loadingOverlay.style.display = 'flex';
+
+  showToast(`Loading Theater Cinema for Episode ${epId}...`, 'info');
+
+  const res = await apiCall(`/api/stream/resolve/${epId}`);
+  updateStatusConsole(res.data);
+
+  if (loadingOverlay) loadingOverlay.style.display = 'none';
+
+  if (!res.ok || !res.data.success || !res.data.data) {
+    showToast('Failed to resolve stream for this episode', 'error');
+    navigateTo('#/catalog');
+    return;
+  }
+
+  const data = res.data.data;
+  const ep = data.episode;
+  const servers = data.servers || [];
+  const anime = ep.anime || {};
+
+  theaterState.animeId = anime.id;
+  theaterState.animeTitle = anime.title;
+  theaterState.currentServer = servers[0] || null;
+
+  // Breadcrumbs & Headers
+  const backLink = document.getElementById('watchBackLink');
+  const animeBreadcrumb = document.getElementById('watchAnimeBreadcrumb');
+  const epBreadcrumb = document.getElementById('watchEpBreadcrumb');
+  const qualityBadge = document.getElementById('theaterQualityBadge');
+  const epTitle = document.getElementById('theaterEpTitle');
+  const animeSubtitle = document.getElementById('theaterAnimeSubtitle');
+
+  if (backLink) backLink.href = `#/anime/${anime.id || anime.slug || ''}`;
+  if (animeBreadcrumb) animeBreadcrumb.textContent = anime.title || 'Anime';
+  if (epBreadcrumb) epBreadcrumb.textContent = `Ep ${ep.number}`;
+  if (qualityBadge) qualityBadge.textContent = servers[0]?.quality || '1080p HD';
+  if (epTitle) epTitle.textContent = `Episode ${ep.number}: ${ep.title}`;
+  if (animeSubtitle) animeSubtitle.textContent = `${anime.title} • ${ep.duration || '24 min'} • ${anime.type || 'TV'}`;
+
+  // Iframe Stream Embed
+  const iframe = document.getElementById('theaterIframe');
+  if (iframe && servers[0]) {
+    iframe.src = servers[0].embed_url;
+  }
+
+  // Populate Server Switcher
+  const serverButtons = document.getElementById('theaterServerButtons');
+  if (serverButtons) {
+    serverButtons.innerHTML = servers.map((s, idx) => `
+      <button class="pill-btn ${idx === 0 ? 'active' : ''}" 
+        onclick="switchTheaterServer('${s.id}', '${escapeHtml(s.embed_url)}', '${escapeHtml(s.quality)}', this)">
+        ${escapeHtml(s.name)} (${escapeHtml(s.quality)})
+      </button>
+    `).join('');
+  }
+
+  // Hindi Dub button toggle
+  const hindiBtn = document.getElementById('theaterHindiBtn');
+  if (hindiBtn) {
+    hindiBtn.style.display = anime.has_hindi_dub ? 'inline-block' : 'none';
+  }
+
+  // Auto-Resume Handling
+  const resumeBanner = document.getElementById('theaterResumeBanner');
+  const resumeTimeText = document.getElementById('resumeTimeText');
+  const resumeAcceptBtn = document.getElementById('resumeAcceptBtn');
+  const resumeDismissBtn = document.getElementById('resumeDismissBtn');
+
+  const savedSeconds = data.user_progress?.progress_seconds || 0;
+  if (savedSeconds > 60 && resumeBanner) {
+    const mins = Math.floor(savedSeconds / 60);
+    const secs = savedSeconds % 60;
+    const timeFormatted = `${mins}:${secs < 10 ? '0' : ''}${secs}`;
+    if (resumeTimeText) resumeTimeText.textContent = timeFormatted;
+    resumeBanner.style.display = 'flex';
+
+    if (resumeAcceptBtn) {
+      resumeAcceptBtn.onclick = () => {
+        theaterState.progressSeconds = savedSeconds;
+        resumeBanner.style.display = 'none';
+        showToast(`Resumed from ${timeFormatted}!`, 'success');
+        updateTheaterProgressUI(savedSeconds, 1440);
+      };
+    }
+    if (resumeDismissBtn) {
+      resumeDismissBtn.onclick = () => {
+        theaterState.progressSeconds = 0;
+        resumeBanner.style.display = 'none';
+      };
+    }
+  } else if (resumeBanner) {
+    resumeBanner.style.display = 'none';
+    theaterState.progressSeconds = 0;
+  }
+
+  // Start Real-Time Watch Sync Heartbeat (Async Flow)
+  startWatchTheaterHeartbeat(ep.id);
+
+  // Load Playlist Drawer
+  loadTheaterPlaylist(anime.id, ep.number);
+
+  // Load Comments
+  loadTheaterComments(ep.id);
+
+  // Setup Next/Prev Buttons
+  setupTheaterNavigation(data.prev_episode, data.next_episode);
+}
+
+window.switchTheaterServer = function(serverId, embedUrl, quality, btnEl) {
+  const iframe = document.getElementById('theaterIframe');
+  const qualityBadge = document.getElementById('theaterQualityBadge');
+  if (iframe) iframe.src = embedUrl;
+  if (qualityBadge) qualityBadge.textContent = quality;
+
+  const group = document.getElementById('theaterServerButtons');
+  if (group) {
+    group.querySelectorAll('.pill-btn').forEach(b => b.classList.remove('active'));
+  }
+  if (btnEl) btnEl.classList.add('active');
+
+  showToast(`Switched to ${quality} CDN stream`, 'info');
+};
+
+function startWatchTheaterHeartbeat(epId) {
+  stopWatchTheaterHeartbeat();
+
+  // Initial progress sync
+  syncWatchProgress(epId, theaterState.progressSeconds);
+
+  // Heartbeat interval every 10 seconds
+  theaterState.heartbeatTimer = setInterval(() => {
+    theaterState.progressSeconds += 10;
+    if (theaterState.progressSeconds > theaterState.durationSeconds) {
+      theaterState.progressSeconds = theaterState.durationSeconds;
+    }
+    syncWatchProgress(epId, theaterState.progressSeconds);
+  }, 10000);
+}
+
+async function syncWatchProgress(epId, currentSeconds) {
+  const duration = theaterState.durationSeconds || 1440;
+  updateTheaterProgressUI(currentSeconds, duration);
+
+  try {
+    const res = await apiCall('/api/stream/sync', {
+      method: 'POST',
+      body: JSON.stringify({
+        episode_id: epId,
+        progress_seconds: currentSeconds,
+        duration_seconds: duration
+      })
+    });
+    if (res.ok && res.data.success) {
+      const syncStatus = document.getElementById('theaterSyncStatus');
+      if (syncStatus) {
+        syncStatus.textContent = `Watch progress synced: ${res.data.data.percent_watched}% (SQLite DB)`;
+      }
+    }
+  } catch (err) {
+    console.warn('Sync heartbeat error:', err);
+  }
+}
+
+function updateTheaterProgressUI(progress, duration) {
+  const pct = Math.min(100, Math.round((progress / duration) * 100));
+  const bar = document.getElementById('theaterProgressBar');
+  const pctLabel = document.getElementById('theaterProgressPct');
+  if (bar) bar.style.width = `${pct}%`;
+  if (pctLabel) pctLabel.textContent = `${pct}%`;
+}
+
+async function loadTheaterPlaylist(animeId, currentEpNum) {
+  const playlistEl = document.getElementById('theaterEpisodesList');
+  const countEl = document.getElementById('theaterPlaylistCount');
+  if (!playlistEl) return;
+
+  const res = await apiCall(`/api/anime/${animeId}/episodes`);
+  if (!res.ok || !res.data.success) return;
+
+  const episodes = res.data.data || [];
+  theaterState.allEpisodes = episodes;
+
+  if (countEl) countEl.textContent = `${episodes.length} Episodes available`;
+
+  renderTheaterPlaylistItems(episodes, currentEpNum);
+
+  // Search input filter
+  const searchInput = document.getElementById('theaterPlaylistSearch');
+  if (searchInput) {
+    searchInput.oninput = (e) => {
+      const q = e.target.value.toLowerCase().trim();
+      const filtered = episodes.filter(ep => 
+        String(ep.number).includes(q) || (ep.title && ep.title.toLowerCase().includes(q))
+      );
+      renderTheaterPlaylistItems(filtered, currentEpNum);
+    };
+  }
+}
+
+function renderTheaterPlaylistItems(episodes, currentEpNum) {
+  const playlistEl = document.getElementById('theaterEpisodesList');
+  if (!playlistEl) return;
+
+  if (episodes.length === 0) {
+    playlistEl.innerHTML = '<div style="text-align: center; color: var(--text-muted); padding: 20px;">No episodes found</div>';
+    return;
+  }
+
+  playlistEl.innerHTML = episodes.map(ep => {
+    const isPlaying = ep.number === currentEpNum;
+    return `
+      <div class="playlist-item ${isPlaying ? 'active' : ''}" onclick="navigateTo('#/watch/${ep.id}')">
+        <span class="playlist-item-num">EP ${ep.number}</span>
+        <div class="playlist-item-info">
+          <div class="playlist-item-title">${escapeHtml(ep.title || `Episode ${ep.number}`)}</div>
+          <div class="playlist-item-duration">⏱ ${ep.duration || '24 min'}</div>
+        </div>
+        ${isPlaying ? `
+          <div class="playing-equalizer" title="Currently Playing">
+            <span class="eq-bar"></span>
+            <span class="eq-bar"></span>
+            <span class="eq-bar"></span>
+          </div>
+        ` : ''}
+      </div>
+    `;
+  }).join('');
+}
+
+function setupTheaterNavigation(prevEp, nextEp) {
+  const prevBtn = document.getElementById('theaterPrevBtn');
+  const nextBtn = document.getElementById('theaterNextBtn');
+
+  if (prevBtn) {
+    if (prevEp) {
+      prevBtn.style.display = 'inline-flex';
+      prevBtn.onclick = () => navigateTo(`#/watch/${prevEp.id}`);
+    } else {
+      prevBtn.style.display = 'none';
+    }
+  }
+
+  if (nextBtn) {
+    if (nextEp) {
+      nextBtn.style.display = 'inline-flex';
+      nextBtn.onclick = () => navigateTo(`#/watch/${nextEp.id}`);
+    } else {
+      nextBtn.style.display = 'none';
+    }
+  }
+}
+
+async function loadTheaterComments(epId) {
+  const listEl = document.getElementById('theaterCommentsList');
+  const countBadge = document.getElementById('theaterCommentCount');
+  if (!listEl) return;
+
+  const res = await apiCall(`/api/stream/episode/${epId}/comments`);
+  if (!res.ok || !res.data.success) {
+    listEl.innerHTML = '<div class="empty-comments-state">Failed to load comments</div>';
+    return;
+  }
+
+  const comments = res.data.data || [];
+  if (countBadge) countBadge.textContent = `${comments.length} Comments`;
+
+  if (comments.length === 0) {
+    listEl.innerHTML = '<div class="empty-comments-state">No comments yet on this episode. Be the first to share your thoughts!</div>';
+    return;
+  }
+
+  listEl.innerHTML = comments.map(c => `
+    <div class="comment-item">
+      <img src="${escapeHtml(c.avatar_url || `https://api.dicebear.com/7.x/adventurer/svg?seed=${c.username}`)}" 
+           alt="${escapeHtml(c.username)}" class="comment-item-avatar" />
+      <div class="comment-item-content">
+        <div class="comment-item-header">
+          <span class="comment-username">${escapeHtml(c.username || 'User')}</span>
+          <span class="comment-time">${escapeHtml(c.created_at || 'Just now')}</span>
+        </div>
+        <p class="comment-text">${escapeHtml(c.content)}</p>
+      </div>
+    </div>
+  `).join('');
 }
 
 // ===================================================================
@@ -1613,6 +1937,71 @@ document.addEventListener('DOMContentLoaded', () => {
       } else {
         showToast('Failed to sync progress', 'error');
       }
+    });
+  }
+
+  // Day 12: Theater Mode Listeners
+  const theaterCommentForm = document.getElementById('theaterCommentForm');
+  if (theaterCommentForm) {
+    theaterCommentForm.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const input = document.getElementById('theaterCommentInput');
+      const content = input ? input.value.trim() : '';
+      if (!content || !theaterState.episodeId) return;
+
+      showToast('Posting comment to episode...', 'info');
+      const res = await apiCall(`/api/stream/episode/${theaterState.episodeId}/comments`, {
+        method: 'POST',
+        body: JSON.stringify({ content })
+      });
+
+      if (res.ok && res.data.success) {
+        input.value = '';
+        showToast('Comment posted successfully!', 'success');
+        loadTheaterComments(theaterState.episodeId);
+      } else {
+        showToast(res.data.error || 'Failed to post comment', 'error');
+      }
+    });
+  }
+
+  const theaterManualSyncBtn = document.getElementById('theaterManualSyncBtn');
+  if (theaterManualSyncBtn) {
+    theaterManualSyncBtn.addEventListener('click', () => {
+      if (theaterState.episodeId) {
+        syncWatchProgress(theaterState.episodeId, theaterState.progressSeconds);
+        showToast('Watch progress saved to SQLite!', 'success');
+      }
+    });
+  }
+
+  document.querySelectorAll('#theaterAudioButtons .pill-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      document.querySelectorAll('#theaterAudioButtons .pill-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      const audioLang = btn.dataset.audio;
+      theaterState.currentAudio = audioLang;
+      showToast(`Audio set to ${audioLang}`, 'info');
+    });
+  });
+
+  const theaterWatchlistBtn = document.getElementById('theaterWatchlistBtn');
+  if (theaterWatchlistBtn) {
+    theaterWatchlistBtn.addEventListener('click', () => {
+      if (theaterState.animeId) {
+        openAddWatchlistModal(theaterState.animeId, theaterState.animeTitle, 12);
+      }
+    });
+  }
+
+  const theaterShareBtn = document.getElementById('theaterShareBtn');
+  if (theaterShareBtn) {
+    theaterShareBtn.addEventListener('click', () => {
+      navigator.clipboard.writeText(window.location.href).then(() => {
+        showToast('Episode link copied to clipboard!', 'success');
+      }).catch(() => {
+        showToast('Link: ' + window.location.href, 'info');
+      });
     });
   }
 });

@@ -75,10 +75,35 @@
 - [x] **Day 9**: Main list and detail screens (Catalog with filters & pagination + Single anime view with full episode tracker)
 - [x] **Day 10**: Create, edit and delete flows (Watchlist & Catalogue CRUD usable from UI with loading & error states)
 - [x] **Day 11**: Heavy feature, part 1 (Video streaming & sync backend)
-- [ ] **Day 12**: Heavy feature, part 2 (Embedded player & UI integration)
+- [x] **Day 12**: Heavy feature, part 2 (Embedded player & UI integration)
 - [ ] **Day 13**: Testing and bug fixes (5+ API tests)
 - [ ] **Day 14**: Deploy frontend, backend and database
 - [ ] **Day 15**: README, demo video and project launch post
+
+---
+
+## 🎬 Day 12 Deliverables: Heavy Feature, Part 2 (Full Cinema Theater Player & Async Heartbeat Sync Engine)
+
+- **Dedicated Full-Page Cinema Theater Player (`#/watch/:episodeId`)**:
+  - Implemented responsive 16:9 widescreen cinema theater experience with Tokyo-cyberpunk ambient backlighting.
+  - Connected end-to-end to backend multi-CDN streaming resolver (`GET /api/stream/resolve/:episodeId`).
+- **Live Multi-CDN Server & Audio Switching**:
+  - One-click server toggles (`HD Vault 1080p Full HD`, `AnimeStream Mirror 720p`, `Cloud Stream Engine`) with dynamic stream switching.
+  - Multi-language audio track selector (`Japanese Sub`, `Hindi Dub`, `English Dub`) with automatic Dub badge detection.
+- **Intelligent Auto-Resume Playback System**:
+  - Automatically queries user's last playback timestamp from SQLite database.
+  - Displays instant auto-resume prompt (*"Welcome back! You were previously watching at 07:15 • [Resume Playback] [Start Over]"*).
+- **Real-Time Async Watch Progress Heartbeat Engine**:
+  - Background async interval (`setInterval`) pulses `POST /api/stream/sync` every 10 seconds during playback.
+  - Dynamic progress bar smoothly updates in real time, auto-incrementing user watchlist progress upon 90% completion.
+- **Interactive Sidebar Playlist & Episode Drawer**:
+  - Right-hand playlist panel listing all season episodes with thumbnail, duration, and audio format flags.
+  - Active playing episode highlighted with glowing crimson border and live animated audio equalizer (`.playing-equalizer`).
+  - Next Episode (`⏭`) and Previous Episode (`⏮`) navigation controls for seamless binge-watching.
+  - Real-time instant episode search filter within the drawer.
+- **Episode Discussion & Community Comments Feed**:
+  - Fully integrated discussion feed below the player reading from `GET /api/stream/episode/:id/comments`.
+  - Live comment submission form writing to `POST /api/stream/episode/:id/comments` with optimistic UI rendering.
 
 ---
 

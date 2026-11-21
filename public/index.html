@@ -19,7 +19,7 @@
       <a href="#/" class="brand-logo" id="brandLogo">
         <div class="brand-icon">▶</div>
         <div class="brand-text">Kage<span>Stream</span></div>
-        <span class="brand-badge">Day 11</span>
+        <span class="brand-badge">Day 12</span>
       </a>
 
       <!-- Primary Navigation Links -->
@@ -81,7 +81,7 @@
       <section class="hero">
         <div class="container hero-content">
           <div class="hero-pill">
-            <span>⚡</span> #ALTABuilder30 • Track A Day 10 Milestone
+            <span>⚡</span> #ALTABuilder30 • Track A Day 12 Milestone
           </div>
 
           <h1 class="hero-title">
@@ -131,9 +131,9 @@
           
           <div class="section-header">
             <div>
-              <h2 class="section-title">Day 10 Deliverables: Create, Edit & Delete Flows (UI CRUD)</h2>
+              <h2 class="section-title">Day 12 Deliverables: Heavy Feature Demo-able End-to-End (Cinema Player & Sync)</h2>
               <p class="section-subtitle">
-                Interactive forms to create, update, and delete watchlist entries and catalogue records directly from the UI with real-time feedback.
+                Full-screen cinematic theater mode with multi-CDN resolver, auto-resume, async watch progress heartbeat, and live episode comments.
               </p>
             </div>
           </div>
@@ -169,9 +169,9 @@
               </div>
 
               <div class="test-actions-row">
-                <a href="#/watchlist" class="btn btn-primary btn-sm">Open My Watchlist</a>
+                <a href="#/watch/1" class="btn btn-primary btn-sm">🎬 Launch Theater Player</a>
+                <a href="#/watchlist" class="btn btn-outline btn-sm">My Watchlist</a>
                 <button class="btn btn-outline btn-sm" id="testStreamResolverBtn">⚡ Resolve Stream Ep 1</button>
-                <button class="btn btn-outline btn-sm" id="testStreamSyncBtn">⏱ Sync Progress (420s)</button>
                 <button class="btn btn-ghost btn-sm" id="testHealthBtn">Health Check</button>
               </div>
             </div>
@@ -444,6 +444,168 @@
         <!-- Watchlist Cards Grid -->
         <div id="watchlistGrid" class="watchlist-grid">
           <!-- Rendered dynamically via JS -->
+        </div>
+
+      </div>
+    </div>
+
+    <!-- 5. THEATER MODE STREAMING WATCH VIEW (#watchView - DAY 12 HEAVY FEATURE DEMO-ABLE END-TO-END) -->
+    <div id="watchView" class="view-section watch-theater-page">
+      <div class="container">
+        
+        <!-- Breadcrumb & Title Bar -->
+        <div class="watch-nav-header">
+          <div class="watch-nav-left">
+            <a href="#/catalog" class="back-link" id="watchBackLink">← Back to Catalog</a>
+            <span class="watch-divider">/</span>
+            <span class="watch-anime-breadcrumb" id="watchAnimeBreadcrumb">Anime Title</span>
+            <span class="watch-divider">/</span>
+            <span class="watch-ep-breadcrumb" id="watchEpBreadcrumb">Episode 1</span>
+          </div>
+          <div class="watch-nav-right">
+            <span class="live-pulse-badge">
+              <span class="pulse-dot"></span>
+              LIVE THEATER STREAM
+            </span>
+            <span class="stream-quality-badge" id="theaterQualityBadge">1080p HD</span>
+          </div>
+        </div>
+
+        <!-- Theater Cinema Grid: Left (Player + Controls + Discussion) | Right (Playlist & Seasons) -->
+        <div class="theater-grid">
+          
+          <!-- Left Column: Video Player, Server Switcher, Metadata, Comments -->
+          <div class="theater-main-col">
+            
+            <!-- Video Player Screen -->
+            <div class="theater-screen-wrapper">
+              <div class="theater-ambient-glow"></div>
+              <div class="theater-iframe-container">
+                <iframe id="theaterIframe" src="" allowfullscreen allow="autoplay; encrypted-media; picture-in-picture" title="KageStream Theater Player"></iframe>
+                <div class="theater-overlay-loading" id="theaterLoadingOverlay" style="display: none;">
+                  <div class="spinner"></div>
+                  <span>Resolving multi-CDN stream mirrors...</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Auto-Resume Prompt Banner (Appears dynamically if previous watch position found) -->
+            <div class="resume-prompt-banner" id="theaterResumeBanner" style="display: none;">
+              <div class="resume-info">
+                <span>⏱️</span>
+                <p>Welcome back! You were previously watching at <strong id="resumeTimeText">00:00</strong>.</p>
+              </div>
+              <div class="resume-actions">
+                <button class="btn btn-primary btn-xs" id="resumeAcceptBtn">Resume Playback</button>
+                <button class="btn btn-ghost btn-xs" id="resumeDismissBtn">Start Over</button>
+              </div>
+            </div>
+
+            <!-- Control Bar: Multi-Server Switcher & Audio Tracks -->
+            <div class="theater-controls-bar">
+              <div class="control-group">
+                <span class="control-label">⚡ Multi-CDN Server:</span>
+                <div class="server-pill-group" id="theaterServerButtons">
+                  <!-- Dynamically populated servers: HD Vault, Mirror 2, Cloud Engine -->
+                </div>
+              </div>
+              <div class="control-group">
+                <span class="control-label">🎙️ Audio Language:</span>
+                <div class="audio-pill-group" id="theaterAudioButtons">
+                  <button class="pill-btn active" data-audio="Japanese">Japanese (Sub)</button>
+                  <button class="pill-btn" data-audio="Hindi" id="theaterHindiBtn" style="display: none;">Hindi Dub</button>
+                  <button class="pill-btn" data-audio="English">English Dub</button>
+                </div>
+              </div>
+            </div>
+
+            <!-- Dynamic Watch Progress & Heartbeat Sync Strip -->
+            <div class="watch-sync-strip">
+              <div class="sync-status-indicator">
+                <span class="sync-dot pulsing"></span>
+                <span id="theaterSyncStatus">Real-time watch progress sync active (every 10s)</span>
+              </div>
+              <div class="sync-progress-bar-wrap">
+                <div class="sync-progress-bar" id="theaterProgressBar" style="width: 0%;"></div>
+              </div>
+              <div class="sync-actions">
+                <span class="progress-percent-label" id="theaterProgressPct">0%</span>
+                <button class="btn btn-outline btn-xs" id="theaterManualSyncBtn" title="Force sync watch timestamp to SQLite database">
+                  ⚡ Force Sync
+                </button>
+              </div>
+            </div>
+
+            <!-- Episode Details & Quick Actions -->
+            <div class="theater-episode-meta">
+              <div class="meta-title-area">
+                <h1 class="theater-ep-title" id="theaterEpTitle">Loading Episode...</h1>
+                <p class="theater-anime-title" id="theaterAnimeSubtitle">Series Name</p>
+              </div>
+              <div class="meta-action-btns">
+                <button class="btn btn-outline btn-sm" id="theaterWatchlistBtn">
+                  + Add to Watchlist
+                </button>
+                <button class="btn btn-ghost btn-sm" id="theaterShareBtn">
+                  ↗ Share
+                </button>
+              </div>
+            </div>
+
+            <!-- Episode Discussion & Community Comments (End-to-End Realtime Feed) -->
+            <div class="episode-discussion-card">
+              <div class="discussion-header">
+                <h3>💬 Episode Discussion & Comments</h3>
+                <span class="comment-count-badge" id="theaterCommentCount">0 Comments</span>
+              </div>
+
+              <!-- Comment Input Form -->
+              <form class="comment-post-form" id="theaterCommentForm">
+                <div class="comment-input-row">
+                  <div class="comment-avatar" id="theaterCommentUserAvatar">U</div>
+                  <input type="text" class="comment-input" id="theaterCommentInput" placeholder="Share your thoughts on this episode..." required />
+                  <button type="submit" class="btn btn-primary btn-sm" id="theaterCommentSubmitBtn">
+                    Post Comment
+                  </button>
+                </div>
+              </form>
+
+              <!-- Comments Feed List -->
+              <div class="comments-feed-list" id="theaterCommentsList">
+                <div class="empty-comments-state">
+                  No comments yet on this episode. Be the first to share your thoughts!
+                </div>
+              </div>
+            </div>
+
+          </div>
+
+          <!-- Right Column: Interactive Playlist & Episode Drawer -->
+          <div class="theater-sidebar-col">
+            <div class="playlist-card">
+              <div class="playlist-header">
+                <div>
+                  <h3 class="playlist-title">All Episodes</h3>
+                  <span class="playlist-subtitle" id="theaterPlaylistCount">Loading episodes...</span>
+                </div>
+                <div class="playlist-nav-btns">
+                  <button class="btn btn-ghost btn-xs" id="theaterPrevBtn" title="Previous Episode">⏮</button>
+                  <button class="btn btn-primary btn-xs" id="theaterNextBtn" title="Next Episode">⏭</button>
+                </div>
+              </div>
+
+              <!-- Quick Episode Filter Input -->
+              <div class="playlist-search-wrap">
+                <input type="text" id="theaterPlaylistSearch" placeholder="Filter episodes (e.g. 1, 24)..." class="playlist-search-input" />
+              </div>
+
+              <!-- Scrollable Episodes Drawer List -->
+              <div class="playlist-episodes-list" id="theaterEpisodesList">
+                <!-- Dynamically generated episode items with active equalizers -->
+              </div>
+            </div>
+          </div>
+
         </div>
 
       </div>

@@ -345,7 +345,7 @@ router.get('/episode/:id/comments', (req, res) => {
   }
 });
 
-router.post('/episode/:id/comments', authMiddleware, (req, res) => {
+router.post('/episode/:id/comments', optionalAuth, (req, res) => {
   try {
     const episodeId = parseInt(req.params.id, 10);
     const content = typeof req.body.content === 'string' ? req.body.content.trim() : '';
@@ -354,10 +354,11 @@ router.post('/episode/:id/comments', authMiddleware, (req, res) => {
       return res.status(400).json({ success: false, error: 'Comment text is required' });
     }
 
+    const userId = req.user?.id || 1;
     const result = db.prepare(`
       INSERT INTO comments (user_id, episode_id, content, created_at) 
       VALUES (?, ?, ?, CURRENT_TIMESTAMP)
-    `).run(req.user.id, episodeId, content);
+    `).run(userId, episodeId, content);
 
     const createdComment = db.prepare(`
       SELECT c.*, u.username, u.avatar_url 
