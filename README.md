@@ -105,6 +105,36 @@
   - Fully integrated discussion feed below the player reading from `GET /api/stream/episode/:id/comments`.
   - Live comment submission form writing to `POST /api/stream/episode/:id/comments` with optimistic UI rendering.
 
+### 🎮 Testing Day 12 Deliverables (Cinema Theater Mode & Async Sync):
+1. Open `http://localhost:5050/#/watch/1` (or click **"🎬 Launch Theater Player"** on the home page).
+2. **Cinema Stream**: Experience the 16:9 widescreen player with ambient Tokyo-cyberpunk backlight vignette.
+3. **Multi-Server Switching**: Click `HD Vault (1080p)` or `AnimeStream Mirror (720p)` to seamlessly switch video CDN sources.
+4. **Audio Track Selector**: Toggle between `Japanese (Sub)`, `Hindi Dub`, and `English Dub`.
+5. **Async Watch Progress Heartbeat**: Watch the live pulsating green dot and animated progress bar sync every 10 seconds to `POST /api/stream/sync`.
+6. **Interactive Sidebar Playlist**: Browse season episodes with the live audio equalizer on the active episode, and click any episode to switch streams instantly.
+7. **Episode Community Feed**: Post a comment below the player and watch it appear in the live discussion list!
+
+```bash
+# Test 1: Resolve Multi-Server Streams for Episode 1
+curl -s http://localhost:5050/api/stream/resolve/1
+
+# Test 2: Synchronize Real-Time Watch Progress
+curl -s -X POST http://localhost:5050/api/stream/sync \
+  -H "Content-Type: application/json" \
+  -d '{"episode_id": 1, "progress_seconds": 600, "duration_seconds": 1440}'
+
+# Test 3: Instant Resume Timestamp Lookup
+curl -s http://localhost:5050/api/stream/resume/1
+
+# Test 4: Fetch Episode Discussion Comments Feed
+curl -s http://localhost:5050/api/stream/episode/1/comments
+
+# Test 5: Post Episode Community Comment
+curl -s -X POST http://localhost:5050/api/stream/episode/1/comments \
+  -H "Content-Type: application/json" \
+  -d '{"content": "Loving the 1080p HD streaming on KageStream!"}'
+```
+
 ---
 
 ## 🚀 Day 11 Deliverables: Heavy Feature, Part 1 (Streaming Resolver & Watch Sync Backend)
