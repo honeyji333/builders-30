@@ -1510,18 +1510,42 @@ async function loadTheaterPlaylist(animeId, currentEpNum) {
   if (!playlistEl) return;
 
   const res = await apiCall(`/api/anime/${animeId}/episodes`);
-  if (!res.ok || !res.data.success) return;
+  if (!res.ok || !res.data.success) {
+    if (countEl) countEl.textContent = '0 Episodes available';
+    if (playlistEl) playlistEl.innerHTML = '<div style="text-align: center; color: var(--text-muted); padding: 20px;">Could not load episodes</div>';
+    return;
+  }
 
-  const episodes = res.data.data || [];
+  // Handle all API response formats: res.data.data.episodes, res.data.data, res.data.episodes, res.data
+  let episodes = [];
+  if (res.data?.data?.episodes && Array.isArray(res.data.data.episodes)) {
+    episodes = res.data.data.episodes;
+  } else if (Array.isArray(res.data?.data)) {
+    episodes = res.data.data;
+  } else if (Array.isArray(res.data?.episodes)) {
+    episodes = res.data.episodes;
+  } else if (Array.isArray(res.data)) {
+    episodes = res.data;
+  }
+
   theaterState.allEpisodes = episodes;
 
   if (countEl) countEl.textContent = `${episodes.length} Episodes available`;
 
   renderTheaterPlaylistItems(episodes, currentEpNum);
 
+  // Auto-scroll active episode into view
+  setTimeout(() => {
+    const activeItem = playlistEl.querySelector('.playlist-item.active');
+    if (activeItem) {
+      activeItem.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
+    }
+  }, 150);
+
   // Search input filter
   const searchInput = document.getElementById('theaterPlaylistSearch');
   if (searchInput) {
+    searchInput.value = '';
     searchInput.oninput = (e) => {
       const q = e.target.value.toLowerCase().trim();
       const filtered = episodes.filter(ep => 
