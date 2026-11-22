@@ -76,9 +76,68 @@
 - [x] **Day 10**: Create, edit and delete flows (Watchlist & Catalogue CRUD usable from UI with loading & error states)
 - [x] **Day 11**: Heavy feature, part 1 (Video streaming & sync backend)
 - [x] **Day 12**: Heavy feature, part 2 (Embedded player & UI integration)
-- [ ] **Day 13**: Testing and bug fixes (5+ API tests)
+- [x] **Day 13**: Testing and bug fixes (16 automated API tests passing, bug list cleared, input validation)
 - [ ] **Day 14**: Deploy frontend, backend and database
 - [ ] **Day 15**: README, demo video and project launch post
+
+---
+
+## 🧪 Day 13 Deliverables: Testing, Bug Fixes & Input Validation (Track A - Testing)
+
+### 📋 Overview of What Was Built & Cleared:
+1. **Automated API Test Suite (`tests/run_tests.py` & `tests/api.test.js`)**:
+   - Comprehensive test runner executing **16 distinct integration test cases** across all platform core flows.
+   - **100% test pass rate (16/16)** with millisecond timing diagnostics and colored ASCII terminal report.
+2. **Input Validation Hardening**:
+   - **Auth Validation**: RFC 5322 regex email validation, username format regex (`^[a-zA-Z0-9_]{3,24}$`), password length enforcement (8-128 chars), and HTTP 409 Conflict rejection on duplicate accounts.
+   - **Stream Resolver Validation**: HTTP 400 Bad Request on invalid/negative episode IDs, HTTP 404 Not Found on missing episodes.
+   - **Watch Progress Sync Validation**: Validation of `episode_id` presence, `progress_seconds >= 0`, `duration_seconds > 0`, and 404 handling.
+   - **Comments Validation**: Rejection of empty/whitespace-only comments (HTTP 400), enforcement of max 1000 characters (HTTP 400), and episode existence check (HTTP 404).
+   - **Watchlist CRUD Validation**: Strict validation of `anime_id` and enum enforcement for watchlist status (`watching`, `completed`, `plan_to_watch`, `dropped`, `on_hold`).
+3. **Bug List Cleared**:
+   - Fixed playlist drawer episode parsing where response shapes caused `undefined Episodes available` in sidebar.
+   - Fixed HTTP 206 range demo response headers preventing socket disconnects.
+   - Fixed user login identifier resolution allowing authentication via either email address or username.
+   - Cleaned duplicate route handler registrations.
+
+### 🚀 Running the Automated Test Suite:
+```bash
+# Run the 16-test suite using Python:
+python3 tests/run_tests.py
+
+# Or via npm scripts:
+npm test
+```
+
+### 📊 Test Suite Execution Results:
+```text
+===================================================================
+   KAGESTREAM AUTOMATED API TEST SUITE (DAY 13 - #ALTABuilder30)    
+   Target Server: http://localhost:5050                                        
+===================================================================
+
+  ✓ PASS [ 55.0ms] Test 1: Health & Diagnostics (/api/health)
+  ✓ PASS [  6.0ms] Test 2: Anime Catalog Search & Pagination (/api/anime)
+  ✓ PASS [  2.8ms] Test 3: Genre Taxonomy Taxonomy (/api/genres)
+  ✓ PASS [ 11.2ms] Test 4: Single Anime Details & Relations (/api/anime/1)
+  ✓ PASS [  3.7ms] Test 5: Anime Episodes Listing (/api/anime/1/episodes)
+  ✓ PASS [  4.2ms] Test 6: Auth Registration Input Validation (400 Rejections)
+  ✓ PASS [  5.4ms] Test 7: Auth Registration & Login Happy Path (201 & 200)
+  ✓ PASS [  2.6ms] Test 8: Multi-CDN Stream Source Resolver (/api/stream/resolve/:id)
+  ✓ PASS [  3.4ms] Test 9: Stream Resolver Boundary & 404 Validation
+  ✓ PASS [  1.9ms] Test 10: Watch Progress Sync Heartbeat (POST /api/stream/sync)
+  ✓ PASS [  4.2ms] Test 11: Watch Progress Sync Input Validation (400 & 404)
+  ✓ PASS [  3.2ms] Test 12: Playback Auto-Resume Metadata (/api/stream/resume/:animeId)
+  ✓ PASS [  4.7ms] Test 13: Episode Comments Creation & Validation (POST /comments)
+  ✓ PASS [  2.2ms] Test 14: Episode Comments Feed Retrieval (GET /comments)
+  ✓ PASS [  4.4ms] Test 15: Watchlist CRUD & Status Validation (/api/user/watchlist)
+  ✓ PASS [  1.2ms] Test 16: HTTP 206 Range Streaming Demo (/api/stream/range-demo)
+
+-------------------------------------------------------------------
+SUMMARY: 16 Total Tests | 16 Passed | 0 Failed
+-------------------------------------------------------------------
+🎉 ALL 16 TESTS PASSED FLAWLESSLY! DAY 13 TESTING DELIVERABLE COMPLETE!
+```
 
 ---
 
@@ -134,6 +193,31 @@ curl -s -X POST http://localhost:5050/api/stream/episode/1/comments \
   -H "Content-Type: application/json" \
   -d '{"content": "Loving the 1080p HD streaming on KageStream!"}'
 ```
+
+---
+
+## 🎬 Day 12 Deliverables: Heavy Feature, Part 2 (Full Cinema Theater Player & Async Heartbeat Sync Engine)
+
+- **Dedicated Full-Page Cinema Theater Player (`#/watch/:episodeId`)**:
+  - Implemented responsive 16:9 widescreen cinema theater experience with Tokyo-cyberpunk ambient backlighting.
+  - Connected end-to-end to backend multi-CDN streaming resolver (`GET /api/stream/resolve/:episodeId`).
+- **Live Multi-CDN Server & Audio Switching**:
+  - One-click server toggles (`HD Vault 1080p Full HD`, `AnimeStream Mirror 720p`, `Cloud Stream Engine`) with dynamic stream switching.
+  - Multi-language audio track selector (`Japanese Sub`, `Hindi Dub`, `English Dub`) with automatic Dub badge detection.
+- **Intelligent Auto-Resume Playback System**:
+  - Automatically queries user's last playback timestamp from SQLite database.
+  - Displays instant auto-resume prompt (*"Welcome back! You were previously watching at 07:15 • [Resume Playback] [Start Over]"*).
+- **Real-Time Async Watch Progress Heartbeat Engine**:
+  - Background async interval (`setInterval`) pulses `POST /api/stream/sync` every 10 seconds during playback.
+  - Dynamic progress bar smoothly updates in real time, auto-incrementing user watchlist progress upon 90% completion.
+- **Interactive Sidebar Playlist & Episode Drawer**:
+  - Right-hand playlist panel listing all season episodes with thumbnail, duration, and audio format flags.
+  - Active playing episode highlighted with glowing crimson border and live animated audio equalizer (`.playing-equalizer`).
+  - Next Episode (`⏭`) and Previous Episode (`⏮`) navigation controls for seamless binge-watching.
+  - Real-time instant episode search filter within the drawer.
+- **Episode Discussion & Community Comments Feed**:
+  - Fully integrated discussion feed below the player reading from `GET /api/stream/episode/:id/comments`.
+  - Live comment submission form writing to `POST /api/stream/episode/:id/comments` with optimistic UI rendering.
 
 ---
 

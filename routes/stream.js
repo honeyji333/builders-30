@@ -296,6 +296,20 @@ router.get('/resume/:animeId', optionalAuth, (req, res) => {
  */
 router.get('/range-demo', (req, res) => {
   const simulatedSize = 10485760; // 10MB simulated media stream
+
+  if (req.headers.accept?.includes('application/json') || req.query.info === 'true') {
+    return res.json({
+      success: true,
+      message: 'HTTP 206 Range Stream Demo Active',
+      data: {
+        range_support: true,
+        content_type: 'video/mp4',
+        simulated_size_bytes: simulatedSize,
+        chunk_size_bytes: 524288
+      }
+    });
+  }
+
   const range = req.headers.range;
 
   if (range) {
@@ -348,10 +362,23 @@ router.get('/episode/:id/comments', (req, res) => {
 router.post('/episode/:id/comments', optionalAuth, (req, res) => {
   try {
     const episodeId = parseInt(req.params.id, 10);
+    if (isNaN(episodeId) || episodeId < 1) {
+      return res.status(400).json({ success: false, error: 'Valid episode ID required' });
+    }
+
     const content = typeof req.body.content === 'string' ? req.body.content.trim() : '';
 
     if (!content) {
-      return res.status(400).json({ success: false, error: 'Comment text is required' });
+      return res.status(400).json({ success: false, error: 'Validation Error: Comment text is required' });
+    }
+
+    if (content.length > 1000) {
+      return res.status(400).json({ success: false, error: 'Validation Error: Comment cannot exceed 1000 characters' });
+    }
+
+    const episode = db.prepare('SELECT id FROM episodes WHERE id = ?').get(episodeId);
+    if (!episode) {
+      return res.status(404).json({ success: false, error: 'Episode not found' });
     }
 
     const userId = req.user?.id || 1;

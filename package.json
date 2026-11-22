@@ -5,7 +5,9 @@
   "main": "server.js",
   "scripts": {
     "start": "node server.js",
-    "dev": "node server.js"
+    "dev": "node server.js",
+    "test": "python3 tests/run_tests.py",
+    "test:node": "node tests/api.test.js"
   },
   "dependencies": {
     "bcryptjs": "^2.4.3",

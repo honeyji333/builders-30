@@ -6,3 +6,4 @@ data/*.db-wal
 data/*.db-shm
 preview_server.py
 .env
+__pycache__/
