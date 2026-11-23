@@ -85,9 +85,9 @@
 ## 🌐 Day 14 Deliverables: Production Deployment & Secrets Management (Track A - Deploy)
 
 ### 🌍 1. Live Public Production URL:
-- **Live URL**: [https://kodak-ladies-bras-hazards.trycloudflare.com](https://kodak-ladies-bras-hazards.trycloudflare.com)
-- **Live Health Diagnostics**: [https://kodak-ladies-bras-hazards.trycloudflare.com/api/health](https://kodak-ladies-bras-hazards.trycloudflare.com/api/health)
-- **Live Cinema Theater Player**: [https://kodak-ladies-bras-hazards.trycloudflare.com/#/watch/1](https://kodak-ladies-bras-hazards.trycloudflare.com/#/watch/1)
+- **Live URL**: [https://verified-tire-vacations-carl.trycloudflare.com](https://verified-tire-vacations-carl.trycloudflare.com)
+- **Live Health Diagnostics**: [https://verified-tire-vacations-carl.trycloudflare.com/api/health](https://verified-tire-vacations-carl.trycloudflare.com/api/health)
+- **Live Cinema Theater Player**: [https://verified-tire-vacations-carl.trycloudflare.com/#/watch/1](https://verified-tire-vacations-carl.trycloudflare.com/#/watch/1)
 - *Verified*: All 16 automated integration tests pass with 100% success rate across the live public HTTPS endpoint.
 
 ### 🔐 2. Secrets Management & Environment Variables (`.env.example`):
