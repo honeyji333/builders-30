@@ -28,9 +28,16 @@ import os
 import sys
 import json
 import time
+import ssl
 import urllib.request
 import urllib.error
 import urllib.parse
+
+# Create SSL context to handle macOS Python without local CA certificates
+try:
+    ssl_context = ssl._create_unverified_context()
+except AttributeError:
+    ssl_context = None
 
 BASE_URL = os.environ.get('API_URL', 'http://localhost:5050').rstrip('/')
 
@@ -57,7 +64,10 @@ def request(method, path, data=None, token=None):
     req = urllib.request.Request(url, data=body, headers=headers, method=method)
 
     try:
-        with urllib.request.urlopen(req, timeout=10) as resp:
+        kwargs = {'timeout': 10}
+        if ssl_context is not None and url.startswith('https://'):
+            kwargs['context'] = ssl_context
+        with urllib.request.urlopen(req, **kwargs) as resp:
             status = resp.status
             content = resp.read().decode('utf-8')
             try:
