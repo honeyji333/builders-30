@@ -1,0 +1,23 @@
+# =============================================================================
+# KageStream - Render.com Blueprint Specification
+# Day 14 Deliverable: Free Hosting Production Deployment (#ALTABuilder30)
+# =============================================================================
+services:
+  - type: web
+    name: kagestream
+    env: node
+    plan: free
+    region: oregon
+    buildCommand: npm install
+    startCommand: npm start
+    autoDeploy: true
+    healthCheckPath: /health
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: PORT
+        value: 10000
+      - key: DATABASE_PATH
+        value: ./data/anime.db
+      - key: JWT_SECRET
+        generateValue: true

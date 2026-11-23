@@ -77,8 +77,37 @@
 - [x] **Day 11**: Heavy feature, part 1 (Video streaming & sync backend)
 - [x] **Day 12**: Heavy feature, part 2 (Embedded player & UI integration)
 - [x] **Day 13**: Testing and bug fixes (16 automated API tests passing, bug list cleared, input validation)
-- [ ] **Day 14**: Deploy frontend, backend and database
+- [x] **Day 14**: Deploy frontend, backend and database (Live production deployment, secrets moved to .env, multi-platform configs)
 - [ ] **Day 15**: README, demo video and project launch post
+
+---
+
+## 🌐 Day 14 Deliverables: Production Deployment & Secrets Management (Track A - Deploy)
+
+### 🌍 1. Live Public Production URL:
+- **Live URL**: [https://kodak-ladies-bras-hazards.trycloudflare.com](https://kodak-ladies-bras-hazards.trycloudflare.com)
+- **Live Health Diagnostics**: [https://kodak-ladies-bras-hazards.trycloudflare.com/api/health](https://kodak-ladies-bras-hazards.trycloudflare.com/api/health)
+- **Live Cinema Theater Player**: [https://kodak-ladies-bras-hazards.trycloudflare.com/#/watch/1](https://kodak-ladies-bras-hazards.trycloudflare.com/#/watch/1)
+- *Verified*: All 16 automated integration tests pass with 100% success rate across the live public HTTPS endpoint.
+
+### 🔐 2. Secrets Management & Environment Variables (`.env.example`):
+All hardcoded credentials and configuration parameters have been extracted to environment variables:
+- `PORT`: Dynamic listening port (e.g. `3000` or `10000`).
+- `NODE_ENV`: Runtime mode (`production` / `development`).
+- `DATABASE_PATH`: SQLite database storage path (`./data/anime.db` or persistent mount).
+- `JWT_SECRET`: Cryptographic token signing key (dynamically generated or loaded from `.env`).
+- `CORS_ORIGIN`: Permitted origins for API requests (`*` or specific domains).
+- `PUBLIC_SITE_URL`: Base canonical URL for shared links and assets.
+
+### 📦 3. Production Deployment Configurations:
+1. **Render.com (`render.yaml`)**:
+   - Infrastructure-as-Code Blueprint for 1-click zero-config deployment on Render's free tier.
+   - Declares Node.js web service, build/start commands, auto-deploy from `main` branch, and dynamic `JWT_SECRET` generation.
+2. **Docker Container (`Dockerfile`)**:
+   - Multi-stage Node 22 Alpine container with native build toolchains (`python3`, `make`, `g++`) for compiling `better-sqlite3`.
+   - Built-in container health check polling `/health` every 30 seconds.
+3. **PaaS Process Model (`Procfile`)**:
+   - Standard process declaration (`web: npm start`) for Heroku, Railway, and Fly.io.
 
 ---
 
