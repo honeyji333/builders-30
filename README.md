@@ -1,7 +1,15 @@
-# 🎬 KageStream - 30-Day Project Challenge
+# 🎬 KageStream - Full-Stack Anime Streaming & Personal Library Platform
 
-> A modern, ad-free full-stack anime streaming platform and personal media library.
-> Built as part of the **#ALTABuilder30** 30-Day Project Challenge (Track A: Days 1–15).
+[![Challenge](https://img.shields.io/badge/Challenge-%23ALTABuilder30_Track_A_Completed-e50914.svg)](https://github.com/honeyji333/builders-30)
+[![Tests](https://img.shields.io/badge/Tests-16%2F16_Passing_100%25-brightgreen.svg)](https://github.com/honeyji333/builders-30)
+[![Runtime](https://img.shields.io/badge/Node.js-%3E%3D18.0.0-339933.svg)](https://nodejs.org/)
+[![Database](https://img.shields.io/badge/Database-SQLite3_WAL_Mode-003B57.svg)](https://github.com/WiseLibs/better-sqlite3)
+[![Deployment](https://img.shields.io/badge/Deploy-Docker_%7C_Render_%7C_Cloudflare-4285F4.svg)](https://smtp-muscles-routes-seas.trycloudflare.com)
+[![Catalog](https://img.shields.io/badge/Catalog-137%2B_Anime_%7C_7%2C500%2B_Episodes-ff1e2b.svg)](https://smtp-muscles-routes-seas.trycloudflare.com/#/catalog)
+
+> **KageStream** is a high-performance, ad-free full-stack anime streaming platform and personal media library.
+> Engineered with a dark Tokyo-cyberpunk visual language (`#070709` pitch-black + `#e50914` crimson red), instant multi-CDN server switching, asynchronous watch progress sync, auto-resume playback, interactive playlist drawer, and automated integration test coverage.
+> Built as the flagship project for the **#ALTABuilder30** 30-Day Project Challenge (Track A: Days 1–15) at **ALTA School of Technology**.
 
 ---
 
@@ -78,7 +86,74 @@
 - [x] **Day 12**: Heavy feature, part 2 (Embedded player & UI integration)
 - [x] **Day 13**: Testing and bug fixes (16 automated API tests passing, bug list cleared, input validation)
 - [x] **Day 14**: Deploy frontend, backend and database (Live production deployment, secrets moved to .env, multi-platform configs)
-- [ ] **Day 15**: README, demo video and project launch post
+- [x] **Day 15**: README, demo video and project launch post (Final Track A Ship & Production Launch 🎉)
+
+---
+
+## 🚀 Day 15 Deliverables: Project Launch, Demo Video & Portfolio Showcase (Track A Finale)
+
+### 🏆 Track A Completed: 15-Day Full-Stack Milestone Achieved!
+From zero lines of code on Day 1 to a fully functional, tested, containerized, and deployed full-stack anime streaming platform on Day 15!
+
+---
+
+### 🎥 2-Minute Demo Video Recording Script & Walkthrough
+
+Use any screen recorder (OBS, Loom, or Mac QuickTime: `Cmd + Shift + 5`):
+
+| Timestamp | Screen / Flow | Narration & Actions |
+| :--- | :--- | :--- |
+| **0:00 - 0:20** | **Homepage & Hero Banner** (`#/`) | *"Hi everyone, I'm Manan Sharma. This is KageStream, a dark Tokyo-cyberpunk full-stack anime streaming catalogue and personal media library platform built for #ALTABuilder30 at ALTA School of Technology."* Highlight hero stats (137+ anime, 7,500+ episodes). |
+| **0:20 - 0:45** | **Catalog Discovery & Search Engine** (`#/catalog`) | *"Under the catalog, we engineered a full-text search engine with multi-facet filtering. Users can search by title in English or Japanese, filter across 10+ genres, filter Airing vs Completed, and toggle Hindi Dub. Everything is paginated with dynamic SQL queries."* Click an anime card (e.g. Solo Leveling / Attack on Titan). |
+| **0:45 - 1:15** | **The Heavy Feature: Cinema Theater Mode** (`#/watch/:id`) | *"Clicking Watch takes us to our heavy feature: the dedicated Cinema Theater Player. It features a responsive 16:9 viewport with ambient dark backlighting, multi-CDN mirror switching (HD Vault 1080p vs AnimeStream 720p) with zero reload, and multi-language audio track toggling."* Point to the right sidebar playlist with active equalizer animations! |
+| **1:15 - 1:35** | **Real-Time Watch Sync & Auto-Resume** | *"While watching, an asynchronous 10-second heartbeat loop automatically synchronizes playback timestamp to our SQLite database. If a user reloads or switches devices, KageStream detects previous progress and presents an instant 'Resume Playback from 06:40' banner!"* |
+| **1:35 - 1:50** | **Watchlist CRUD & 16-Test Suite** | *"Users can organize their library across Watching, Completed, and Plan to Watch tabs with toast alerts. To guarantee reliability, we built an automated integration suite with 16 comprehensive tests passing in under 90 milliseconds."* Show terminal running `python3 tests/run_tests.py` (16/16 green PASS). |
+| **1:50 - 2:00** | **Production Cloud & Wrap-up** | *"The platform is containerized with Docker, deployed with automated Render CI/CD blueprints, and live on the internet. Code is open on GitHub. Track A complete!"* |
+
+---
+
+### 🌍 Live Deployment & Production Endpoints:
+- **Live Web App**: [https://smtp-muscles-routes-seas.trycloudflare.com](https://smtp-muscles-routes-seas.trycloudflare.com)
+- **Cinema Theater Watch Mode**: [https://smtp-muscles-routes-seas.trycloudflare.com/#/watch/1](https://smtp-muscles-routes-seas.trycloudflare.com/#/watch/1)
+- **Live API Health Check**: [https://smtp-muscles-routes-seas.trycloudflare.com/api/health](https://smtp-muscles-routes-seas.trycloudflare.com/api/health)
+- **GitHub Repository**: [https://github.com/honeyji333/builders-30](https://github.com/honeyji333/builders-30)
+
+---
+
+### 💻 Local Development Quickstart
+
+```bash
+# 1. Clone the repository
+git clone https://github.com/honeyji333/builders-30.git
+cd builders-30
+
+# 2. Install dependencies (Node.js >= 18)
+npm install
+
+# 3. Configure environment variables
+cp .env.example .env
+
+# 4. Start production server
+npm start
+# Server listens at http://localhost:3000 (or preview port 5050)
+
+# 5. Run the 16-test automated integration suite
+npm test
+# or
+python3 tests/run_tests.py
+```
+
+---
+
+### 🐳 Docker Container Quickstart
+
+```bash
+# Build container image
+docker build -t kagestream .
+
+# Run container with mapped port
+docker run -p 3000:3000 -e NODE_ENV=production kagestream
+```
 
 ---
 
