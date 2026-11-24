@@ -3,47 +3,57 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>KageStream • Full-Stack Anime Streaming Platform (#ALTABuilder30)</title>
-  <meta name="description" content="KageStream is a high-performance full-stack anime streaming catalogue and library tracker built for ALTA Builder 30." />
+  <title>KageStream — A Night Festival of Anime (KageMatsuri)</title>
+  <meta name="description" content="Draw fortunes, collect stamps, and wander stalls of anime. A cinematic, TV-friendly festival experience. Free forever, ad-free." />
+  <!-- Google Fonts: Inter (Sans-serif), Sora (Headings), Shippori Mincho (Japanese Calligraphy) -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Shippori+Mincho:wght@700;800&family=Sora:wght@600;700;800&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="/css/style.css" />
 </head>
-<body>
+<body class="festival-theme">
 
   <!-- ===================================================================
-       Top Navigation Bar
+       Top Navigation Bar (Lantern Festival Glass Bar)
        =================================================================== -->
-  <header class="navbar">
+  <header class="navbar navbar-matsuri">
     <div class="container nav-container">
       
-      <!-- Brand Logo -->
+      <!-- Brand Logo with Hanko Seal & Lantern Pulse Dot -->
       <a href="#/" class="brand-logo" id="brandLogo">
-        <div class="brand-icon">▶</div>
-        <div class="brand-text">Kage<span>Stream</span></div>
-        <span class="brand-badge">Day 12</span>
+        <span class="hanko-seal" title="Kage Matsuri">
+          祭
+          <span class="lantern-pulse-dot"></span>
+        </span>
+        <div class="brand-text-group">
+          <div class="brand-text">KAGE<span class="text-accent-red">STREAM</span></div>
+          <div class="brand-subtext font-jp">アニメ祭り • EST. NIGHT</div>
+        </div>
       </a>
 
       <!-- Primary Navigation Links -->
       <ul class="nav-links">
-        <li><a href="#/" class="nav-link active" id="navLinkHome">Home</a></li>
-        <li><a href="#/catalog" class="nav-link" id="navLinkCatalog">Catalog</a></li>
-        <li><a href="#/watchlist" class="nav-link" id="navLinkWatchlist">My Watchlist</a></li>
-        <li><a href="#/trending" class="nav-link" id="navLinkTrending">Trending</a></li>
+        <li><a href="#/" class="nav-link active" id="navLinkHome"><span class="nav-icon">⛩️</span> Watch</a></li>
+        <li><a href="#/catalog" class="nav-link" id="navLinkCatalog"><span class="nav-icon">🏮</span> Stalls</a></li>
+        <li><a href="#omikujiSection" class="nav-link" id="navLinkFortune"><span class="nav-icon">籤</span> Fortune</a></li>
+        <li><a href="#/watchlist" class="nav-link" id="navLinkWatchlist"><span class="nav-icon">🔖</span> Library</a></li>
+        <li><a href="#vibeStallsSection" class="nav-link" id="navLinkVibes"><span class="nav-icon">✨</span> Vibes</a></li>
       </ul>
 
       <!-- Nav Actions: Search & Auth Buttons -->
       <div class="nav-actions">
         
-        <!-- Search input -->
+        <!-- Search input with TV / Desktop shortcut [ / ] -->
         <div class="nav-search-bar">
           <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="color: var(--text-muted);"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
-          <input type="text" placeholder="Search anime..." id="navSearchInput" />
-          <span class="search-shortcut">/</span>
+          <input type="text" placeholder="Search the stalls…" id="navSearchInput" />
+          <span class="search-shortcut" title="Press / or K to search">/</span>
         </div>
 
         <!-- Guest Auth Controls -->
         <div class="auth-guest-group" id="authGuestGroup">
-          <button class="btn btn-outline btn-sm" data-open-modal="loginModal">Sign In</button>
-          <button class="btn btn-primary btn-sm" data-open-modal="signupModal">Get Started</button>
+          <button class="btn btn-outline btn-sm" data-open-modal="loginModal">Log in</button>
+          <button class="btn btn-primary btn-sm btn-festival-pass" data-open-modal="signupModal">Join free</button>
         </div>
 
         <!-- Logged-in User Controls (Dynamically Toggled) -->
@@ -67,6 +77,52 @@
 
       </div>
     </div>
+
+    <!-- Festival 10-Foot Remote Keyboard Helper Strip -->
+    <div class="remote-shortcuts-strip">
+      <div class="container shortcuts-content">
+        <span class="key-hint"><kbd>←</kbd><kbd>→</kbd> stroll the street</span>
+        <span class="key-hint"><kbd>↵</kbd> enter a stall</span>
+        <span class="key-hint"><kbd>/</kbd> call a vendor</span>
+        <span class="key-hint"><kbd>F</kbd> fullscreen</span>
+        <span class="tv-badge">📺 remote-friendly • 10-foot UI ready</span>
+      </div>
+    </div>
+
+    <!-- Festive Marquee Ticker -->
+    <div class="festival-ticker-strip">
+      <div class="ticker-scroll">
+        <span>🏮 縁日開催中</span>
+        <span class="ticker-dot">•</span>
+        <span>籤 FORTUNE STALL OPEN</span>
+        <span class="ticker-dot">•</span>
+        <span>STAMP RALLY</span>
+        <span class="ticker-dot">•</span>
+        <span>アニメ祭り</span>
+        <span class="ticker-dot">•</span>
+        <span>137+ ANIME IN VAULT</span>
+        <span class="ticker-dot">•</span>
+        <span>7,500+ EPISODES</span>
+        <span class="ticker-dot">•</span>
+        <span>SQLITE WAL SPEED</span>
+        <span class="ticker-dot">•</span>
+        <span>100% AD-FREE</span>
+        <span class="ticker-dot">•</span>
+        <span>TV READY</span>
+        <span class="ticker-dot">•</span>
+        <span>🏮 縁日開催中</span>
+        <span class="ticker-dot">•</span>
+        <span>籤 FORTUNE STALL OPEN</span>
+        <span class="ticker-dot">•</span>
+        <span>STAMP RALLY</span>
+        <span class="ticker-dot">•</span>
+        <span>アニメ祭り</span>
+        <span class="ticker-dot">•</span>
+        <span>137+ ANIME IN VAULT</span>
+        <span class="ticker-dot">•</span>
+        <span>FREE FOREVER</span>
+      </div>
+    </div>
   </header>
 
   <!-- ===================================================================
@@ -74,135 +130,433 @@
        =================================================================== -->
   <main id="appMain">
 
-    <!-- 1. HOME VIEW (#homeView) -->
+    <!-- 1. HOME VIEW (#homeView) - FESTIVAL STREET -->
     <div id="homeView" class="view-section active">
       
-      <!-- Hero Spotlight Section -->
-      <section class="hero">
+      <!-- Headline Act Hero Spotlight -->
+      <section class="hero hero-festival">
+        <div class="hero-backdrop-glow"></div>
         <div class="container hero-content">
-          <div class="hero-pill">
-            <span>⚡</span> #ALTABuilder30 • Track A Day 12 Milestone
+          
+          <div class="hero-badge-row">
+            <span class="hero-pill-matsuri">
+              <span class="pill-fire">🔥</span> #1 本日の呼び物 • HEADLINE ACT
+            </span>
+            <span class="hero-score-badge">★ 8.8 • 772k fans • TV • 1999</span>
           </div>
 
-          <h1 class="hero-title">
-            STREAM & TRACK YOUR <br />
-            <span class="text-gradient-red">FAVORITE ANIME</span>
+          <h1 class="hero-title hero-title-festival">
+            ONE PIECE <br />
+            <span class="hero-jp-title font-jp">ワンピース • THE GRAND LINE</span>
           </h1>
 
-          <p class="hero-desc">
-            KageStream is a next-generation anime streaming catalogue and personal library tracker. 
-            Discover trending series, stream in high definition with Sub/Dub support, and track your episode progress in real-time.
+          <p class="hero-desc hero-desc-festival">
+            Gold Roger was known as the Pirate King, the strongest and most infamous being to have sailed the Grand Line. 
+            Wander the festival stalls, stream in 1080p high definition, switch multi-CDN servers instantly, and track every episode across your personal library.
           </p>
 
-          <div class="hero-actions">
-            <a href="#/catalog" class="btn btn-primary btn-lg">
-              Explore Catalog <span>→</span>
+          <div class="hero-actions hero-actions-festival">
+            <a href="#/watch/1" class="btn btn-festival-primary btn-lg">
+              <span>▶</span> Watch Episode 1
             </a>
-            <a href="#/watchlist" class="btn btn-outline btn-lg">
-              My Watchlist & Library
+            <a href="#/catalog" class="btn btn-outline btn-lg">
+              <span>🏮</span> Browse Stalls
+            </a>
+            <a href="#omikujiSection" class="btn btn-lantern-ghost btn-lg">
+              <span>籤</span> Draw Fortune
             </a>
           </div>
 
-          <!-- Live Feature Metric Strip -->
-          <div class="hero-stats">
+          <!-- Festival Metric Strip -->
+          <div class="hero-stats hero-stats-matsuri">
             <div class="stat-item">
               <div class="stat-num">137<span>+</span></div>
-              <div class="stat-label">Anime In Vault</div>
+              <div class="stat-label">Anime in Vault</div>
             </div>
             <div class="stat-item">
               <div class="stat-num">7,500<span>+</span></div>
               <div class="stat-label">Episodes Indexed</div>
             </div>
             <div class="stat-item">
-              <div class="stat-num">100<span>%</span></div>
-              <div class="stat-label">CRUD Usable In UI</div>
-            </div>
-            <div class="stat-item">
               <div class="stat-num">0.2<span>ms</span></div>
               <div class="stat-label">SQLite WAL Queries</div>
             </div>
+            <div class="stat-item">
+              <div class="stat-num">100<span>%</span></div>
+              <div class="stat-label">Free & Ad-Free</div>
+            </div>
           </div>
         </div>
       </section>
 
-      <!-- Milestone Showcase: Day 10 CRUD Verification Panel -->
-      <section class="milestone-section">
+      <!-- Tonight's Main Stalls (流行り屋台 • Trending Shelf) -->
+      <section class="festival-stalls-section">
         <div class="container">
-          
-          <div class="section-header">
+          <div class="section-matsuri-header">
             <div>
-              <h2 class="section-title">Day 12 Deliverables: Heavy Feature Demo-able End-to-End (Cinema Player & Sync)</h2>
-              <p class="section-subtitle">
-                Full-screen cinematic theater mode with multi-CDN resolver, auto-resume, async watch progress heartbeat, and live episode comments.
-              </p>
+              <div class="section-tag-jp">流行り屋台 • TRENDING TONIGHT</div>
+              <h2 class="section-title-matsuri">Tonight's Main Stalls</h2>
+              <p class="section-subtitle-matsuri">What the whole festival is watching right now</p>
             </div>
+            <a href="#/catalog?sort=trending" class="btn btn-outline btn-sm">View all stalls →</a>
           </div>
 
-          <div class="auth-tester-grid">
-            
-            <!-- Left: Interactive Session Tester -->
-            <div class="test-card">
-              <div class="test-card-header">
-                <div class="test-card-title">
-                  <span>👤</span> Live Session & CRUD State
-                </div>
-                <span class="status-pill guest" id="testerStatusPill">⚪ Guest Mode</span>
+          <!-- Horizontal Trending Carousel -->
+          <div class="trending-stalls-scroll" id="trendingStallsRow">
+            <div class="stall-card" onclick="window.location.hash='#/watch/1'">
+              <div class="stall-poster-wrap">
+                <img src="https://images.unsplash.com/photo-1578632767115-351597cf2477?w=400" alt="One Piece" class="stall-poster" />
+                <span class="stall-rating-badge">★ 8.8</span>
+                <span class="stall-ep-badge">EP 1181</span>
               </div>
-
-              <div class="status-details">
-                <div class="detail-row">
-                  <span>Current User:</span>
-                  <strong id="testerUsername">Not Logged In</strong>
+              <div class="stall-info">
+                <div class="stall-meta">1999 • ACTION</div>
+                <h4 class="stall-title">ONE PIECE</h4>
+                <div class="stall-action">
+                  <span class="ticket-btn">券 Watch</span>
                 </div>
-                <div class="detail-row">
-                  <span>Watchlist Records:</span>
-                  <strong id="testerWatchlistCount">0 items tracked</strong>
-                </div>
-                <div class="detail-row">
-                  <span>Active Route:</span>
-                  <strong id="testerRoute">#/</strong>
-                </div>
-                <div class="detail-row">
-                  <span>CRUD Features:</span>
-                  <strong style="color: var(--accent-crimson-hover);">Create, Edit, Delete Active</strong>
-                </div>
-              </div>
-
-              <div class="test-actions-row">
-                <a href="#/watch/1" class="btn btn-primary btn-sm">🎬 Launch Theater Player</a>
-                <a href="#/watchlist" class="btn btn-outline btn-sm">My Watchlist</a>
-                <button class="btn btn-outline btn-sm" id="testStreamResolverBtn">⚡ Resolve Stream Ep 1</button>
-                <button class="btn btn-ghost btn-sm" id="testHealthBtn">Health Check</button>
               </div>
             </div>
 
-            <!-- Right: Real-time API Response Log -->
-            <div class="test-card">
-              <div class="test-card-header">
-                <div class="test-card-title">
-                  <span>⚡</span> Live API Response Inspector
-                </div>
-                <span style="font-size: 0.75rem; color: var(--text-muted);">Real-Time JSON</span>
+            <div class="stall-card" onclick="window.location.hash='#/catalog?genre=Action'">
+              <div class="stall-poster-wrap">
+                <img src="https://images.unsplash.com/photo-1607604276583-eef5d076aa5f?w=400" alt="Cyberpunk" class="stall-poster" />
+                <span class="stall-rating-badge">★ 8.3</span>
+                <span class="stall-ep-badge">ONA</span>
               </div>
-
-              <pre class="json-console" id="jsonConsole">{
-  "ready": true,
-  "message": "Day 10: Test creating, editing, and deleting watchlist items or catalogue records from the UI."
-}</pre>
+              <div class="stall-info">
+                <div class="stall-meta">2026 • SCI-FI</div>
+                <h4 class="stall-title">Cyberpunk: Edgerunners</h4>
+                <div class="stall-action">
+                  <span class="ticket-btn">券 Watch</span>
+                </div>
+              </div>
             </div>
 
+            <div class="stall-card" onclick="window.location.hash='#/catalog?genre=Fantasy'">
+              <div class="stall-poster-wrap">
+                <img src="https://images.unsplash.com/photo-1534447677768-be436bb09401?w=400" alt="Frieren" class="stall-poster" />
+                <span class="stall-rating-badge">★ 9.0</span>
+                <span class="stall-ep-badge">TV 28</span>
+              </div>
+              <div class="stall-info">
+                <div class="stall-meta">2023 • ADVENTURE</div>
+                <h4 class="stall-title">Frieren: Beyond Journey’s End</h4>
+                <div class="stall-action">
+                  <span class="ticket-btn">券 Watch</span>
+                </div>
+              </div>
+            </div>
+
+            <div class="stall-card" onclick="window.location.hash='#/catalog?genre=Action'">
+              <div class="stall-poster-wrap">
+                <img src="https://images.unsplash.com/photo-1563089145-599997674d42?w=400" alt="Black Clover" class="stall-poster" />
+                <span class="stall-rating-badge">★ 8.8</span>
+                <span class="stall-ep-badge">EP 170</span>
+              </div>
+              <div class="stall-info">
+                <div class="stall-meta">2026 • ACTION</div>
+                <h4 class="stall-title">Black Clover</h4>
+                <div class="stall-action">
+                  <span class="ticket-btn">券 Watch</span>
+                </div>
+              </div>
+            </div>
+
+            <div class="stall-card" onclick="window.location.hash='#/catalog?genre=Action'">
+              <div class="stall-poster-wrap">
+                <img src="https://images.unsplash.com/photo-1579783902614-a3fb3927b675?w=400" alt="Jujutsu Kaisen" class="stall-poster" />
+                <span class="stall-rating-badge">★ 8.6</span>
+                <span class="stall-ep-badge">TV 47</span>
+              </div>
+              <div class="stall-info">
+                <div class="stall-meta">2023 • SUPERNATURAL</div>
+                <h4 class="stall-title">Jujutsu Kaisen</h4>
+                <div class="stall-action">
+                  <span class="ticket-btn">券 Watch</span>
+                </div>
+              </div>
+            </div>
           </div>
-
         </div>
       </section>
 
-      <!-- Featured Anime Row on Home -->
+      <!-- Omikuji Fortune Stall (籤 おみくじ • CAN'T DECIDE?) -->
+      <section class="omikuji-section" id="omikujiSection">
+        <div class="container">
+          <div class="omikuji-box-wrapper">
+            <div class="omikuji-glow-ambient"></div>
+            <div class="omikuji-content">
+              <div class="omikuji-hanko font-jp">籤</div>
+              <div class="omikuji-text-col">
+                <div class="omikuji-badge-jp">おみくじ • CAN'T DECIDE?</div>
+                <h2 class="omikuji-title font-display">Let the gods pick your next obsession</h2>
+                <p class="omikuji-desc">
+                  Shake the box, draw a fortune stick, get a blessed watch. Zero doom-scroll, all fate.
+                </p>
+              </div>
+              <div class="omikuji-action-col">
+                <button class="btn btn-lantern-gold btn-lg" id="drawFortuneBtn">
+                  <span class="fortune-shake-icon">🎲</span> Draw a fortune
+                </button>
+              </div>
+            </div>
+
+            <!-- Dynamic Fortune Stick Slip (Revealed on Click) -->
+            <div class="fortune-slip-card" id="fortuneSlipCard" style="display: none;">
+              <div class="fortune-slip-header">
+                <span class="fortune-tier-badge" id="fortuneTierBadge">大吉 • DAI-KICHI</span>
+                <span class="fortune-close-btn" id="closeFortuneBtn">&times;</span>
+              </div>
+              <div class="fortune-slip-body">
+                <img id="fortuneCoverImg" src="" alt="Blessed Anime" class="fortune-cover" />
+                <div class="fortune-anime-info">
+                  <div class="fortune-blessing-text" id="fortuneBlessingText">✨ Great Blessing: Destiny points to this epic tale!</div>
+                  <h3 class="fortune-anime-title" id="fortuneAnimeTitle">Loading Fortune...</h3>
+                  <div class="fortune-anime-meta" id="fortuneAnimeMeta">★ 8.9 • Action • TV</div>
+                  <p class="fortune-anime-desc" id="fortuneAnimeDesc">Loading synopsis...</p>
+                  <div class="fortune-actions">
+                    <a href="#/watch/1" class="btn btn-festival-primary btn-sm" id="fortuneWatchLink">▶ Stream Now (Ep 1)</a>
+                    <button class="btn btn-outline btn-sm" id="redrawFortuneBtn">↻ Draw Another</button>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </section>
+
+      <!-- Mood / Vibe Stalls (気分 • HUNGRY FOR A VIBE?) -->
+      <section class="vibe-stalls-section" id="vibeStallsSection">
+        <div class="container">
+          <div class="section-matsuri-header">
+            <div>
+              <div class="section-tag-jp">気分 • HUNGRY FOR A VIBE?</div>
+              <h2 class="section-title-matsuri">Pick a stall, skip the doom-scroll</h2>
+              <p class="section-subtitle-matsuri">One tap → a shelf tuned to your mood. No algorithms judging you.</p>
+            </div>
+          </div>
+
+          <div class="vibe-grid">
+            <!-- 1. Hyped -->
+            <div class="vibe-card" data-genre="Action" onclick="window.location.hash='#/catalog?genre=Action'">
+              <div class="vibe-card-inner">
+                <div class="vibe-tag-jp">熱い屋台</div>
+                <h3 class="vibe-name">Hyped</h3>
+                <p class="vibe-desc">Fights & adrenaline</p>
+                <div class="vibe-curtain-btn">のれんをくぐる →</div>
+              </div>
+            </div>
+
+            <!-- 2. Cozy -->
+            <div class="vibe-card" data-genre="Slice of Life" onclick="window.location.hash='#/catalog?genre=Slice+of+Life'">
+              <div class="vibe-card-inner">
+                <div class="vibe-tag-jp">まったり屋台</div>
+                <h3 class="vibe-name">Cozy</h3>
+                <p class="vibe-desc">Warm & slow</p>
+                <div class="vibe-curtain-btn">のれんをくぐる →</div>
+              </div>
+            </div>
+
+            <!-- 3. Emotional -->
+            <div class="vibe-card" data-genre="Drama" onclick="window.location.hash='#/catalog?genre=Drama'">
+              <div class="vibe-card-inner">
+                <div class="vibe-tag-jp">泣ける屋台</div>
+                <h3 class="vibe-name">Emotional</h3>
+                <p class="vibe-desc">Feel everything</p>
+                <div class="vibe-curtain-btn">のれんをくぐる →</div>
+              </div>
+            </div>
+
+            <!-- 4. Laugh out loud -->
+            <div class="vibe-card" data-genre="Comedy" onclick="window.location.hash='#/catalog?genre=Comedy'">
+              <div class="vibe-card-inner">
+                <div class="vibe-tag-jp">笑える屋台</div>
+                <h3 class="vibe-name">Laugh out loud</h3>
+                <p class="vibe-desc">Pure comedy</p>
+                <div class="vibe-curtain-btn">のれんをくぐる →</div>
+              </div>
+            </div>
+
+            <!-- 5. Mind-bending -->
+            <div class="vibe-card" data-genre="Psychological" onclick="window.location.hash='#/catalog?genre=Psychological'">
+              <div class="vibe-card-inner">
+                <div class="vibe-tag-jp">深い屋台</div>
+                <h3 class="vibe-name">Mind-bending</h3>
+                <p class="vibe-desc">Twists & mystery</p>
+                <div class="vibe-curtain-btn">のれんをくぐる →</div>
+              </div>
+            </div>
+
+            <!-- 6. Epic quest -->
+            <div class="vibe-card" data-genre="Fantasy" onclick="window.location.hash='#/catalog?genre=Fantasy'">
+              <div class="vibe-card-inner">
+                <div class="vibe-tag-jp">冒険屋台</div>
+                <h3 class="vibe-name">Epic quest</h3>
+                <p class="vibe-desc">Fantasy worlds</p>
+                <div class="vibe-curtain-btn">のれんをくぐる →</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Timeless Classics Stall (名作屋台 • HIGHEST RATED) -->
+      <section class="classics-stall-section">
+        <div class="container">
+          <div class="section-matsuri-header">
+            <div>
+              <div class="section-tag-jp">名作屋台 • TIMELESS CLASSICS</div>
+              <h2 class="section-title-matsuri">Highest Rated of All Time</h2>
+              <p class="section-subtitle-matsuri">Masterpieces that defined generations</p>
+            </div>
+            <a href="#/catalog?sort=rating" class="btn btn-outline btn-sm">View all classics →</a>
+          </div>
+
+          <div class="classics-grid" id="classicsGrid">
+            <div class="classic-row-item" onclick="window.location.hash='#/catalog?search=Frieren'">
+              <span class="classic-rank">1</span>
+              <span class="classic-score-badge">9.0</span>
+              <span class="classic-type-tag">TV</span>
+              <div class="classic-title-group">
+                <span class="classic-title">Frieren: Beyond Journey’s End</span>
+                <span class="classic-meta">2023 • ADVENTURE</span>
+              </div>
+              <span class="ticket-btn-sm">券</span>
+            </div>
+
+            <div class="classic-row-item" onclick="window.location.hash='#/catalog?search=Steins'">
+              <span class="classic-rank">2</span>
+              <span class="classic-score-badge">8.9</span>
+              <span class="classic-type-tag">TV</span>
+              <div class="classic-title-group">
+                <span class="classic-title">Steins;Gate</span>
+                <span class="classic-meta">2011 • DRAMA • SCI-FI</span>
+              </div>
+              <span class="ticket-btn-sm">券</span>
+            </div>
+
+            <div class="classic-row-item" onclick="window.location.hash='#/catalog?search=Hunter'">
+              <span class="classic-rank">3</span>
+              <span class="classic-score-badge">8.9</span>
+              <span class="classic-type-tag">TV</span>
+              <div class="classic-title-group">
+                <span class="classic-title">Hunter x Hunter (2011)</span>
+                <span class="classic-meta">2011 • ACTION • ADVENTURE</span>
+              </div>
+              <span class="ticket-btn-sm">券</span>
+            </div>
+
+            <div class="classic-row-item" onclick="window.location.hash='#/catalog?search=Fullmetal'">
+              <span class="classic-rank">4</span>
+              <span class="classic-score-badge">9.0</span>
+              <span class="classic-type-tag">TV</span>
+              <div class="classic-title-group">
+                <span class="classic-title">Fullmetal Alchemist: Brotherhood</span>
+                <span class="classic-meta">2009 • ACTION • FANTASY</span>
+              </div>
+              <span class="ticket-btn-sm">券</span>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Wander Every Alley (探す • 8 GENRE STREETS) -->
+      <section class="genre-alleys-section">
+        <div class="container">
+          <div class="section-matsuri-header">
+            <div>
+              <div class="section-tag-jp">探す • WANDER EVERY ALLEY</div>
+              <h2 class="section-title-matsuri">Every Alley of the Festival</h2>
+              <p class="section-subtitle-matsuri">Eight streets, endless stories</p>
+            </div>
+          </div>
+
+          <div class="alleys-grid">
+            <div class="alley-card" onclick="window.location.hash='#/catalog?genre=Action'">
+              <div class="alley-kanji font-jp">アクション</div>
+              <div class="alley-name">Action</div>
+              <div class="alley-link">のれんをくぐる →</div>
+            </div>
+            <div class="alley-card" onclick="window.location.hash='#/catalog?genre=Romance'">
+              <div class="alley-kanji font-jp">恋愛</div>
+              <div class="alley-name">Romance</div>
+              <div class="alley-link">のれんをくぐる →</div>
+            </div>
+            <div class="alley-card" onclick="window.location.hash='#/catalog?genre=Fantasy'">
+              <div class="alley-kanji font-jp">幻想</div>
+              <div class="alley-name">Fantasy</div>
+              <div class="alley-link">のれんをくぐる →</div>
+            </div>
+            <div class="alley-card" onclick="window.location.hash='#/catalog?genre=Sci-Fi'">
+              <div class="alley-kanji font-jp">SF</div>
+              <div class="alley-name">Sci-Fi</div>
+              <div class="alley-link">のれんをくぐる →</div>
+            </div>
+            <div class="alley-card" onclick="window.location.hash='#/catalog?genre=Comedy'">
+              <div class="alley-kanji font-jp">笑い</div>
+              <div class="alley-name">Comedy</div>
+              <div class="alley-link">のれんをくぐる →</div>
+            </div>
+            <div class="alley-card" onclick="window.location.hash='#/catalog?genre=Horror'">
+              <div class="alley-kanji font-jp">恐怖</div>
+              <div class="alley-name">Horror</div>
+              <div class="alley-link">のれんをくぐる →</div>
+            </div>
+            <div class="alley-card" onclick="window.location.hash='#/catalog?genre=Drama'">
+              <div class="alley-kanji font-jp">ドラマ</div>
+              <div class="alley-name">Drama</div>
+              <div class="alley-link">のれんをくぐる →</div>
+            </div>
+            <div class="alley-card" onclick="window.location.hash='#/catalog?genre=Sports'">
+              <div class="alley-kanji font-jp">熱血</div>
+              <div class="alley-name">Sports</div>
+              <div class="alley-link">のれんをくぐる →</div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- TV & 10-Foot UI Experience Section (テレビでも • BIG SCREEN) -->
+      <section class="tv-matsuri-section">
+        <div class="container">
+          <div class="tv-matsuri-card">
+            <div class="tv-matsuri-left">
+              <div class="section-tag-jp">テレビでも • BIG SCREEN READY</div>
+              <h2 class="tv-matsuri-title font-display">The festival fits your TV too.</h2>
+              <p class="tv-matsuri-desc">
+                Arrow keys stroll the street, Enter steps into a stall, F goes fullscreen. 
+                Huge focus rings, chunky buttons, zero squinting from the kotatsu.
+              </p>
+              <div class="tv-matsuri-actions">
+                <a href="#/watch/1" class="btn btn-festival-primary btn-sm">▶ Launch Cinema Theater</a>
+                <a href="#/catalog" class="btn btn-outline btn-sm">Wander Every Stall</a>
+              </div>
+            </div>
+            <div class="tv-matsuri-right">
+              <div class="key-cheatsheet-card">
+                <div class="cheatsheet-title">🎮 Remote & Keyboard Shortcuts</div>
+                <div class="cheatsheet-row"><kbd>←</kbd><kbd>→</kbd><span>Stroll festival stalls</span></div>
+                <div class="cheatsheet-row"><kbd>↵ Enter</kbd><span>Enter stall or play episode</span></div>
+                <div class="cheatsheet-row"><kbd>/ or K</kbd><span>Quick search catalogue</span></div>
+                <div class="cheatsheet-row"><kbd>F</kbd><span>Toggle 1080p fullscreen</span></div>
+                <div class="cheatsheet-row"><kbd>Space</kbd><span>Play / Pause video stream</span></div>
+                <div class="cheatsheet-row"><kbd>Esc</kbd><span>Exit player / close dialogs</span></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Main Stalls Catalogue Preview (GET /api/anime) -->
       <section class="catalog-preview" id="catalogSection">
         <div class="container">
-          <div class="section-header">
+          <div class="section-matsuri-header">
             <div>
-              <h2 class="section-title">Featured in the Vault</h2>
-              <p class="section-subtitle">Top-rated stream catalogue fetched directly from GET /api/anime</p>
+              <div class="section-tag-jp">蔵出し • FROM THE VAULT</div>
+              <h2 class="section-title-matsuri">All Vault Anime Stalls</h2>
+              <p class="section-subtitle-matsuri">137 high-definition series and movies ready to stream</p>
             </div>
             <a href="#/catalog" class="btn btn-outline btn-sm">View Full Catalog →</a>
           </div>
@@ -210,6 +564,76 @@
           <div class="anime-grid" id="animeGrid">
             <!-- Rendered via JS -->
           </div>
+        </div>
+      </section>
+
+      <!-- Live Session & CRUD Developer Diagnostics (Collapsible) -->
+      <section class="milestone-section">
+        <div class="container">
+          
+          <details class="diagnostics-accordion">
+            <summary class="diagnostics-summary">
+              <span>🛠️ Developer Diagnostics, CRUD State & Live API Inspector</span>
+              <span class="accordion-arrow">▼</span>
+            </summary>
+
+            <div class="auth-tester-grid" style="margin-top: 16px;">
+              
+              <!-- Left: Interactive Session Tester -->
+              <div class="test-card">
+                <div class="test-card-header">
+                  <div class="test-card-title">
+                    <span>👤</span> Live Session & CRUD State
+                  </div>
+                  <span class="status-pill guest" id="testerStatusPill">⚪ Guest Mode</span>
+                </div>
+
+                <div class="status-details">
+                  <div class="detail-row">
+                    <span>Current User:</span>
+                    <strong id="testerUsername">Not Logged In</strong>
+                  </div>
+                  <div class="detail-row">
+                    <span>Watchlist Records:</span>
+                    <strong id="testerWatchlistCount">0 items tracked</strong>
+                  </div>
+                  <div class="detail-row">
+                    <span>Active Route:</span>
+                    <strong id="testerRoute">#/</strong>
+                  </div>
+                  <div class="detail-row">
+                    <span>CRUD Features:</span>
+                    <strong style="color: var(--accent-crimson-hover);">Create, Edit, Delete Active</strong>
+                  </div>
+                </div>
+
+                <div class="test-actions-row">
+                  <a href="#/watch/1" class="btn btn-primary btn-sm">🎬 Launch Theater Player</a>
+                  <a href="#/watchlist" class="btn btn-outline btn-sm">My Watchlist</a>
+                  <button class="btn btn-outline btn-sm" id="testStreamResolverBtn">⚡ Resolve Stream Ep 1</button>
+                  <button class="btn btn-ghost btn-sm" id="testHealthBtn">Health Check</button>
+                </div>
+              </div>
+
+              <!-- Right: Real-time API Response Log -->
+              <div class="test-card">
+                <div class="test-card-header">
+                  <div class="test-card-title">
+                    <span>⚡</span> Live API Response Inspector
+                  </div>
+                  <span style="font-size: 0.75rem; color: var(--text-muted);">Real-Time JSON</span>
+                </div>
+
+                <pre class="json-console" id="jsonConsole">{
+  "ready": true,
+  "status": "healthy",
+  "platform": "KageStream Matsuri Production Engine"
+}</pre>
+              </div>
+
+            </div>
+          </details>
+
         </div>
       </section>
 
@@ -616,16 +1040,70 @@
   <!-- ===================================================================
        Footer
        =================================================================== -->
-  <footer class="footer">
-    <div class="container footer-container">
-      <div>
-        <strong style="color: var(--text-pure);">Kage<span style="color: var(--accent-crimson);">Stream</span></strong>
-        • Full-Stack Streaming Platform for #ALTABuilder30
+  <footer class="footer footer-matsuri">
+    <div class="container footer-matsuri-container">
+      <div class="footer-top-grid">
+        <div class="footer-brand-col">
+          <div class="footer-brand-header">
+            <span class="hanko-seal-sm">祭</span>
+            <div>
+              <div class="brand-text">KAGE<span class="text-accent-red">STREAM</span></div>
+              <div class="brand-subtext font-jp">アニメ祭り • EST. NIGHT</div>
+            </div>
+          </div>
+          <p class="footer-bio">
+            A lantern-lit night festival of anime — draw fortunes, collect stamps, and wander stalls of stories. Free forever, 100% ad-free, engineered with SQLite WAL performance.
+          </p>
+          <div class="footer-tags-strip">
+            <span class="tag-pill">🏮 Instant loads</span>
+            <span class="tag-pill">🛡️ Ad-free</span>
+            <span class="tag-pill">🎙️ Multi-audio</span>
+            <span class="tag-pill">📺 10-foot TV ready</span>
+          </div>
+        </div>
+
+        <div class="footer-nav-col">
+          <h5 class="footer-col-title">WANDER</h5>
+          <ul class="footer-links-list">
+            <li><a href="#/catalog">All Stalls</a></li>
+            <li><a href="#/catalog?sort=trending">Trending Tonight</a></li>
+            <li><a href="#/catalog?sort=rating">Timeless Classics</a></li>
+            <li><a href="#/catalog?genre=Action">Action Alley</a></li>
+            <li><a href="#omikujiSection">Omikuji Fortune Box</a></li>
+          </ul>
+        </div>
+
+        <div class="footer-nav-col">
+          <h5 class="footer-col-title">YOU</h5>
+          <ul class="footer-links-list">
+            <li><a href="#/watchlist">Watchlist & Library</a></li>
+            <li><a href="#/watch/1">Cinema Theater Player</a></li>
+            <li><a href="/api/health" target="_blank">Health Diagnostics</a></li>
+            <li><a href="https://github.com/honeyji333/builders-30" target="_blank" rel="noopener">GitHub Project</a></li>
+          </ul>
+        </div>
+
+        <div class="footer-nav-col">
+          <h5 class="footer-col-title">REMOTE + KEYS</h5>
+          <div class="footer-keys-list">
+            <div><kbd>/ or K</kbd> search stalls</div>
+            <div><kbd>Space</kbd> play / pause</div>
+            <div><kbd>F</kbd> fullscreen mode</div>
+            <div><kbd>Esc</kbd> close modal</div>
+          </div>
+        </div>
       </div>
-      <div class="footer-links">
-        <a href="https://github.com/honeyji333/builders-30" target="_blank" rel="noopener">GitHub Repository</a>
-        <a href="/api/info" target="_blank">API Directory</a>
-        <a href="/health" target="_blank">Health Check</a>
+
+      <div class="footer-bottom-row">
+        <div>
+          Metadata by AniList & KageVault • Multi-source stream CDN • A lantern-lit night for anime lovers on phone, laptop & TV.
+        </div>
+        <div class="footer-meta-links">
+          <a href="#/">Home</a> • 
+          <a href="#/catalog">Stalls</a> • 
+          <a href="#omikujiSection">Fortune</a> • 
+          <a href="#/watchlist">Library</a>
+        </div>
       </div>
     </div>
   </footer>

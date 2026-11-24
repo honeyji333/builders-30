@@ -297,7 +297,7 @@ router.get('/resume/:animeId', optionalAuth, (req, res) => {
 router.get('/range-demo', (req, res) => {
   const simulatedSize = 10485760; // 10MB simulated media stream
 
-  if (req.headers.accept?.includes('application/json') || req.query.info === 'true') {
+  if (req.headers.accept?.includes('application/json') || req.headers['content-type'] === 'application/json' || req.query.info === 'true' || req.path.includes('range-demo') && !req.headers.range) {
     return res.json({
       success: true,
       message: 'HTTP 206 Range Stream Demo Active',

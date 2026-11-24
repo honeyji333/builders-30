@@ -4,8 +4,8 @@
 [![Tests](https://img.shields.io/badge/Tests-16%2F16_Passing_100%25-brightgreen.svg)](https://github.com/honeyji333/builders-30)
 [![Runtime](https://img.shields.io/badge/Node.js-%3E%3D18.0.0-339933.svg)](https://nodejs.org/)
 [![Database](https://img.shields.io/badge/Database-SQLite3_WAL_Mode-003B57.svg)](https://github.com/WiseLibs/better-sqlite3)
-[![Deployment](https://img.shields.io/badge/Deploy-Docker_%7C_Render_%7C_Cloudflare-4285F4.svg)](https://smtp-muscles-routes-seas.trycloudflare.com)
-[![Catalog](https://img.shields.io/badge/Catalog-137%2B_Anime_%7C_7%2C500%2B_Episodes-ff1e2b.svg)](https://smtp-muscles-routes-seas.trycloudflare.com/#/catalog)
+[![Deployment](https://img.shields.io/badge/Deploy-Render_Production_%7C_Docker-4285F4.svg)](https://kagestream-q481.onrender.com)
+[![Catalog](https://img.shields.io/badge/Catalog-137%2B_Anime_%7C_7%2C500%2B_Episodes-ff1e2b.svg)](https://kagestream-q481.onrender.com/#/catalog)
 
 > **KageStream** is a high-performance, ad-free full-stack anime streaming platform and personal media library.
 > Engineered with a dark Tokyo-cyberpunk visual language (`#070709` pitch-black + `#e50914` crimson red), instant multi-CDN server switching, asynchronous watch progress sync, auto-resume playback, interactive playlist drawer, and automated integration test coverage.
@@ -113,9 +113,9 @@ Use any screen recorder (OBS, Loom, or Mac QuickTime: `Cmd + Shift + 5`):
 ---
 
 ### 🌍 Live Deployment & Production Endpoints:
-- **Live Web App**: [https://smtp-muscles-routes-seas.trycloudflare.com](https://smtp-muscles-routes-seas.trycloudflare.com)
-- **Cinema Theater Watch Mode**: [https://smtp-muscles-routes-seas.trycloudflare.com/#/watch/1](https://smtp-muscles-routes-seas.trycloudflare.com/#/watch/1)
-- **Live API Health Check**: [https://smtp-muscles-routes-seas.trycloudflare.com/api/health](https://smtp-muscles-routes-seas.trycloudflare.com/api/health)
+- **Render Production App**: [https://kagestream-q481.onrender.com](https://kagestream-q481.onrender.com)
+- **Cinema Theater Watch Mode**: [https://kagestream-q481.onrender.com/#/watch/1](https://kagestream-q481.onrender.com/#/watch/1)
+- **Production Health Diagnostics**: [https://kagestream-q481.onrender.com/health](https://kagestream-q481.onrender.com/health)
 - **GitHub Repository**: [https://github.com/honeyji333/builders-30](https://github.com/honeyji333/builders-30)
 
 ---

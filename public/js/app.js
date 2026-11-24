@@ -2028,4 +2028,126 @@ document.addEventListener('DOMContentLoaded', () => {
       });
     });
   }
+
+  // ===================================================================
+  // KAGEMATSURI NIGHT FESTIVAL INTERACTIVE FEATURES
+  // ===================================================================
+
+  // 1. Omikuji Fortune Drawer
+  const drawFortuneBtn = document.getElementById('drawFortuneBtn');
+  const redrawFortuneBtn = document.getElementById('redrawFortuneBtn');
+  const closeFortuneBtn = document.getElementById('closeFortuneBtn');
+  const fortuneSlipCard = document.getElementById('fortuneSlipCard');
+
+  const fortuneTiers = [
+    { tier: '大吉 • DAI-KICHI', blessing: '✨ Great Blessing: Destiny points to this masterpiece!' },
+    { tier: '吉 • KICHI', blessing: '🌟 Blessed Watch: An extraordinary adventure awaits you.' },
+    { tier: '中吉 • CHU-KICHI', blessing: '⚡ Middle Fortune: High octane action and thrills!' },
+    { tier: '小吉 • SHO-KICHI', blessing: '🏮 Cozy Blessing: A heartwarming story that will stay with you.' }
+  ];
+
+  async function handleDrawFortune() {
+    if (!fortuneSlipCard) return;
+
+    const btn = document.getElementById('drawFortuneBtn');
+    if (btn) {
+      btn.disabled = true;
+      btn.innerHTML = '<span>🎲 Shaking the box...</span>';
+    }
+
+    try {
+      // Ensure we have catalog anime list
+      let animePool = state.catalog.animeList;
+      if (!animePool || animePool.length === 0) {
+        const res = await apiCall('/api/anime?limit=30&sort=rating');
+        if (res.ok && res.data.data) {
+          animePool = res.data.data;
+          state.catalog.animeList = animePool;
+        }
+      }
+
+      // Pick random anime & fortune tier
+      const chosenAnime = (animePool && animePool.length > 0)
+        ? animePool[Math.floor(Math.random() * animePool.length)]
+        : {
+            id: 1,
+            title: 'ONE PIECE',
+            type: 'TV',
+            rating: 8.8,
+            cover_image: 'https://images.unsplash.com/photo-1578632767115-351597cf2477?w=400',
+            description: 'The journey across the Grand Line for the legendary treasure left behind by the Pirate King.'
+          };
+
+      const chosenTier = fortuneTiers[Math.floor(Math.random() * fortuneTiers.length)];
+
+      // Populate Fortune Slip
+      const tierBadge = document.getElementById('fortuneTierBadge');
+      const blessingText = document.getElementById('fortuneBlessingText');
+      const coverImg = document.getElementById('fortuneCoverImg');
+      const animeTitle = document.getElementById('fortuneAnimeTitle');
+      const animeMeta = document.getElementById('fortuneAnimeMeta');
+      const animeDesc = document.getElementById('fortuneAnimeDesc');
+      const watchLink = document.getElementById('fortuneWatchLink');
+
+      if (tierBadge) tierBadge.textContent = chosenTier.tier;
+      if (blessingText) blessingText.textContent = chosenTier.blessing;
+      if (coverImg) coverImg.src = chosenAnime.cover_image || 'https://images.unsplash.com/photo-1578632767115-351597cf2477?w=400';
+      if (animeTitle) animeTitle.textContent = chosenAnime.title || 'Selected Anime';
+      if (animeMeta) animeMeta.textContent = `★ ${chosenAnime.rating || '8.5'} • ${chosenAnime.type || 'TV'} • ${chosenAnime.release_year || '2024'}`;
+      if (animeDesc) animeDesc.textContent = chosenAnime.description || 'Step through the festival curtain and begin streaming now.';
+      if (watchLink) watchLink.href = `#/watch/${chosenAnime.id || 1}`;
+
+      fortuneSlipCard.style.display = 'block';
+      fortuneSlipCard.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+      showToast('🏮 Fortune drawn: ' + chosenTier.tier, 'success');
+    } catch (err) {
+      console.error('Error drawing fortune:', err);
+    } finally {
+      if (btn) {
+        btn.disabled = false;
+        btn.innerHTML = '<span>🎲 Draw a fortune</span>';
+      }
+    }
+  }
+
+  if (drawFortuneBtn) drawFortuneBtn.addEventListener('click', handleDrawFortune);
+  if (redrawFortuneBtn) redrawFortuneBtn.addEventListener('click', handleDrawFortune);
+  if (closeFortuneBtn) {
+    closeFortuneBtn.addEventListener('click', () => {
+      if (fortuneSlipCard) fortuneSlipCard.style.display = 'none';
+    });
+  }
+
+  // 2. 10-Foot TV Remote & Keyboard Navigation
+  document.addEventListener('keydown', (e) => {
+    const isInput = ['INPUT', 'TEXTAREA', 'SELECT'].includes(document.activeElement.tagName);
+
+    // '/' or 'k' focuses search bar
+    if ((e.key === '/' || e.key === 'k' || e.key === 'K') && !isInput) {
+      e.preventDefault();
+      const searchInput = document.getElementById('navSearchInput');
+      if (searchInput) {
+        searchInput.focus();
+        searchInput.select();
+      }
+    }
+
+    // 'f' or 'F' toggles fullscreen
+    if ((e.key === 'f' || e.key === 'F') && !isInput) {
+      e.preventDefault();
+      if (!document.fullscreenElement) {
+        document.documentElement.requestFullscreen().catch(() => {});
+        showToast('Entering 1080p Fullscreen Cinema Mode', 'info');
+      } else {
+        document.exitFullscreen().catch(() => {});
+      }
+    }
+
+    // Escape closes fortune slip or modals
+    if (e.key === 'Escape') {
+      if (fortuneSlipCard && fortuneSlipCard.style.display !== 'none') {
+        fortuneSlipCard.style.display = 'none';
+      }
+    }
+  });
 });

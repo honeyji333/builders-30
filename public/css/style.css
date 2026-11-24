@@ -2588,3 +2588,1156 @@ input, select, textarea {
     font-size: 1.5rem;
   }
 }
+
+
+/* ===================================================================
+   KAGEMATSURI / KAGESTREAM NIGHT FESTIVAL STYLING
+   =================================================================== */
+
+:root {
+  --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  --font-display: 'Sora', sans-serif;
+  --font-jp: 'Shippori Mincho', 'Noto Serif JP', serif;
+  
+  --accent-festival: #f0442e;
+  --accent-deep: #a11f12;
+  --bg-night-void: #070709;
+  --bg-night-sky: #0b0e1d;
+  --bg-matsuri-panel: #13172e;
+  --bg-matsuri-card: #1a203f;
+  --lantern-gold: #ffb13d;
+  --shrine-gold: #fbbf24;
+  --festival-red-glow: 0 0 24px rgba(240, 68, 46, 0.5);
+  --lantern-glow: 0 0 20px rgba(255, 177, 61, 0.55);
+}
+
+body.festival-theme {
+  font-family: var(--font-sans);
+  background-color: var(--bg-night-void);
+  background-image: radial-gradient(circle at 50% -20%, rgba(240, 68, 46, 0.15) 0%, rgba(11, 14, 29, 0.4) 40%, rgba(7, 7, 9, 0.95) 100%);
+  color: #f1f3f9;
+}
+
+.font-display { font-family: var(--font-display); }
+.font-jp { font-family: var(--font-jp); }
+.text-accent-red { color: var(--accent-festival); }
+
+/* --- Hanko Seal Logo & Lantern Pulse --- */
+.hanko-seal {
+  width: 40px;
+  height: 40px;
+  border-radius: 10px;
+  background: linear-gradient(135deg, #f0442e, #a11f12 75%);
+  box-shadow: 0 4px 20px -2px rgba(240, 68, 46, 0.7), inset 0 0 0 1.5px rgba(255, 255, 255, 0.35);
+  display: grid;
+  place-items: center;
+  color: #fff;
+  font-family: var(--font-jp);
+  font-weight: 800;
+  font-size: 1.25rem;
+  position: relative;
+  flex-shrink: 0;
+  user-select: none;
+}
+
+.hanko-seal-sm {
+  width: 32px;
+  height: 32px;
+  border-radius: 8px;
+  background: linear-gradient(135deg, #f0442e, #a11f12 75%);
+  box-shadow: 0 3px 14px rgba(240, 68, 46, 0.6);
+  display: grid;
+  place-items: center;
+  color: #fff;
+  font-family: var(--font-jp);
+  font-weight: 800;
+  font-size: 1rem;
+}
+
+.lantern-pulse-dot {
+  position: absolute;
+  top: -3px;
+  right: -3px;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: var(--lantern-gold);
+  box-shadow: 0 0 10px var(--lantern-gold), 0 0 18px var(--lantern-gold);
+  animation: pulseLanternDot 1.6s ease-in-out infinite;
+}
+
+@keyframes pulseLanternDot {
+  0%, 100% { transform: scale(1); opacity: 0.9; }
+  50% { transform: scale(1.35); opacity: 1; }
+}
+
+.brand-text-group {
+  display: flex;
+  flex-direction: column;
+}
+
+.brand-subtext {
+  font-size: 0.62rem;
+  letter-spacing: 0.28em;
+  color: #a0a6be;
+  margin-top: 1px;
+}
+
+/* --- Floating Festival Navbar --- */
+.navbar-matsuri {
+  border-top: 2px solid rgba(240, 68, 46, 0.75);
+  background: rgba(11, 14, 29, 0.88);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.6);
+}
+
+.nav-icon {
+  margin-right: 4px;
+}
+
+.btn-festival-pass {
+  background: linear-gradient(135deg, #f0442e, #c01913);
+  color: #fff !important;
+  box-shadow: 0 4px 18px rgba(240, 68, 46, 0.5);
+  border: none;
+  font-weight: 700;
+}
+
+.btn-festival-primary {
+  background: linear-gradient(135deg, #f0442e, #a11f12);
+  color: #fff !important;
+  box-shadow: 0 6px 24px rgba(240, 68, 46, 0.55);
+  border: none;
+  font-weight: 700;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 24px;
+  border-radius: 9999px;
+  text-decoration: none;
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.btn-festival-primary:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 30px rgba(240, 68, 46, 0.75);
+}
+
+.btn-lantern-gold {
+  background: linear-gradient(135deg, #ffb13d, #d98811);
+  color: #070709 !important;
+  font-weight: 800;
+  box-shadow: 0 6px 20px rgba(255, 177, 61, 0.45);
+  border: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 24px;
+  border-radius: 9999px;
+  cursor: pointer;
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.btn-lantern-gold:hover {
+  transform: scale(1.03);
+  box-shadow: 0 8px 28px rgba(255, 177, 61, 0.7);
+}
+
+.btn-lantern-ghost {
+  background: rgba(255, 177, 61, 0.12);
+  color: var(--lantern-gold) !important;
+  border: 1px solid rgba(255, 177, 61, 0.35);
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 24px;
+  border-radius: 9999px;
+  text-decoration: none;
+  transition: background 0.2s, border-color 0.2s;
+}
+
+.btn-lantern-ghost:hover {
+  background: rgba(255, 177, 61, 0.2);
+  border-color: var(--lantern-gold);
+}
+
+/* --- Remote Shortcut Bar --- */
+.remote-shortcuts-strip {
+  background: rgba(19, 23, 46, 0.95);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+  padding: 6px 0;
+  font-size: 0.75rem;
+  color: #9aa1bc;
+}
+
+.shortcuts-content {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+.key-hint {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+
+kbd {
+  display: inline-block;
+  padding: 2px 6px;
+  font-family: ui-monospace, monospace;
+  font-size: 0.7rem;
+  background: #0b0e1d;
+  color: var(--lantern-gold);
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  border-radius: 4px;
+  box-shadow: 0 1px 2px rgba(0,0,0,0.4);
+}
+
+.tv-badge {
+  color: var(--lantern-gold);
+  font-weight: 600;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  border-left: 1px solid rgba(255, 255, 255, 0.15);
+  padding-left: 14px;
+}
+
+/* --- Festive Marquee Ticker --- */
+.festival-ticker-strip {
+  background: linear-gradient(90deg, #a11f12, #680d0d);
+  overflow: hidden;
+  white-space: nowrap;
+  padding: 5px 0;
+  font-size: 0.72rem;
+  font-weight: 800;
+  letter-spacing: 0.15em;
+  color: #fff;
+  border-bottom: 1px solid rgba(240, 68, 46, 0.3);
+}
+
+.ticker-scroll {
+  display: inline-flex;
+  align-items: center;
+  gap: 18px;
+  animation: tickerSlide 35s linear infinite;
+}
+
+.ticker-dot {
+  color: var(--lantern-gold);
+  font-size: 1rem;
+}
+
+@keyframes tickerSlide {
+  0% { transform: translateX(0); }
+  100% { transform: translateX(-50%); }
+}
+
+/* --- Hero Festival Spotlight --- */
+.hero-festival {
+  position: relative;
+  padding: 60px 0 50px 0;
+  overflow: hidden;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.hero-backdrop-glow {
+  position: absolute;
+  top: -100px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 900px;
+  height: 450px;
+  background: radial-gradient(circle, rgba(240, 68, 46, 0.22) 0%, rgba(255, 177, 61, 0.08) 45%, transparent 70%);
+  pointer-events: none;
+  z-index: 0;
+}
+
+.hero-festival .hero-content {
+  position: relative;
+  z-index: 1;
+}
+
+.hero-badge-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 16px;
+  flex-wrap: wrap;
+}
+
+.hero-pill-matsuri {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 5px 12px;
+  background: rgba(240, 68, 46, 0.16);
+  border: 1px solid rgba(240, 68, 46, 0.45);
+  border-radius: 9999px;
+  color: #ff7663;
+  font-size: 0.8rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+}
+
+.hero-score-badge {
+  font-size: 0.8rem;
+  color: var(--lantern-gold);
+  font-weight: 700;
+  background: rgba(255, 177, 61, 0.1);
+  padding: 5px 12px;
+  border-radius: 9999px;
+  border: 1px solid rgba(255, 177, 61, 0.25);
+}
+
+.hero-title-festival {
+  font-size: 3.5rem;
+  font-weight: 800;
+  line-height: 1.1;
+  letter-spacing: -0.02em;
+  color: #fff;
+  margin-bottom: 18px;
+}
+
+.hero-jp-title {
+  font-size: 1.6rem;
+  color: var(--accent-festival);
+  letter-spacing: 0.05em;
+  display: block;
+  margin-top: 6px;
+  text-shadow: 0 0 20px rgba(240, 68, 46, 0.6);
+}
+
+.hero-desc-festival {
+  max-width: 680px;
+  font-size: 1.05rem;
+  color: #b3b9d1;
+  line-height: 1.6;
+  margin-bottom: 28px;
+}
+
+.hero-actions-festival {
+  display: flex;
+  gap: 14px;
+  flex-wrap: wrap;
+  margin-bottom: 45px;
+}
+
+.hero-stats-matsuri {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 16px;
+  padding-top: 24px;
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+/* --- Section Matsuri Headers --- */
+.section-matsuri-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  margin-bottom: 24px;
+  flex-wrap: wrap;
+  gap: 16px;
+}
+
+.section-tag-jp {
+  font-size: 0.72rem;
+  font-weight: 800;
+  letter-spacing: 0.2em;
+  color: var(--accent-festival);
+  margin-bottom: 6px;
+  text-transform: uppercase;
+}
+
+.section-title-matsuri {
+  font-family: var(--font-display);
+  font-size: 1.75rem;
+  font-weight: 800;
+  color: #fff;
+  line-height: 1.2;
+}
+
+.section-subtitle-matsuri {
+  font-size: 0.92rem;
+  color: #9aa1bc;
+  margin-top: 4px;
+}
+
+/* --- Tonight's Main Stalls Horizontal Carousel --- */
+.festival-stalls-section {
+  padding: 45px 0;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.trending-stalls-scroll {
+  display: flex;
+  gap: 18px;
+  overflow-x: auto;
+  padding-bottom: 14px;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(240, 68, 46, 0.5) rgba(19, 23, 46, 0.5);
+}
+
+.trending-stalls-scroll::-webkit-scrollbar {
+  height: 6px;
+}
+
+.trending-stalls-scroll::-webkit-scrollbar-thumb {
+  background: var(--accent-festival);
+  border-radius: 9999px;
+}
+
+.stall-card {
+  min-width: 220px;
+  width: 220px;
+  background: var(--bg-matsuri-panel);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 14px;
+  overflow: hidden;
+  cursor: pointer;
+  transition: transform 0.25s, box-shadow 0.25s, border-color 0.25s;
+  flex-shrink: 0;
+}
+
+.stall-card:hover {
+  transform: translateY(-6px);
+  border-color: rgba(240, 68, 46, 0.6);
+  box-shadow: 0 14px 30px rgba(0, 0, 0, 0.6), 0 0 18px rgba(240, 68, 46, 0.25);
+}
+
+.stall-poster-wrap {
+  position: relative;
+  height: 290px;
+  background: #000;
+  overflow: hidden;
+}
+
+.stall-poster {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.3s;
+}
+
+.stall-card:hover .stall-poster {
+  transform: scale(1.05);
+}
+
+.stall-rating-badge {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  background: rgba(11, 14, 29, 0.88);
+  color: var(--lantern-gold);
+  font-size: 0.75rem;
+  font-weight: 800;
+  padding: 3px 8px;
+  border-radius: 6px;
+  backdrop-filter: blur(8px);
+}
+
+.stall-ep-badge {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  background: var(--accent-festival);
+  color: #fff;
+  font-size: 0.68rem;
+  font-weight: 800;
+  padding: 3px 7px;
+  border-radius: 6px;
+}
+
+.stall-info {
+  padding: 12px;
+}
+
+.stall-meta {
+  font-size: 0.68rem;
+  color: #8b92ad;
+  letter-spacing: 0.05em;
+  margin-bottom: 4px;
+}
+
+.stall-title {
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: #fff;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  margin-bottom: 10px;
+}
+
+.stall-action {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.ticket-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 0.72rem;
+  font-weight: 700;
+  color: var(--lantern-gold);
+  background: rgba(255, 177, 61, 0.12);
+  border: 1px solid rgba(255, 177, 61, 0.3);
+  padding: 4px 10px;
+  border-radius: 6px;
+}
+
+.ticket-btn:hover {
+  background: var(--lantern-gold);
+  color: #070709;
+}
+
+/* --- Omikuji Fortune Section --- */
+.omikuji-section {
+  padding: 50px 0;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.omikuji-box-wrapper {
+  position: relative;
+  background: linear-gradient(135deg, rgba(26, 32, 63, 0.9), rgba(19, 23, 46, 0.95));
+  border: 1.5px solid rgba(240, 68, 46, 0.4);
+  border-radius: 20px;
+  padding: 36px 40px;
+  overflow: hidden;
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.5), inset 0 0 30px rgba(240, 68, 46, 0.1);
+}
+
+.omikuji-glow-ambient {
+  position: absolute;
+  top: -40px;
+  right: -40px;
+  width: 250px;
+  height: 250px;
+  background: radial-gradient(circle, rgba(255, 177, 61, 0.25) 0%, transparent 70%);
+  pointer-events: none;
+}
+
+.omikuji-content {
+  display: flex;
+  align-items: center;
+  gap: 30px;
+  flex-wrap: wrap;
+}
+
+.omikuji-hanko {
+  width: 70px;
+  height: 70px;
+  border-radius: 16px;
+  background: linear-gradient(135deg, #f0442e, #a11f12);
+  box-shadow: 0 8px 30px rgba(240, 68, 46, 0.7);
+  display: grid;
+  place-items: center;
+  font-size: 2.5rem;
+  color: #fff;
+  font-weight: 800;
+  flex-shrink: 0;
+  user-select: none;
+}
+
+.omikuji-text-col {
+  flex: 1;
+  min-width: 260px;
+}
+
+.omikuji-badge-jp {
+  font-size: 0.72rem;
+  font-weight: 800;
+  letter-spacing: 0.2em;
+  color: var(--lantern-gold);
+  margin-bottom: 6px;
+}
+
+.omikuji-title {
+  font-size: 1.6rem;
+  color: #fff;
+  font-weight: 800;
+  margin-bottom: 6px;
+}
+
+.omikuji-desc {
+  font-size: 0.95rem;
+  color: #b0b7cf;
+  line-height: 1.5;
+}
+
+.omikuji-action-col {
+  flex-shrink: 0;
+}
+
+.fortune-shake-icon {
+  font-size: 1.25rem;
+}
+
+/* Fortune Slip Reveal Card */
+.fortune-slip-card {
+  margin-top: 28px;
+  padding: 24px;
+  background: #0e1227;
+  border: 1px solid rgba(255, 177, 61, 0.4);
+  border-radius: 16px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.6);
+  animation: fadeInDown 0.3s ease-out;
+}
+
+.fortune-slip-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 16px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  padding-bottom: 10px;
+}
+
+.fortune-tier-badge {
+  background: linear-gradient(135deg, #f0442e, #a11f12);
+  color: #fff;
+  font-weight: 800;
+  font-size: 0.8rem;
+  letter-spacing: 0.1em;
+  padding: 4px 12px;
+  border-radius: 9999px;
+  box-shadow: 0 0 14px rgba(240, 68, 46, 0.5);
+}
+
+.fortune-close-btn {
+  font-size: 1.4rem;
+  color: #8b92ad;
+  cursor: pointer;
+  line-height: 1;
+}
+
+.fortune-close-btn:hover {
+  color: #fff;
+}
+
+.fortune-slip-body {
+  display: flex;
+  gap: 20px;
+  flex-wrap: wrap;
+}
+
+.fortune-cover {
+  width: 140px;
+  height: 190px;
+  object-fit: cover;
+  border-radius: 10px;
+  box-shadow: 0 8px 24px rgba(0,0,0,0.5);
+  flex-shrink: 0;
+}
+
+.fortune-anime-info {
+  flex: 1;
+  min-width: 220px;
+}
+
+.fortune-blessing-text {
+  font-size: 0.82rem;
+  color: var(--lantern-gold);
+  font-weight: 700;
+  margin-bottom: 6px;
+}
+
+.fortune-anime-title {
+  font-size: 1.4rem;
+  font-weight: 800;
+  color: #fff;
+  margin-bottom: 6px;
+}
+
+.fortune-anime-meta {
+  font-size: 0.8rem;
+  color: #9aa1bc;
+  margin-bottom: 10px;
+}
+
+.fortune-anime-desc {
+  font-size: 0.88rem;
+  color: #b0b7cf;
+  line-height: 1.5;
+  margin-bottom: 18px;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.fortune-actions {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+/* --- Mood / Vibe Stalls Grid --- */
+.vibe-stalls-section {
+  padding: 50px 0;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.vibe-grid {
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
+  gap: 16px;
+}
+
+.vibe-card {
+  background: var(--bg-matsuri-panel);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 14px;
+  padding: 20px 16px;
+  cursor: pointer;
+  transition: transform 0.25s, border-color 0.25s, box-shadow 0.25s;
+  position: relative;
+  overflow: hidden;
+}
+
+.vibe-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 4px;
+  background: linear-gradient(90deg, var(--accent-festival), var(--lantern-gold));
+  opacity: 0.7;
+}
+
+.vibe-card:hover {
+  transform: translateY(-6px);
+  border-color: rgba(240, 68, 46, 0.6);
+  box-shadow: 0 12px 28px rgba(0, 0, 0, 0.6), 0 0 18px rgba(240, 68, 46, 0.2);
+}
+
+.vibe-tag-jp {
+  font-family: var(--font-jp);
+  font-size: 0.75rem;
+  color: var(--lantern-gold);
+  margin-bottom: 8px;
+  letter-spacing: 0.05em;
+}
+
+.vibe-name {
+  font-family: var(--font-display);
+  font-size: 1.1rem;
+  font-weight: 800;
+  color: #fff;
+  margin-bottom: 4px;
+}
+
+.vibe-desc {
+  font-size: 0.78rem;
+  color: #9aa1bc;
+  margin-bottom: 14px;
+  line-height: 1.4;
+}
+
+.vibe-curtain-btn {
+  font-size: 0.72rem;
+  font-weight: 700;
+  color: var(--accent-festival);
+  display: inline-flex;
+  align-items: center;
+  transition: transform 0.2s;
+}
+
+.vibe-card:hover .vibe-curtain-btn {
+  transform: translateX(4px);
+  color: #ff7663;
+}
+
+/* --- Timeless Classics Stall --- */
+.classics-stall-section {
+  padding: 50px 0;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.classics-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 14px;
+}
+
+.classic-row-item {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  background: var(--bg-matsuri-panel);
+  border: 1px solid rgba(255, 255, 255, 0.07);
+  border-radius: 12px;
+  padding: 14px 18px;
+  cursor: pointer;
+  transition: transform 0.2s, border-color 0.2s, background 0.2s;
+}
+
+.classic-row-item:hover {
+  transform: translateY(-2px);
+  border-color: rgba(240, 68, 46, 0.5);
+  background: rgba(26, 32, 63, 0.95);
+}
+
+.classic-rank {
+  font-family: var(--font-display);
+  font-size: 1.1rem;
+  font-weight: 800;
+  color: #687192;
+  width: 22px;
+}
+
+.classic-score-badge {
+  font-size: 0.78rem;
+  font-weight: 800;
+  color: var(--lantern-gold);
+  background: rgba(255, 177, 61, 0.12);
+  border: 1px solid rgba(255, 177, 61, 0.3);
+  padding: 3px 8px;
+  border-radius: 6px;
+}
+
+.classic-type-tag {
+  font-size: 0.68rem;
+  font-weight: 700;
+  color: #8b92ad;
+  background: rgba(255, 255, 255, 0.06);
+  padding: 2px 6px;
+  border-radius: 4px;
+}
+
+.classic-title-group {
+  flex: 1;
+  min-width: 0;
+}
+
+.classic-title {
+  display: block;
+  font-weight: 700;
+  font-size: 0.92rem;
+  color: #fff;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.classic-meta {
+  display: block;
+  font-size: 0.68rem;
+  color: #8b92ad;
+  letter-spacing: 0.05em;
+  margin-top: 2px;
+}
+
+.ticket-btn-sm {
+  font-size: 0.75rem;
+  font-weight: 800;
+  color: var(--lantern-gold);
+  background: rgba(255, 177, 61, 0.12);
+  border: 1px solid rgba(255, 177, 61, 0.3);
+  padding: 4px 8px;
+  border-radius: 6px;
+}
+
+/* --- Genre Alleys Section --- */
+.genre-alleys-section {
+  padding: 50px 0;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.alleys-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 16px;
+}
+
+.alley-card {
+  background: linear-gradient(135deg, rgba(19, 23, 46, 0.9), rgba(11, 14, 29, 0.95));
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 14px;
+  padding: 22px 18px;
+  cursor: pointer;
+  text-align: center;
+  transition: transform 0.25s, border-color 0.25s, box-shadow 0.25s;
+  position: relative;
+  overflow: hidden;
+}
+
+.alley-card:hover {
+  transform: translateY(-5px);
+  border-color: rgba(240, 68, 46, 0.55);
+  box-shadow: 0 12px 28px rgba(0, 0, 0, 0.5), 0 0 16px rgba(240, 68, 46, 0.2);
+}
+
+.alley-kanji {
+  font-size: 1.5rem;
+  color: var(--accent-festival);
+  font-weight: 800;
+  margin-bottom: 6px;
+  letter-spacing: 0.1em;
+}
+
+.alley-name {
+  font-family: var(--font-display);
+  font-size: 1rem;
+  font-weight: 700;
+  color: #fff;
+  margin-bottom: 8px;
+}
+
+.alley-link {
+  font-size: 0.72rem;
+  font-weight: 700;
+  color: #8b92ad;
+  transition: color 0.2s;
+}
+
+.alley-card:hover .alley-link {
+  color: var(--lantern-gold);
+}
+
+/* --- TV & Big Screen Showcase --- */
+.tv-matsuri-section {
+  padding: 50px 0;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.tv-matsuri-card {
+  display: flex;
+  background: linear-gradient(135deg, rgba(26, 32, 63, 0.8), rgba(19, 23, 46, 0.95));
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 20px;
+  padding: 36px 40px;
+  gap: 36px;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.tv-matsuri-left {
+  flex: 1;
+  min-width: 280px;
+}
+
+.tv-matsuri-title {
+  font-size: 2rem;
+  font-weight: 800;
+  color: #fff;
+  line-height: 1.2;
+  margin-bottom: 12px;
+}
+
+.tv-matsuri-desc {
+  font-size: 0.98rem;
+  color: #b0b7cf;
+  line-height: 1.6;
+  margin-bottom: 22px;
+}
+
+.tv-matsuri-actions {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.tv-matsuri-right {
+  flex-shrink: 0;
+  min-width: 280px;
+}
+
+.key-cheatsheet-card {
+  background: #0b0e1d;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 14px;
+  padding: 18px 22px;
+}
+
+.cheatsheet-title {
+  font-size: 0.82rem;
+  font-weight: 800;
+  color: var(--lantern-gold);
+  margin-bottom: 12px;
+  letter-spacing: 0.04em;
+}
+
+.cheatsheet-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 8px;
+  font-size: 0.78rem;
+  color: #c0c6db;
+}
+
+/* --- Diagnostics Accordion --- */
+.diagnostics-accordion {
+  background: var(--bg-matsuri-panel);
+  border: 1px solid rgba(255, 255, 255, 0.07);
+  border-radius: 12px;
+  padding: 12px 18px;
+}
+
+.diagnostics-summary {
+  cursor: pointer;
+  font-size: 0.88rem;
+  font-weight: 700;
+  color: #8b92ad;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  user-select: none;
+}
+
+.diagnostics-summary:hover {
+  color: #fff;
+}
+
+.accordion-arrow {
+  font-size: 0.7rem;
+}
+
+/* --- Festival Footer --- */
+.footer-matsuri {
+  background: #070709;
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+  padding: 50px 0 30px 0;
+  color: #9aa1bc;
+  font-size: 0.82rem;
+}
+
+.footer-top-grid {
+  display: grid;
+  grid-template-columns: 2fr 1fr 1fr 1fr;
+  gap: 36px;
+  margin-bottom: 36px;
+}
+
+.footer-brand-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 12px;
+}
+
+.footer-bio {
+  font-size: 0.85rem;
+  color: #8b92ad;
+  line-height: 1.6;
+  margin-bottom: 16px;
+  max-width: 360px;
+}
+
+.footer-tags-strip {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.tag-pill {
+  font-size: 0.7rem;
+  padding: 3px 8px;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 9999px;
+  color: #b0b7cf;
+}
+
+.footer-col-title {
+  font-size: 0.72rem;
+  font-weight: 800;
+  letter-spacing: 0.15em;
+  color: #fff;
+  margin-bottom: 14px;
+}
+
+.footer-links-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.footer-links-list li {
+  margin-bottom: 8px;
+}
+
+.footer-links-list a {
+  color: #8b92ad;
+  text-decoration: none;
+  transition: color 0.2s;
+}
+
+.footer-links-list a:hover {
+  color: var(--accent-festival);
+}
+
+.footer-keys-list div {
+  margin-bottom: 6px;
+  font-size: 0.75rem;
+}
+
+.footer-bottom-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 16px;
+  padding-top: 24px;
+  border-top: 1px solid rgba(255, 255, 255, 0.06);
+  font-size: 0.75rem;
+  color: #687192;
+}
+
+.footer-meta-links a {
+  color: #8b92ad;
+  text-decoration: none;
+}
+
+.footer-meta-links a:hover {
+  color: #fff;
+}
+
+/* --- Responsive Adjustments --- */
+@media (max-width: 1024px) {
+  .vibe-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+  .alleys-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  .footer-top-grid {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+@media (max-width: 768px) {
+  .hero-title-festival {
+    font-size: 2.2rem;
+  }
+  .hero-stats-matsuri {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  .vibe-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  .classics-grid {
+    grid-template-columns: 1fr;
+  }
+  .omikuji-content {
+    flex-direction: column;
+    text-align: center;
+  }
+  .omikuji-hanko {
+    margin: 0 auto;
+  }
+  .footer-top-grid {
+    grid-template-columns: 1fr;
+  }
+  .remote-shortcuts-strip {
+    display: none;
+  }
+}

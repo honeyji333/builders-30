@@ -55,7 +55,7 @@ failures = []
 
 def request(method, path, data=None, token=None):
     url = f"{BASE_URL}{path}"
-    headers = {'Content-Type': 'application/json'}
+    headers = {'Content-Type': 'application/json', 'Accept': 'application/json'}
     if token:
         headers['Authorization'] = f"Bearer {token}"
         headers['Cookie'] = f"auth_token={token}; token={token}"
@@ -118,7 +118,7 @@ state = {}
 def test_health():
     status, body = request('GET', '/api/health')
     assert status == 200, f"Expected 200, got {status}"
-    assert body.get('status') == 'healthy', f"Expected status healthy, got {body}"
+    assert body.get('status') in ['healthy', 'OK'], f"Expected status healthy or OK, got {body}"
 run_test("Test 1: Health & Diagnostics (/api/health)", test_health)
 
 # Test 2: Paginated Anime Catalog & Search

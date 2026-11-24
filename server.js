@@ -54,7 +54,8 @@ app.get(['/health', '/api/health'], (req, res) => {
   
   if (dbHealth.connected) {
     return res.status(200).json({
-      status: 'OK',
+      status: 'healthy',
+      success: true,
       message: 'KageStream server is running smoothly',
       database: 'Connected',
       dbEngine: 'SQLite3 (better-sqlite3)',
