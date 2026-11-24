@@ -20,7 +20,7 @@ router.get('/resolve/:episodeId', optionalAuth, (req, res) => {
       SELECT e.*, 
              a.id as anime_id, a.title as anime_title, a.title_jp, a.slug as anime_slug, 
              a.cover_image as anime_cover, a.type as anime_type, a.episodes_count as total_episodes,
-             a.has_hindi_dub
+             a.has_hindi_dub, a.mal_id, a.anilist_id, a.tmdb_id
       FROM episodes e
       JOIN anime a ON e.anime_id = a.id
       WHERE e.id = ?
@@ -43,33 +43,58 @@ router.get('/resolve/:episodeId', optionalAuth, (req, res) => {
       ORDER BY number ASC LIMIT 1
     `).get(episode.anime_id, episode.number);
 
-    // Resolve Multiple Streaming Servers & Mirrors
+    // Resolve Multiple Real Anime Streaming Servers & Mirrors (AnimeSuge / MegaCloud / VidLink)
+    const malId = episode.mal_id || episode.anime_id;
+    const epNum = episode.number || 1;
+    const tmdbId = episode.tmdb_id;
+    const animeTitle = episode.anime_title || 'Anime';
+    const encodedTitle = encodeURIComponent(animeTitle);
     const ytId = episode.youtube_video_id || 'W81XCKkTez8';
+
     const servers = [
       {
-        id: 'hd-vault',
-        name: 'HD Vault (Fast CDN)',
-        quality: '1080p HD',
-        embed_url: `https://www.youtube-nocookie.com/embed/${ytId}?autoplay=1&enablejsapi=1&rel=0&modestbranding=1`,
-        direct_stream_url: episode.source_url || `https://www.youtube.com/watch?v=${ytId}`,
+        id: 'animesuge-hd',
+        name: 'AnimeSuge HD (Sub 1080p)',
+        quality: '1080p Ultra HD',
+        embed_url: `https://vidlink.pro/anime/${malId}/${epNum}/sub?primaryColor=f0442e&secondaryColor=a11f12&icons=vid&title=true`,
+        direct_stream_url: `https://vidlink.pro/anime/${malId}/${epNum}/sub`,
         type: 'embed',
         preferred: true
       },
       {
-        id: 'mirror-stream',
-        name: 'AnimeStream Mirror (Sub/Dub)',
-        quality: '720p Multi',
-        embed_url: `https://www.youtube.com/embed/${ytId}?autoplay=1&fs=1`,
+        id: 'megacloud-dub',
+        name: 'MegaCloud Dub (Hindi / Multi-Audio)',
+        quality: '1080p Multi-Dub',
+        embed_url: `https://vidlink.pro/anime/${malId}/${epNum}/dub?fallback=true&primaryColor=f0442e`,
+        direct_stream_url: `https://vidlink.pro/anime/${malId}/${epNum}/dub`,
         type: 'embed',
         preferred: false
       },
       {
-        id: 'server-3',
-        name: 'Official Partner Feed',
+        id: 'vidsrc-cdn',
+        name: 'VidSrc Rapid Cloud',
         quality: '1080p Auto',
-        source_name: episode.source_name || 'Official Licensor',
-        direct_stream_url: episode.source_url || `https://www.youtube.com/watch?v=${ytId}`,
+        embed_url: tmdbId 
+          ? `https://vidsrc.cc/v2/embed/tv/${tmdbId}/1/${epNum}` 
+          : `https://vidlink.pro/anime/${malId}/${epNum}/sub`,
+        type: 'embed',
+        preferred: false
+      },
+      {
+        id: 'official-partner',
+        name: 'Official Crunchyroll Stream',
+        quality: 'Official 4K / HD',
+        source_name: 'Crunchyroll / Licensor',
+        direct_stream_url: `https://www.crunchyroll.com/search?q=${encodedTitle}`,
         type: 'external',
+        preferred: false
+      },
+      {
+        id: 'backup-mirror',
+        name: 'Backup Archive Stream',
+        quality: '720p Mirror',
+        embed_url: `https://www.youtube-nocookie.com/embed/${ytId}?autoplay=1&enablejsapi=1`,
+        type: 'embed',
         preferred: false
       }
     ];
