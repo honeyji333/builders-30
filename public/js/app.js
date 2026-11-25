@@ -142,14 +142,24 @@ async function handleRouting() {
   if (hash === '#/' || hash === '' || hash === '#') {
     switchView('homeView');
     fetchFeaturedAnime();
+  } else if (hash === '#omikujiSection' || hash === '#vibeStallsSection' || hash === '#catalogSection') {
+    switchView('homeView');
+    fetchFeaturedAnime();
+    setTimeout(() => {
+      const targetEl = document.getElementById(hash.slice(1));
+      if (targetEl) targetEl.scrollIntoView({ behavior: 'smooth' });
+    }, 60);
   } else if (hash.startsWith('#/catalog') || hash.startsWith('#/browse')) {
     switchView('catalogView');
     if (hash.includes('?')) {
       const qs = hash.split('?')[1];
       const params = new URLSearchParams(qs);
-      if (params.has('genre')) state.catalog.filters.genre = params.get('genre');
-      if (params.has('search')) state.catalog.filters.search = params.get('search');
-      if (params.has('page')) state.catalog.filters.page = parseInt(params.get('page'), 10) || 1;
+      const rawGenre = params.get('genre') || '';
+      state.catalog.filters.genre = rawGenre ? rawGenre.toLowerCase().trim().replace(/\s+/g, '-') : '';
+      state.catalog.filters.search = params.get('search') || '';
+      const rawSort = params.get('sort') || 'rating';
+      state.catalog.filters.sort = rawSort === 'trending' ? 'views' : rawSort;
+      state.catalog.filters.page = parseInt(params.get('page'), 10) || 1;
       syncFilterInputsFromState();
     }
     loadCatalog();
@@ -2057,12 +2067,12 @@ document.addEventListener('DOMContentLoaded', () => {
 
     try {
       // Ensure we have catalog anime list
-      let animePool = state.catalog.animeList;
+      let animePool = state.catalog.anime;
       if (!animePool || animePool.length === 0) {
         const res = await apiCall('/api/anime?limit=30&sort=rating');
         if (res.ok && res.data.data) {
           animePool = res.data.data;
-          state.catalog.animeList = animePool;
+          state.catalog.anime = animePool;
         }
       }
 
@@ -2070,13 +2080,23 @@ document.addEventListener('DOMContentLoaded', () => {
       const chosenAnime = (animePool && animePool.length > 0)
         ? animePool[Math.floor(Math.random() * animePool.length)]
         : {
-            id: 1,
-            title: 'ONE PIECE',
+            id: 4,
+            title: 'One Piece',
             type: 'TV',
             rating: 8.8,
             cover_image: 'https://images.unsplash.com/photo-1578632767115-351597cf2477?w=400',
             description: 'The journey across the Grand Line for the legendary treasure left behind by the Pirate King.'
           };
+
+      // Resolve actual Episode 1 ID for the drawn anime
+      let targetWatchHref = `#/anime/${chosenAnime.id || 4}`;
+      try {
+        const epRes = await apiCall(`/api/anime/${chosenAnime.id}/episodes`);
+        const eps = epRes?.data?.episodes;
+        if (epRes.ok && Array.isArray(eps) && eps.length > 0) {
+          targetWatchHref = `#/watch/${eps[0].id}`;
+        }
+      } catch (_) {}
 
       const chosenTier = fortuneTiers[Math.floor(Math.random() * fortuneTiers.length)];
 
@@ -2095,7 +2115,7 @@ document.addEventListener('DOMContentLoaded', () => {
       if (animeTitle) animeTitle.textContent = chosenAnime.title || 'Selected Anime';
       if (animeMeta) animeMeta.textContent = `★ ${chosenAnime.rating || '8.5'} • ${chosenAnime.type || 'TV'} • ${chosenAnime.release_year || '2024'}`;
       if (animeDesc) animeDesc.textContent = chosenAnime.description || 'Step through the festival curtain and begin streaming now.';
-      if (watchLink) watchLink.href = `#/watch/${chosenAnime.id || 1}`;
+      if (watchLink) watchLink.href = targetWatchHref;
 
       fortuneSlipCard.style.display = 'block';
       fortuneSlipCard.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
